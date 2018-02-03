@@ -18,7 +18,6 @@
 			// USAGE: pdf.textEx('Example text', xPosition, yPosition, 'right', 'middle')
 			// from: https://stackoverflow.com/questions/28327510/align-text-right-using-jspdf
 
-
 			var splitRegex = /\r\n|\r|\n/g;
 			jsPDF.API.textEx = function (text, x, y, hAlign, vAlign) {
 				var fontSize = this.internal.getFontSize() / this.internal.scaleFactor;
@@ -70,7 +69,7 @@
 			doc.line(0,50,100,50);
 			doc.line(50,0,50,100);
 			
-			testo = "EXAMPLE EXAMPLE EXAMPLE EXAMPLE";
+			testo = "EXAMPLE lorem ipsum sit";
 			
 			testo_ = doc.splitTextToSize(testo, 50);
 			
