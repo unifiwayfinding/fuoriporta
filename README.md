@@ -1,5 +1,7 @@
-# pdfexperiments
-libraries:
+# PDF experiments
+Experiments in browser PDF composing
+
+## Libraries:
 1. jsPDF
 	* Missing custom font support - Beta plugin [here](https://github.com/sphilee/jsPDF-CustomFonts-support)
 
