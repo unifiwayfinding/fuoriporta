@@ -8,6 +8,7 @@ Experiments in browser PDF composing
 2. [PDFkit](http://pdfkit.org/)
 	* Engine powering PDFmake
 	* Should have custom font support
+	* Broser DEMO -> [pdfkit.org/demo/browser.html](http://pdfkit.org/demo/browser.html)
 
 3. PDFmake
 	* Deisnged to work with text flow, not with manual positions

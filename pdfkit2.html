@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>PDFlkit Experiments</title>
+		<script src="js/pdfkit.js"></script>
+		<script src="js/blob-stream.js"></script>
+		<style>
+
+			body {
+				font-family: sans-serif;
+			}
+			iframe {
+				border: 1px solid black;
+				display: block;
+			}
+
+			#nome {
+				margin: 20px 0;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<img src="" alt="" id="photo" width="300px" height="auto">
+
+		<h1>TEST PER FUORIPORTA PDF</h1>
+		NOME: <input id="nome" type="text" value="Nome Docente">
+		<button onclick="aggiorna()">Aggiorna</button>
+
+		<iframe height="600px" width="600px"></iframe>
+
+		<script>
+
+			var iframe = document.querySelector('iframe');
+
+			// load images
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./images/logo.jpg", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				var arrayBufferView = new Uint8Array( this.response );
+				var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+				var urlCreator = window.URL || window.webkitURL;
+				var imageUrl = urlCreator.createObjectURL( blob );
+				var img = document.querySelector('#photo');
+				img.src = imageUrl;
+				urlGloball = imageUrl;
+			};
+			xhr.send();
+
+
+			function aggiorna(){
+				var nome = document.querySelector('#nome').value;
+
+				doc = new PDFDocument({
+					autoFirstPage: false
+				});
+
+				stream = doc.pipe(blobStream())
+
+				doc.addPage({
+					size: [400,400],
+					margins: {
+						top: 10,
+						bottom: 10,
+						left: 10,
+						right: 12
+					}
+				});
+
+				doc.font('Helvetica', 30)
+					.text(nome, {
+					align: 'right',
+					height: 300,
+					ellipsis: true
+				});
+
+
+				alert(urlGlobal);
+				doc.image(imageUrl);
+
+
+
+				// LOADING FILES
+				/*
+				var filesLoaded = 0;
+
+				var files = {
+					img1: {
+						url: 'http://static.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg',
+					}
+				};
+
+				function loadedFile(xhr) {
+					for (var file in files) {
+						if (files[file].url === xhr.responseURL) {
+							files[file].data = xhr.response;
+						}
+					}
+					filesLoaded += 1;
+					if (filesLoaded == Object.keys(files).length) {
+						showPDF();
+					}
+				}
+
+				for (var file in files) {
+					files[file].xhr = new XMLHttpRequest();
+					files[file].xhr.onreadystatechange = function() {
+						if (this.readyState == 4 && this.status == 200) {
+							loadedFile(this);
+						}     
+					};
+					files[file].xhr.responseType = 'arraybuffer';
+					files[file].xhr.open('GET', files[file].url);
+					files[file].xhr.send(null); 
+				}				
+
+
+				doc.image(files.img1.data);
+
+
+				// doc.font('fonts/TitilliumWeb-Light.ttf', 20)
+				//.text("black");
+
+
+
+				*/
+
+
+
+				doc.end();
+				stream.on('finish', function() {
+					iframe.src = stream.toBlobURL('application/pdf');
+				});
+
+			}	
+
+			aggiorna();
+
+
+
+		</script>
+
+
+
+
+
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
