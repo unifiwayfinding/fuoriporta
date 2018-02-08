@@ -25,7 +25,7 @@
 
 		<img src="" alt="" id="photo" width="300px" height="auto">
 
-		<h1>TEST PER FUORIPORTA PDF</h1>
+		<h1>GENERATORE FUORIPORTA NOVOLI</h1>
 		NOME: <input id="nome" type="text" value="Nome Docente">
 		<button onclick="aggiorna()">Aggiorna</button>
 
@@ -35,23 +35,34 @@
 
 			var iframe = document.querySelector('iframe');
 
+			var urlGlobal;	
+			var dataGlobal;	
+			
 			// load images
 			var xhr = new XMLHttpRequest();
-			xhr.open( "GET", "./images/logo.jpg", true );
+			xhr.open( "GET", "./images/gatto.jpg", true );
 			xhr.responseType = "arraybuffer";
 			xhr.onload = function( e ) {
+				
+				dataGlobal = this.response;
+				
 				var arrayBufferView = new Uint8Array( this.response );
 				var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
 				var urlCreator = window.URL || window.webkitURL;
 				var imageUrl = urlCreator.createObjectURL( blob );
 				var img = document.querySelector('#photo');
 				img.src = imageUrl;
-				urlGloball = imageUrl;
+				
+				urlGlobal = imageUrl;
+				
+				aggiorna();
+				
 			};
 			xhr.send();
 
 
 			function aggiorna(){
+				
 				var nome = document.querySelector('#nome').value;
 
 				doc = new PDFDocument({
@@ -69,6 +80,7 @@
 						right: 12
 					}
 				});
+				
 
 				doc.font('Helvetica', 30)
 					.text(nome, {
@@ -76,10 +88,11 @@
 					height: 300,
 					ellipsis: true
 				});
+				
+							doc.image(dataGlobal, 0, 300);
 
-
-				alert(urlGlobal);
-				doc.image(imageUrl);
+				
+				// alert(dataGlobal);
 
 
 
@@ -137,7 +150,7 @@
 
 			}	
 
-			aggiorna();
+
 
 
 
