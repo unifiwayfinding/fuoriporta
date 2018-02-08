@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>PDFlkit Experiments - Load image with xhr</title>
+		<style>
+
+			body {
+				font-family: sans-serif;
+			}
+
+
+			#photo {
+				border: 1px solid black;
+				display: block;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<img src="images/blank.gif" alt="" id="photo" width="300px" height="146px">
+		<button onclick="load()">Load image</button>
+
+
+		<script>
+
+			var iframe = document.querySelector('iframe');
+
+
+			// load images
+
+			/* longer method - still works
+			function load() {
+				var xhr = new XMLHttpRequest();
+				xhr.open( "GET", "./images/logo.jpg", true );
+				xhr.responseType = "arraybuffer";
+				xhr.onload = function( e ) {
+					var arrayBufferView = new Uint8Array( this.response );
+					var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+					var urlCreator = window.URL || window.webkitURL;
+					var imageUrl = urlCreator.createObjectURL( blob );
+					var img = document.querySelector('#photo');
+					img.src = imageUrl;
+				};
+				xhr.send();
+			}
+			*/ 
+			
+			function load() {
+				var xhr = new XMLHttpRequest();
+				xhr.open( "GET", "./images/logo.jpg", true );
+				xhr.responseType = "blob";
+				xhr.onload = function( e ) {
+					var blob = xhr.response;
+					var urlCreator = window.URL || window.webkitURL;
+					var imageUrl = urlCreator.createObjectURL( blob );
+					var img = document.querySelector('#photo');
+					img.src = imageUrl;
+				};
+				xhr.send();
+			}			
+
+
+
+
+
+
+		</script>
+
+
+
+
+
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
