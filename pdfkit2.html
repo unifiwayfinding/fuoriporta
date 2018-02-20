@@ -5,33 +5,90 @@
 		<title>PDFlkit Experiments</title>
 		<script src="js/pdfkit.js"></script>
 		<script src="js/blob-stream.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+
+
 		<style>
 
 			body {
-				font-family: sans-serif;
+				display: flex;
 			}
-			iframe {
+			
+			section {
 				border: 1px solid black;
-				display: block;
+				border-radius: 10px;
+				padding: 10px;
+				margin: 5px;
+			}
+			#control {
+				padding-right: 200px;
+			}
+			#preview: padding: 10px;
+
+			iframe {
+				border: 1px solid grey;
 			}
 
-			#nome {
-				margin: 20px 0;
+			label {
+				font-weight: 400;
+				font-size: 11px;
 			}
+
+			input[type=text]{
+				margin: 0;
+			}
+
+			select, input[type=text] {width: 200px; height: 20px;}
+
+
+
+			select, button, input {margin-left: 45px;}
 
 		</style>
+
 	</head>
 	<body>
+		<section id="control">
+			<header>
+				<img src="images/logo.jpg" alt="" id="photo" width="150px" height="auto">
+				<h5>GENERATORE FUORIPORTA NOVOLI</h5>
+			</header>
 
-		<img src="images/logo.jpg" alt="" id="photo" width="300px" height="auto">
+			<div class="input-container">
+				<select>
+					<option value="Studi Docenti">Studi Docenti</option>
+					<option value="Centri di Ricerca">Centri di Ricerca</option>
+				</select>
 
-		<h1>GENERATORE FUORIPORTA NOVOLI</h1>
-		NOME: <input id="nome" type="text" value="Nome Docente">
-		<button onclick="aggiorna()">Aggiorna</button>
+				<div class="input-fields">
+					<label>Nome 1: <input id="nome01" type="text" value="Nome Docente"></label>
+					<label>Nome 2: <input id="nome02" type="text" ></label>
+					<label>Nome 3: <input id="nome03" type="text" ></label>
+					<label>Nome 4: <input id="nome04" type="text" ></label>
+					<label>Nome 5: <input id="nome05" type="text" ></label>
+					<label>Nome 6: <input id="nome06" type="text" ></label>
+				</div>
 
-		<iframe height="600px" width="600px"></iframe>
+				<input type="checkbox" id="margins" checked> Mostra i margini <br>
+				<button id="aggiorna" onclick="aggiorna()">Aggiorna il preview</button>
+				<button onclick="">Scarica il PDF</button>
+
+			</div>
+		</section>
+
+		<section id="preview">
+			<iframe height="600px" width="600px"></iframe>
+		</section>
 
 		<script>
+
+			// Impostazioni PDF, in mm
+			var pdf_larg = 150;
+			var pdf_alt = 140;
+			var pdf_msx = 10;
+			var pdf_mdx = 10;
+			var pdf_msu = 10;
+			var pdf_mgiu = 10;
 
 			var iframe = document.querySelector('iframe');
 			var loaded = 0;
@@ -76,44 +133,67 @@
 				}
 			}
 
+
+
 			function aggiorna(){
 
-				var nome = document.querySelector('#nome').value;
+				// Carica informazioni da form
+				var nomi = load_nomi();
 
+				//Setup PDF document
 				doc = new PDFDocument({
 					autoFirstPage: false
 				});
-
 				stream = doc.pipe(blobStream())
 
+				// Aggiungi pagina
 				doc.addPage({
-					size: [400,400],
+					size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
 					margins: {
-						top: 10,
-						bottom: 10,
-						left: 10,
-						right: 12
+						top: mmToUnits(8),
+						bottom: mmToUnits(0),
+						left: mmToUnits(10),
+						right: mmToUnits(10)
 					}
 				});
 
+				// Mostra margini
+				// alert (document.querySelector("#margins").checked)
+				if (document.querySelector("#margins").checked == true) {
 
-				doc.font(helvetica_black, 30)
-					.text(nome, {
-					height: 300,
-					align: 'right',
-					ellipsis: true
-				});
-				
+					doc.moveTo(0,0)
+						.lineTo(300,300)
+						.lineWidth(.5)
+						.stroke("black");
+
+					doc.moveTo(300,300)
+						.lineTo(0,300)
+						.lineWidth(3)
+						.stroke("blue");
+
+					doc.rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
+						.fill("red")
+						.fillOpacity(0.2)
+						.strokeColor("blue")
+						.lineWidth(2)
+
+				}
+
+				// Scrivi info su PDF
+
+				var prima_riga = "studi";
+				var seconda_riga = "docenti";
+
+				doc.fill ("#000");
+
+				doc.font(helvetica_black, 36);
+				doc.text(prima_riga, mmToUnits(pdf_msx), mmToUnits(pdf_msu), {lineGap: mmToUnits(-4)})
+					.text(seconda_riga);
+
 				doc.font(helvetica_light, 30)
-					.text(nome, {
-					height: 300,
-					align: 'right',
-					ellipsis: true
-				});
-				
-				doc.image(image, 10, 10,  {width: 100});
+					.text(nomi[0], mmToUnits(pdf_msx), mmToUnits(122));
 
-
+				// Chiudi PDF e visualizza
 				doc.end();
 				stream.on('finish', function() {
 					iframe.src = stream.toBlobURL('application/pdf');
@@ -122,7 +202,21 @@
 			}	
 
 
+			function mmToUnits(mm){
+				units = mm * 2.8368794326;
+				return units;
+			}
 
+			function load_nomi() {
+
+				var nomi_list=['#nome01', '#nome02', '#nome03', '#nome04', '#nome05', '#nome06']
+				var nomi=[]
+				for (var x in nomi_list) {
+					nomi[x]=document.querySelector(nomi_list[x]).value;
+				} 
+
+				return nomi;
+			}
 
 
 		</script>

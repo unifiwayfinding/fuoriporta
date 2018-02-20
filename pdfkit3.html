@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>PDFlkit Experiments</title>
+		<script src="js/pdfkit.js"></script>
+		<script src="js/blob-stream.js"></script>
+		<script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+
+
+
+		<style>
+
+			body {
+				display: flex;
+			}
+
+			section {
+				border: 1px solid black;
+				border-radius: 10px;
+				padding: 10px;
+				margin: 5px;
+			}
+			#control {
+				padding-right: 200px;
+			}
+			#preview {
+				padding: 10px;
+			}
+
+			iframe, canvas {
+				border: 1px solid grey;
+			}
+
+			label {
+				font-weight: 400;
+				font-size: 11px;
+			}
+
+			input[type=text]{
+				margin: 0;
+			}
+
+			select, input[type=text] {width: 200px; height: 20px;}
+
+
+			select, button, input {margin-left: 45px;}
+
+		</style>
+
+	</head>
+	<body>
+		<section id="control">
+			<header>
+				<img src="images/logo.jpg" alt="" id="photo" width="150px" height="auto">
+				<h5>GENERATORE FUORIPORTA NOVOLI</h5>
+			</header>
+
+			<div class="input-container">
+				<select>
+					<option value="Studi Docenti">Studi Docenti</option>
+					<option value="Centri di Ricerca">Centri di Ricerca</option>
+				</select>
+
+				<div class="input-fields">
+					<label>Nome 1: <input id="nome01" type="text" value="Nome Docente"></label>
+					<label>Nome 2: <input id="nome02" type="text" ></label>
+					<label>Nome 3: <input id="nome03" type="text" ></label>
+					<label>Nome 4: <input id="nome04" type="text" ></label>
+					<label>Nome 5: <input id="nome05" type="text" ></label>
+					<label>Nome 6: <input id="nome06" type="text" ></label>
+				</div>
+
+				<input type="checkbox" id="margins" checked> Mostra i margini <br>
+				<button id="aggiorna" onclick="aggiorna()">Aggiorna il preview</button>
+				<button onclick="">Scarica il PDF</button>
+
+			</div>
+		</section>
+
+		<section id="preview">
+			<h1>ANTEPRIMA PDF</h1>
+			<canvas id="the-canvas"></canvas>
+			<iframe height="600px" width="600px"></iframe>
+		</section>
+
+		<script>
+
+			// Impostazioni PDF, in mm
+			var pdf_larg = 150;
+			var pdf_alt = 140;
+			var pdf_msx = 10;
+			var pdf_mdx = 10;
+			var pdf_msu = 10;
+			var pdf_mgiu = 10;
+
+			var iframe = document.querySelector('iframe');
+			var loaded = 0;
+
+			// load logo
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./images/logo.jpg", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				image = this.response;
+				loaded = loaded + 1;
+				load_pdf();
+			};
+			xhr.send();
+
+			// load font helvetica black
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica_black = this.response;
+				loaded = loaded + 1;
+				load_pdf();
+			};
+			xhr.send();		
+
+			// load font helvetica light
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica_light = this.response;
+				loaded = loaded + 1;
+				load_pdf();
+			};
+			xhr.send();	
+
+
+			function load_pdf() {
+				if (loaded == 3) {
+					aggiorna();
+				}
+			}
+
+
+
+			function aggiorna(){
+
+				// Carica informazioni da form
+				var nomi = load_nomi();
+
+				//Setup PDF document
+				doc = new PDFDocument({
+					autoFirstPage: false
+				});
+				stream = doc.pipe(blobStream())
+
+				// Aggiungi pagina
+				doc.addPage({
+					size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
+					margins: {
+						top: mmToUnits(8),
+						bottom: mmToUnits(0),
+						left: mmToUnits(10),
+						right: mmToUnits(10)
+					}
+				});
+
+				// Mostra margini
+				// alert (document.querySelector("#margins").checked)
+				if (document.querySelector("#margins").checked == true) {
+
+					doc.moveTo(0,0)
+						.lineTo(300,300)
+						.lineWidth(.5)
+						.stroke("black");
+
+					doc.moveTo(300,300)
+						.lineTo(0,300)
+						.lineWidth(3)
+						.stroke("blue");
+
+					doc.rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
+						.fill("red")
+						.fillOpacity(0.2)
+						.strokeColor("blue")
+						.lineWidth(2)
+
+				}
+
+				// Scrivi info su PDF
+				var prima_riga = "studi";
+				var seconda_riga = "docenti";
+
+				doc.fill ("#000");
+
+				doc.font(helvetica_black, 36);
+				doc.text(prima_riga, mmToUnits(pdf_msx), mmToUnits(pdf_msu), {lineGap: mmToUnits(-4)})
+					.text(seconda_riga);
+
+				doc.font(helvetica_light, 30)
+					.text(nomi[0], mmToUnits(pdf_msx), mmToUnits(122));
+
+				// Chiudi PDF e visualizza
+				doc.end();
+				stream.on('finish', function() {
+					pdf_url = stream.toBlobURL('application/pdf')
+					iframe.src = pdf_url;
+					aggiorna_PDF(pdf_url);
+				});
+
+
+
+			}
+
+
+			function mmToUnits(mm){
+				units = mm * 2.8368794326;
+				return units;
+			}
+
+			function load_nomi() {
+
+				var nomi_list=['#nome01', '#nome02', '#nome03', '#nome04', '#nome05', '#nome06']
+				var nomi=[]
+				for (var x in nomi_list) {
+					nomi[x]=document.querySelector(nomi_list[x]).value;
+				} 
+
+				return nomi;
+			}
+
+
+			// ----- VISUALIZE WITH PDF.JS -----
+
+			// If absolute URL from the remote server is provided, configure the CORS
+			// header on that server.
+
+			PDFJS.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+
+			// Asynchronous download of PDF
+
+			var aggiorna_PDF = function(url) {
+				var loadingTask = PDFJS.getDocument(url);
+				loadingTask.promise.then(function(pdf) {
+					console.log('PDF loaded');
+
+					// Fetch the first page
+					var pageNumber = 1;
+					pdf.getPage(pageNumber).then(function(page) {
+						console.log('Page loaded');
+
+						var scale = 1.5;
+						var viewport = page.getViewport(scale);
+
+						// Prepare canvas using PDF page dimensions
+						var canvas = document.getElementById('the-canvas');
+						var context = canvas.getContext('2d');
+						canvas.height = viewport.height;
+						canvas.width = viewport.width;
+
+						// Render PDF page into canvas context
+						var renderContext = {
+							canvasContext: context,
+							viewport: viewport
+						};
+						var renderTask = page.render(renderContext);
+						renderTask.then(function () {
+							console.log('Page rendered');
+						});
+					});
+				}, function (reason) {
+					// PDF loading error
+					console.error(reason);
+				});
+
+			};
+
+
+
+
+		</script>
+
+
+
+
+
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

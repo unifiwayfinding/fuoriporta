@@ -13,7 +13,7 @@
 			// -------------------------------------
 			// ------------- PLUGINS ---------------
 			// -------------------------------------
-			
+
 			// ------------- textEx ----------------
 			// USAGE: pdf.textEx('Example text', xPosition, yPosition, 'right', 'middle')
 			// from: https://stackoverflow.com/questions/28327510/align-text-right-using-jspdf
@@ -59,20 +59,20 @@
 				this.text(text, x, y);
 				return this;
 			};
-			
-			
 
-			
-			
+
+
+
+
 			var doc = new jsPDF('landscape', 'mm', [100, 100]);
-			
+
 			doc.line(0,50,100,50);
 			doc.line(50,0,50,100);
-			
+
 			testo = "EXAMPLE lorem ipsum sit";
-			
+
 			testo_ = doc.splitTextToSize(testo, 50);
-			
+
 			doc.textEx(testo_, 50, 50, "left", "bottom");
 
 			function openPDF(){
@@ -81,7 +81,7 @@
 
 		</script>
 
-		
+
 	</body>
 </html>
 
