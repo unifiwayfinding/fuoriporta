@@ -9,46 +9,63 @@
 
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700" rel="stylesheet">
-		<link href="css/styles.css" rel="stylesheet">
+
+		<style>
+			body {
+				margin: 100px;
+				background: #81a9e8;
+				font-family: 'Titillium Web', sans-serif;
+				box-sizing: border-box;
+			}
+
+			section {
+				background: #eee;
+				border: 1px solid black;
+				border-radius: 10px;
+				padding: 20px 10px 10px;
+				margin: 5px ;
+				position: relative;
+			}
+
+			section header img {
+				margin-left: 65px;
+			}
+
+			#control {
+				float: left;
+				height: 800px;
+				width: 450px;
+				padding-right: 50px;
+			}
+
+			#preview {
+				float: left;
+				height: 800px;
+				width: 700px;
+				align-content: center;
+				text-align: center;
+			}
+
+			#preview main {
+				margin-top: 50px;
+			}
+
+			canvas {
+				border: 1px solid grey;
+			}
+		</style>
+
+
 
 	</head>
 	<body>
-		<section id="control">
-			<header>
-				<img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto">
-				<h5>Generatore Fuoriporta Novoli</h5>
-			</header>
 
-			<main class="input-container">
-				<label>Scegliere il tipo:
-					<select onchange="show_input_fields()" id="tipo_selector">
-						<option value="None">---</option>
-						<option value="StudiDocenti">Studi Docenti</option>
-						<option value="CdR">Centri di Ricerca</option>
-						<option value="UdR">Unità di Ricerca</option>
-						<option value="Personalizzato">Personalizzato</option>
-					</select>
-				</label>
-				<br>
 
-				<div id="input-fields">
-				</div>
-
-				<div id="control-panel">
-					<div class="margin-checkbox">
-						<input type="checkbox" id="margins" >
-						<label class=checkbox-label>Mostra i margini</label>
-					</div>
-					<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Genera l'anteprima</button>
-					<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
-				</div>
-
-			</main>
-		</section>
 
 		<section id="preview">
 			<header>
 				<h5>Anteprima PDF</h5>
+				<a href="" id="scarica_link_2" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
 			</header>
 			<main>
 				<canvas id="the-canvas"></canvas>
@@ -65,6 +82,9 @@
 			var pdf_msu = 10;
 			var pdf_mgiu = 10;
 
+			// Mostra Margini
+			var show_margins = false;
+
 
 			// Load stuff
 			var loaded = 0;
@@ -76,6 +96,7 @@
 			xhr.onload = function( e ) {
 				helvetica_black = this.response;
 				loaded = loaded + 1;
+				console.log("black loaded");
 				load_pdf();
 			};
 			xhr.send();		
@@ -87,62 +108,16 @@
 			xhr.onload = function( e ) {
 				helvetica_light = this.response;
 				loaded = loaded + 1;
+				console.log("light loaded");
 				load_pdf();
 			};
 			xhr.send();	
 
 
 			function load_pdf() {
-				if (loaded == 3) {
+				if (loaded == 2) {
 					aggiorna_pdf();
 				}
-			}
-
-			function show_input_fields() {
-				var tipo = document.querySelector("#tipo_selector").value;
-				var container = document.querySelector("#input-fields");
-
-				while (container.firstChild) {
-					container.removeChild(container.firstChild);
-				}				
-				switch (tipo) {
-					case "StudiDocenti":
-						create_input(container, "Nome 1:", "nome_1", "Nome Docente");
-						create_input(container, "Nome 2:", "nome_2");
-						create_input(container, "Nome 3:", "nome_3");
-						create_input(container, "Nome 4:", "nome_4");
-						break;
-					case "UdR":
-						create_input(container, "Acronimo:", "udr_acronimo", "Acronimo");
-						create_input(container, "Nome Unità:", "udr_nome", "Nome Esteso");
-						break;
-					case "CdR":
-						create_input(container, "Acronimo:", "cdr_acronimo", "Acronimo");
-						create_input(container, "Nome Centro:", "cdr_nome", "Nome Esteso");
-						break;
-					case "Personalizzato":
-						create_input(container, "Intestazione 1:", "intest_1", "Intestazione 1")
-						create_input(container, "Intestazione 2:", "intest_2", "")
-						create_input(container, "Intestazione 3:", "intest_3", "")
-						create_input(container, "Nome 1:", "nome_1", "Nome e Cognome");
-						create_input(container, "Nome 2:", "nome_2");
-						create_input(container, "Nome 3:", "nome_3");
-						create_input(container, "Nome 4:", "nome_4");
-						break;
-				}
-			}
-
-			function create_input(container, etichetta, id, value) {
-				var label = document.createElement("label");
-				label.textContent = etichetta;
-				var input = document.createElement("input");
-				input.setAttribute("type", "text"); 
-				input.setAttribute("class", "input_field"); 
-				input.setAttribute("id", id);
-				if (!value) {value =""};
-				input.setAttribute("value", value);
-				label.appendChild(input);
-				container.appendChild(label);
 			}
 
 
@@ -155,24 +130,7 @@
 			function mmToUnits(mm){
 				units = mm * 2.8368794326;
 				return units;
-			}
-
-			// Helper function: loads information
-			function load_info() {
-				var tipo = document.querySelector("#tipo_selector").value;
-				var container = document.querySelector("#input-fields");
-
-				figli = container.children;
-				var figli_2 = container.getElementsByClassName("input_field");				console.log(figli_2);
-
-				var nomi_list=['#nome_1', '#nome_2', '#nome_3']
-				var nomi=[]
-				for (var x in nomi_list) {
-					nomi[x]=document.querySelector(nomi_list[x]).value;
-				} 
-				console.log(nomi);
-				return nomi;
-			}			
+			}		
 
 			// Main function: aggiorna pdf e visualizza anteprima
 			function aggiorna_pdf(){
@@ -187,15 +145,15 @@
 				doc.addPage({
 					size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
 					margins: {
-						top: mmToUnits(8),
-						bottom: mmToUnits(10),
-						left: mmToUnits(10),
-						right: mmToUnits(10)
+						top: mmToUnits(0),
+						bottom: mmToUnits(0),
+						left: mmToUnits(0),
+						right: mmToUnits(0)
 					}
 				});
 
-				// Mostra margini
-				if (document.querySelector("#margins").checked == true) {
+				// Mostra margini				
+				if (show_margins == true) {
 
 					doc.moveTo(0,0)
 						.lineTo(300,300)
@@ -214,6 +172,14 @@
 						.lineWidth(2)
 				}
 
+				doc.rect( mmToUnits(pdf_msx),
+						 mmToUnits(pdf_msu),
+						 mmToUnits(pdf_larg - pdf_msu - pdf_mgiu),
+						 mmToUnits(pdf_alt - pdf_msx - pdf_mdx),
+						)
+					.stroke("red");
+
+
 				// Carica contenuto
 				/*
 				Come scrivere questa parte: dividerla in tre momenti
@@ -225,23 +191,46 @@
 					pdf kit scrive sul pdf in posizioni prefissate delle righe di testo per tutte le variabili che trova riempite
 				*/
 
-				// Carica informazioni da form
-				var nomi = load_info();
 
-				// Scrivi info su PDF
-				var prima_riga = "studi";
-				var seconda_riga = "docenti";
+				var loremIpsum = "Lorem ipsum dolor sit amet, consectetur."
+
+
 
 				doc.fill ("#000");
 
-				doc.font(helvetica_black, 36);
-				doc.text(prima_riga, mmToUnits(pdf_msx), mmToUnits(pdf_msu), {lineGap: mmToUnits(-4)})
-					.text(seconda_riga);
+				var opzioni = {width: mmToUnits(80)};
+
+				doc.font(helvetica_light, 20)
+					.text(loremIpsum,
+						  mmToUnits(pdf_msx),
+						  mmToUnits(pdf_msu),
+						  opzioni);
+
+				doc.font(helvetica_light, 20)
+					.text(loremIpsum,
+						  mmToUnits(pdf_msx),
+						  mmToUnits(pdf_msu) + (doc.heightOfString(loremIpsum, opzioni)),
+						  opzioni);
+
+				var correzione = function(font, size) {
+					switch(font) {
+						case helvetica_light:
+							return size * 0.43;
+							break;
+						case helvetica_black:
+							return size * 0.43;
+							break;							
+					}
+				};
 
 				doc.font(helvetica_light, 30)
-					.text(nomi[0], mmToUnits(pdf_msx), mmToUnits(122), {
-					height: mmToUnits(1)
-				});
+					.text(loremIpsum,
+						  mmToUnits(pdf_msx),
+						  mmToUnits(pdf_alt)
+						  - mmToUnits(pdf_mgiu)
+						  - (doc.heightOfString(loremIpsum, opzioni))
+						  + correzione(helvetica_light, 30),
+						  opzioni);
 
 				// Chiudi PDF e visualizza
 				doc.end();
@@ -249,7 +238,7 @@
 					pdf_url = stream.toBlobURL('application/pdf')
 					// iframe.src = pdf_url;
 					aggiorna_PDF(pdf_url);
-					link=document.querySelector("#scarica_link");
+					link=document.querySelector("#scarica_link_2");
 					link.href=pdf_url;							
 				});
 			}
@@ -299,6 +288,9 @@
 					console.error(reason);
 				});
 			};
+
+
+
 
 		</script>
 

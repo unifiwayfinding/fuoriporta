@@ -7,27 +7,40 @@
 		<script src="js/blob-stream.js"></script>
 		<script src="js/pdf.js"></script>
 
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700" rel="stylesheet">
-		<link href="css/styles.css" rel="stylesheet">
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
+		<link rel="stylesheet" href="css/skeleton.min.css" >
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700"> -->
+    <link rel="stylesheet" href="css/fonts.css" >
+    <link rel="stylesheet" href="css/styles.css" >
+
 
 	</head>
 	<body>
 		<section id="control">
 			<header>
 				<img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto">
-				<h5>Generatore Fuoriporta Novoli</h5>
+        <h5>Generatore Fuoriporta Novoli (beta)</h5>
+        <h6>versione 0.1</h6>
 			</header>
 
 			<main class="input-container">
-				<label>Scegliere il tipo:
-					<select onchange="show_input_fields()" id="tipo_selector">
-						<option value="None">---</option>
-						<option value="StudiDocenti">Studi Docenti</option>
-						<option value="CdR">Centri di Ricerca</option>
-						<option value="UdR">Unità di Ricerca</option>
-						<option value="Personalizzato">Personalizzato</option>
+        <label>Scegliere la struttura:
+					<select onchange="" id="struttura_selector">
+						<option value="DSG">DSG</option>
+						<option value="DSPS">DSPS</option>
+						<option value="DISEI">DISEI</option>
+						<option value="SC_ECONOM">Scuola di Economia e Management</option>
+						<option value="Ecc">ecc</option>
 					</select>
+        </label>
+          <label>Scegliere la funzione:
+  					<select onchange="show_input_fields()" id="tipo_selector">
+  						<option value="None">---</option>
+  						<option value="StudiDocenti">Studi Docenti</option>
+  						<option value="CdR">Centri di Ricerca</option>
+  						<option value="UdR">Unità di Ricerca</option>
+  						<option value="Personalizzato">Personalizzato</option>
+  					</select>
 				</label>
 				<br>
 
@@ -78,7 +91,7 @@
 				loaded = loaded + 1;
 				load_pdf();
 			};
-			xhr.send();		
+			xhr.send();
 
 			// load font helvetica light
 			var xhr = new XMLHttpRequest();
@@ -89,7 +102,7 @@
 				loaded = loaded + 1;
 				load_pdf();
 			};
-			xhr.send();	
+			xhr.send();
 
 
 			function load_pdf() {
@@ -104,7 +117,7 @@
 
 				while (container.firstChild) {
 					container.removeChild(container.firstChild);
-				}				
+				}
 				switch (tipo) {
 					case "StudiDocenti":
 						create_input(container, "Nome 1:", "nome_1", "Nome Docente");
@@ -136,8 +149,8 @@
 				var label = document.createElement("label");
 				label.textContent = etichetta;
 				var input = document.createElement("input");
-				input.setAttribute("type", "text"); 
-				input.setAttribute("class", "input_field"); 
+				input.setAttribute("type", "text");
+				input.setAttribute("class", "input_field");
 				input.setAttribute("id", id);
 				if (!value) {value =""};
 				input.setAttribute("value", value);
@@ -169,10 +182,10 @@
 				var nomi=[]
 				for (var x in nomi_list) {
 					nomi[x]=document.querySelector(nomi_list[x]).value;
-				} 
+				}
 				console.log(nomi);
 				return nomi;
-			}			
+			}
 
 			// Main function: aggiorna pdf e visualizza anteprima
 			function aggiorna_pdf(){
@@ -187,10 +200,10 @@
 				doc.addPage({
 					size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
 					margins: {
-						top: mmToUnits(8),
-						bottom: mmToUnits(10),
-						left: mmToUnits(10),
-						right: mmToUnits(10)
+						top: mmToUnits(pdf_msu),
+						bottom: mmToUnits(pdf_mgiu),
+						left: mmToUnits(pdf_msx),
+						right: mmToUnits(pdf_mdx)
 					}
 				});
 
@@ -228,10 +241,11 @@
 				// Carica informazioni da form
 				var nomi = load_info();
 
-				// Scrivi info su PDF
+        // Carica informazioni mancanti per mockup
 				var prima_riga = "studi";
 				var seconda_riga = "docenti";
 
+        // Scrivi info su PDF
 				doc.fill ("#000");
 
 				doc.font(helvetica_black, 36);
@@ -239,9 +253,7 @@
 					.text(seconda_riga);
 
 				doc.font(helvetica_light, 30)
-					.text(nomi[0], mmToUnits(pdf_msx), mmToUnits(122), {
-					height: mmToUnits(1)
-				});
+					.text(nomi[0], mmToUnits(pdf_msx), mmToUnits(122), {height: mmToUnits(1)});
 
 				// Chiudi PDF e visualizza
 				doc.end();
@@ -250,7 +262,7 @@
 					// iframe.src = pdf_url;
 					aggiorna_PDF(pdf_url);
 					link=document.querySelector("#scarica_link");
-					link.href=pdf_url;							
+					link.href=pdf_url;
 				});
 			}
 
@@ -304,33 +316,3 @@
 
 	</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
