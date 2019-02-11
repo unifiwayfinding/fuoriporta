@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Generatore Fuoriporta v0.1</title>
+		<script src="js/pdfkit.js"></script>
+		<script src="js/blob-stream.js"></script>
+		<script src="js/pdf.js"></script>
+
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
+		<link rel="stylesheet" href="css/skeleton.min.css" >
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700"> -->
+    <link rel="stylesheet" href="css/fonts.css" >
+    <link rel="stylesheet" href="css/styles.css" >
+
+
+	</head>
+	<body>
+		<section id="control">
+			<header>
+				<!-- <img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto"> -->
+        <h5>Generatore Fuoriporta (beta)</h5>
+        <h6>versione 0.1</h6>
+			</header>
+
+
+			<main class="input-container">
+          <label>Template:
+  					<select onchange="show_input_fields()" id="tipo_selector">
+  						<option value="Libera">Compilazione Libera</option>
+  						<option value="Template1">Template 1</option>
+  						<option value="Template2">Template 2</option>
+  					</select>
+				</label>
+				<br>
+
+
+
+
+				<div id="input-fields">
+				</div>
+
+				<div id="control-panel">
+					<div class="margin-checkbox">
+						<input type="checkbox" id="margins" >
+						<label class=checkbox-label>Mostra i margini</label>
+					</div>
+					<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Aggiorna l'anteprima</button>
+					<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
+				</div>
+
+			</main>
+		</section>
+
+		<section id="preview">
+			<header>
+				<h5>Anteprima PDF</h5>
+			</header>
+			<main>
+				<canvas id="the-canvas"></canvas>
+			</main>
+		</section>
+
+		<script>
+
+
+		// ---------------------------------
+		// ----------- SETTINGS ------------
+		// ---------------------------------
+
+			// impostazioni PDF, in mm
+			var pdf_larg = 200;
+			var pdf_alt = 110;
+
+			var pdf_msu = 12;
+			var pdf_mgiu = 10;
+
+			var pdf_msx = 10;
+			var pdf_mdx = 10;
+
+
+
+			// ---------------------------------
+			// ------ load stuff with XHR ------
+			// ---------------------------------
+
+			var xhr_to_load = 0;
+
+			/*
+			// HO PROVATO A FARE UNA FUNZIONE PER CARICARE I FONT MA NON VA (perché?)
+			// SICURAMENTE NON VIENE PASSATO NEL MODO GIUSTO L'OGGETTO CHE RICEVE this.response
+
+			function load_xhr_font (url, font_obj) {
+				xhr_to_load = 1;
+				var xhr = new XMLHttpRequest();
+				xhr.open( "GET", url, true );
+				xhr.responseType = "arraybuffer";
+				xhr.onload = function(e) {
+					font_obj = this.response;
+					console.log("font loaded");
+					xhr_to_load = xhr_to_load - 1;
+					// if (xhr_to_load === 0) {async_trigger()};
+				};
+				xhr.send();
+			}
+
+			var helvetica95;
+
+			load_xhr_font("./fonts/HelveticaNeueLTPro-Blk.otf", helvetica95);
+
+			*/
+
+			// load font helvetica black
+
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica95 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			// load font helvetica bold
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Bd.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica75 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			// load font helvetica medium
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Md.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica65 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			// load font helvetica light
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica45 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+
+
+			function async_trigger() {
+				aggiorna_pdf();
+			}
+
+
+
+
+
+
+
+
+
+			// ---------------------------------
+			// ---- CREATE PDF WITH PDFKIT -----
+			// ---------------------------------
+
+			// Helper function: converts mm to pdf-units
+			function mmToUnits(mm){
+				units = mm * 2.8368794326;
+				return units;
+			}
+
+			// Main function: aggiorna pdf e visualizza anteprima
+			function aggiorna_pdf(){
+
+
+				//Setup PDF document
+				doc = new PDFDocument({
+					autoFirstPage: false
+				});
+				stream = doc.pipe(blobStream())
+
+				// Aggiungi pagina
+				doc.addPage({
+					size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
+					margins: {
+						top: mmToUnits(pdf_msu),
+						bottom: mmToUnits(pdf_mgiu),
+						left: mmToUnits(pdf_msx),
+						right: mmToUnits(pdf_mdx)
+					}
+				});
+
+				// Helper function: mostra margini
+
+
+
+					var Hvalue = 19.5;
+					var Hincrement = 12.8;
+					for (i = 0; i < 5; i++) {
+						doc.moveTo(0, 						mmToUnits(Hvalue))
+							.lineTo(mmToUnits(200), mmToUnits(Hvalue))
+							.lineWidth(.5)
+							.stroke("black");
+
+							Hvalue = Hvalue + Hincrement;
+					}
+
+        // Scrivi info su PDF
+				doc.fill ("#000");
+
+				doc.font(helvetica95, 30)
+					.text("Prova prova prova prova",
+						{ width: mmToUnits(100) })
+					.text("Prova prova",
+						{  })
+					.text("Prova prova",
+						{  });
+
+				doc.font(helvetica95, 30)
+					.text("Prova prova prova prova",
+					mmToUnits(100), mmToUnits(pdf_msu),
+						{ lineGap: -16, paragraphGap: mmToUnits(8.5) })
+					.text("Prova prova",
+					{ lineGap: -16, paragraphGap: mmToUnits(8.5) })
+					.text("Prova prova",
+					{ lineGap: -16, paragraphGap: mmToUnits(8.5) })
+
+					doc.moveDown();
+
+
+				/* Conclusioni:
+				lineGap: e 0 paragraphGap: 0 è come non mettere nulla
+				lineGap è l'interlinea, in pt, partendo dal corpo (es. 30/22 -> lineGap: -8)
+				paragraphGap è "spazio sotto", sempre in pt
+
+				*/
+
+
+				// Chiudi PDF e visualizza
+				doc.end();
+				stream.on('finish', function() {
+					pdf_url = stream.toBlobURL('application/pdf')
+					// iframe.src = pdf_url;
+					aggiorna_PDF(pdf_url);
+					link=document.querySelector("#scarica_link");
+					link.href=pdf_url;
+				});
+			}
+
+
+			// ---------------------------------
+			// ----- VISUALIZE WITH PDF.JS -----
+			// ---------------------------------
+
+			PDFJS.workerSrc = 'js/pdf.worker.js';
+
+			// Asynchronous download of PDF
+
+			var aggiorna_PDF = function(url) {
+				var loadingTask = PDFJS.getDocument(url);
+				loadingTask.promise.then(function(pdf) {
+					console.log('PDF loaded');
+
+					// Fetch the first page
+					var pageNumber = 1;
+					pdf.getPage(pageNumber).then(function(page) {
+						console.log('Page loaded');
+
+						var scale = 5;
+						var viewport = page.getViewport(scale);
+
+						// Prepare canvas using PDF page dimensions
+						var canvas = document.getElementById('the-canvas');
+						var context = canvas.getContext('2d');
+						canvas.height = viewport.height;
+						canvas.width = viewport.width;
+						canvas.style.width = "100%";
+						canvas.style.height = "100%";
+
+						// Render PDF page into canvas context
+						var renderContext = {
+							canvasContext: context,
+							viewport: viewport
+						};
+						var renderTask = page.render(renderContext);
+						renderTask.then(function () {
+							console.log('Page rendered');
+						});
+					});
+				}, function (reason) {
+					// PDF loading error
+					console.error(reason);
+				});
+			};
+
+			// ---------------------------------
+			// ----------- INIZIALIZZA ---------
+			// ---------------------------------
+
+			show_input_fields();
+
+			// setTimeout(aggiorna_pdf, 0);
+
+		</script>
+
+	</body>
+</html>

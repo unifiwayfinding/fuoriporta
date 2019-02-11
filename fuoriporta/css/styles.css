@@ -1,5 +1,4 @@
 body {
-	margin: 100px;
 	background: #81a9e8;
 	font-family: 'Titillium Web', sans-serif;
 	box-sizing: border-box;
@@ -20,7 +19,7 @@ section header img {
 
 #control {
 	float: left;
-	height: 800px;
+	min-height: 1000px;
 	width: 450px;
 	padding-right: 50px;
 }
@@ -34,13 +33,16 @@ section header img {
 }
 
 #control h5 {
-	left: 140px;
-	width: 60px;
-	position: absolute;
-	top: 100px;
+	margin-left: 130px;
+	width: 200px;
 	line-height: 1;
 	font-weight: 200;
-	font-size: 2em;			
+	font-size: 2em;
+	margin-bottom: .1em;
+}
+
+#control h6 {
+	margin-left: 130px;
 }
 
 canvas {
@@ -53,9 +55,8 @@ label {
 }
 
 #control main {
-		margin-top: 150px;
+		margin-top: 50px;
 }
-
 #preview main {
 		margin-top: 100px;
 }
@@ -74,18 +75,26 @@ select, input[type=text] {
 	margin-top: -8px;
 }
 
+/*
 #control-panel {
 	position: absolute;
 	top: 600px;
 }
+*/
 
-button, .margin-checkbox, #scarica_link {
+#control-panel {
+	position: absolute;
+	top: 850px;
+	margin-bottom: 40px;
+}
+
+button, .options-input, #scarica_link {
 	position: relative;
 	left: 130px;
 	display: block;
 }
 
-.margin-checkbox label {
+.options-input label {
 	display: inline;
 	margin: 0;
 }
@@ -101,5 +110,5 @@ button {
 }
 
 #scarica_link {
-	font-size: 
+	font-size:
 }
