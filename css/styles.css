@@ -19,7 +19,7 @@ section header img {
 
 #control {
 	float: left;
-	min-height: 1000px;
+	min-height: 800px;
 	width: 450px;
 	padding-right: 50px;
 }
@@ -65,8 +65,15 @@ input {
 	margin-bottom: 0;
 }
 
-select, input[type=text] {width: 300px; height: 30px;}
-button {width: 300px; height: 40px;}
+select, input[type=text] {
+  width: 300px;
+  height: 25px;
+
+}
+button {
+  width: 300px;
+  height: 40px;
+}
 
 
 select, input[type=text] {
@@ -75,16 +82,10 @@ select, input[type=text] {
 	margin-top: -8px;
 }
 
-/*
-#control-panel {
-	position: absolute;
-	top: 600px;
-}
-*/
 
 #control-panel {
 	position: absolute;
-	top: 850px;
+	top: 720px;
 	margin-bottom: 40px;
 }
 
@@ -102,7 +103,7 @@ button, .options-input, #scarica_link {
 label {
 	text-align: right;
 	margin-right: 328px;
-	margin-bottom: 20px;
+	margin-bottom: 14px;
 }
 
 button {
