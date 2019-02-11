@@ -15,3 +15,6 @@
 
 ## TODO V2
 -[ ] Implementare auto update come qui: http://pdfkit.org/demo/browser.html
+-[ ] Il pdf deve essere impaginato in un A4?
+-[ ] La preview deve essere inclusa in un fuoriporta intero?
+-[ ] Aggiorna fuoriporta con INVIO
