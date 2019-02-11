@@ -89,32 +89,7 @@
 
 			var xhr_to_load = 0;
 
-			/*
-			// HO PROVATO A FARE UNA FUNZIONE PER CARICARE I FONT MA NON VA (perché?)
-			// SICURAMENTE NON VIENE PASSATO NEL MODO GIUSTO L'OGGETTO CHE RICEVE this.response
-
-			function load_xhr_font (url, font_obj) {
-				xhr_to_load = 1;
-				var xhr = new XMLHttpRequest();
-				xhr.open( "GET", url, true );
-				xhr.responseType = "arraybuffer";
-				xhr.onload = function(e) {
-					font_obj = this.response;
-					console.log("font loaded");
-					xhr_to_load = xhr_to_load - 1;
-					// if (xhr_to_load === 0) {async_trigger()};
-				};
-				xhr.send();
-			}
-
-			var helvetica95;
-
-			load_xhr_font("./fonts/HelveticaNeueLTPro-Blk.otf", helvetica95);
-
-			*/
-
 			// load font helvetica black
-
 			xhr_to_load ++;
 			var xhr = new XMLHttpRequest();
 			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true );
@@ -166,8 +141,6 @@
 			};
 			xhr.send();
 
-
-
 			function async_trigger() {
 				aggiorna_pdf();
 			}
@@ -199,7 +172,7 @@
 						create_input(container, "Funzione 3:", 				"funzione_3", 			"Funzione 3");
 						create_input(container, "Nome 1:", 						"nome_1", 					"Nome 1");
 						create_input(container, "Nome 2:", 						"nome_2", 					"Nome 2");
-						create_input(container, "Nome 3:", 						"nome_3", 					"Antonella");
+						create_input(container, "Nome 3:", 						"nome_3", 					"Antonella Pasquadibisceglie");
 						create_input(container, "Nome 4:", 						"nome_4", 					"Nome 4");
 						create_input(container, "Nome 5:", 						"nome_5", 					"Nome 5");
 						create_input(container, "Nome 6:", 						"nome_6", 					"Nome 6");
@@ -220,8 +193,7 @@
 				}
 			}
 
-			// helper function: creates labels
-
+			// helper function: creates inputs
 			function create_input(container, etichetta, id, value) {
 				var label = document.createElement("label");
 				label.textContent = etichetta;
@@ -252,15 +224,6 @@
 
 			// Main function: aggiorna pdf e visualizza anteprima
 			function aggiorna_pdf(){
-
-				/*
-				Come scrivere questa parte: dividerla in tre momenti
-				- momento 1: inizializzazione e reset variabili
-				- momento 2: caricamento informazioni
-					una funzione carica le info dagli input fields e assegna ogni informazione a delle variabili predeterminate
-				- momento 3: scrittura PDF
-					pdf kit scrive sul pdf in posizioni prefissate delle righe di testo per tutte le variabili che trova riempite
-				*/
 
 				//Setup PDF document
 				doc = new PDFDocument({
@@ -310,7 +273,6 @@
 						.lineWidth(1)
 						.stroke("blue");
 				}
-
 
         // Select colors
         var pdf_background = "#fff";
@@ -383,44 +345,57 @@
 				Nomi[7] = document.querySelector("#specifica").value;
 
 
-        // calcola allineamento parte destra
-        var lines;
-        lines = 8 - Nomi.reduce((acc,cv)=>(cv)?acc+1:acc,0);
-        var offset_base = 28.7;
-        var offset_oneline = 7;
-        var offset = offset_base + (offset_oneline*lines);
-
+        // impostazioni per andare a capo
 				var right_textbox_width = mmToUnits(90);
 				var left_textbox_width = mmToUnits(90);
+        var nomi_options = { align: 'right', width: right_textbox_width, lineGap: -8, paragraphGap: 4};
+
+        // calcola allineamento parte destra
+        doc.font(helvetica75, 20); // sets ght fonts for the right calculations
+        var lines_total_height= 0;
+        Nomi.forEach (function(e) {
+          var w = doc.widthOfString(e, nomi_options);
+          var h = doc.heightOfString(e, nomi_options);
+          lines_total_height += doc.heightOfString(e, nomi_options)
+          console.log (e + " // width: " + w.toFixed(1) + " height: " + h);
+        });
+
+        console.log ("altezza totale: " + lines_total_height)
+        offset = 241 - lines_total_height;
+        console.log ("offset (199-h): " + offset);
+
+
+
+
 
         // Scrivi info su PDF
 				doc.fill (pdf_foreground);
 
 				doc.font(helvetica95, 30)
-					.text(St_b1, {paragraphGap: mmToUnits(-3.4)})
-					.text(St_b2, {paragraphGap: mmToUnits(-3.4)})
-					.text(St_b3, {paragraphGap: mmToUnits(-3)})
+					.text(St_b1,              { width: left_textbox_width, paragraphGap: mmToUnits(-3.4) })
+					.text(St_b2,              { width: left_textbox_width, paragraphGap: mmToUnits(-3.4) })
+					.text(St_b3,              { width: left_textbox_width, paragraphGap: mmToUnits(-3) })
 					.font(helvetica45, 18)
-					.text(St_l1, {paragraphGap: mmToUnits(-1)})
-					.text(St_l2, {paragraphGap: mmToUnits(2)})
+					.text(St_l1,              { width: left_textbox_width, paragraphGap: mmToUnits(-1) })
+					.text(St_l2,              { width: left_textbox_width, paragraphGap: mmToUnits(2) })
 					.font(helvetica65, 20)
-					.text(Fu_1, {lineGap: mmToUnits(-1.4), width: mmToUnits(90)})
-					.text(Fu_2, {lineGap: mmToUnits(-1.4)})
-					.text(Fu_3, {lineGap: mmToUnits(-1.4)});
+					.text(Fu_1,               { width: left_textbox_width, lineGap: mmToUnits(-1.4) })
+					.text(Fu_2,               { width: left_textbox_width, lineGap: mmToUnits(-1.4) })
+					.text(Fu_3,               { width: left_textbox_width, lineGap: mmToUnits(-1.4) });
 
           // lineGap: -1.4
 
 					doc.font(helvetica75, 20)
-						.text(Nomi[0], mmToUnits(pdf_msx)+left_textbox_width, mmToUnits(pdf_msu+offset),
-																		{ align: 'right', width: left_textbox_width, lineGap: -4 })
-						.text(Nomi[1], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
-						.text(Nomi[2], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
-						.text(Nomi[3], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
-						.text(Nomi[4], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
-						.text(Nomi[5], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
-						.text(Nomi[6], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
+						.text(Nomi[0], mmToUnits(pdf_msx)+left_textbox_width, mmToUnits(pdf_msu)+offset,
+																		nomi_options)
+						.text(Nomi[1], 					nomi_options)
+						.text(Nomi[2], 					nomi_options)
+						.text(Nomi[3], 					nomi_options)
+						.text(Nomi[4], 					nomi_options)
+						.text(Nomi[5], 					nomi_options)
+						.text(Nomi[6], 					nomi_options)
 						.font(helvetica45, 20)
-						.text(Nomi[7], 					{ align: 'right', width: left_textbox_width, lineGap: -4 })
+						.text(Nomi[7], 					nomi_options);
 
 
 				// Chiudi PDF e visualizza
