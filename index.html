@@ -1,13 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>jacoping: pdf composer repository</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <h1>jacoping: pdf composer repository</h1>
-    <a href="/fuoriporta/index.html"> Fuoriporta </a>
-  </body>
+	<head>
+		<meta charset="utf-8">
+		<title>Generatore Fuoriporta v0.1</title>
+		<script src="js/pdfkit.js"></script>
+		<script src="js/blob-stream.js"></script>
+		<script src="js/pdf.js"></script>
+
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
+		<link rel="stylesheet" href="css/skeleton.min.css" >
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700"> -->
+    <link rel="stylesheet" href="css/fonts.css" >
+    <link rel="stylesheet" href="css/styles.css" >
+
+
+	</head>
+	<body>
+		<section id="control">
+			<header>
+				<!-- <img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto"> -->
+        <h5>Generatore Fuoriporta (beta)</h5>
+        <h6>versione 0.1</h6>
+			</header>
+
+
+			<main class="input-container">
+          <label>Template:
+  					<select onchange="show_input_fields()" id="tipo_selector">
+  						<option value="Libera">Compilazione Libera</option>
+  						<option value="Template1">Template 1</option>
+  						<option value="Template2">Template 2</option>
+  					</select>
+				</label>
+				<br>
+
+
+
+
+				<div id="input-fields">
+				</div>
+
+				<div id="control-panel">
+					<div class="options-input">
+            <input type="radio" name="options-color" id="options-color-black" value="black" checked>
+						<label class=radio-label>Sfondo nero</label>
+            <input type="radio" name="options-color" d="options-color-white" value="white">
+            <label class=radio-label>Sfondo bianco</label>						<input type="checkbox" id="options-margins" >
+						<label class=checkbox-label>Mostra i margini</label>
+					</div>
+					<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Aggiorna l'anteprima</button>
+					<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
+				</div>
+
+			</main>
+		</section>
+
+		<section id="preview">
+			<header>
+				<h5>Anteprima PDF</h5>
+			</header>
+			<main>
+				<canvas id="the-canvas"></canvas>
+			</main>
+		</section>
+
+		<script>
+
+
+		// ---------------------------------
+		// ----------- SETTINGS ------------
+		// ---------------------------------
+
+			// impostazioni PDF, in mm
+			var pdf_larg = 200;
+			var pdf_alt = 110;
+
+			var pdf_msu = 12;
+			var pdf_mgiu = 10;
+
+			var pdf_msx = 10;
+			var pdf_mdx = 10;
+
+
+
+			// ---------------------------------
+			// ------ load stuff with XHR ------
+			// ---------------------------------
+
+			var xhr_to_load = 0;
+
+			// load font helvetica black
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica95 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			// load font helvetica bold
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Bd.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica75 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			// load font helvetica medium
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Md.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica65 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			// load font helvetica light
+			xhr_to_load ++;
+			var xhr = new XMLHttpRequest();
+			xhr.open( "GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true );
+			xhr.responseType = "arraybuffer";
+			xhr.onload = function( e ) {
+				helvetica45 = this.response;
+				console.log("font loaded");
+				xhr_to_load --;
+				if (xhr_to_load === 0) {async_trigger()};
+			};
+			xhr.send();
+
+			function async_trigger() {
+				aggiorna_pdf();
+			}
+
+
+
+
+			// ---------------------------------
+			// ---- generates input fields -----
+			// ---------------------------------
+
+
+			function show_input_fields() {
+				var tipo = document.querySelector("#tipo_selector").value;
+				var container = document.querySelector("#input-fields");
+
+				while (container.firstChild) {
+					container.removeChild(container.firstChild);
+				}
+				switch (tipo) {
+					case "Libera":
+						create_input(container, "Struttura Bold 1:", 	"struttura_b1", 		"Struttura Bold 1");
+						create_input(container, "Struttura Bold 2:", 	"struttura_b2", 		"Struttura Bold 2");
+						create_input(container, "Struttura Bold 3:", 	"struttura_b3", 		"Struttura Bold 3");
+						create_input(container, "Struttura Light 1:", "struttura_l1", 		"Struttura Light 1");
+						create_input(container, "Struttura Light 2:", "struttura_l2", 		"Struttura Light 2");
+						create_input(container, "Funzione 1:", 				"funzione_1", 			"Funzione 1");
+						create_input(container, "Funzione 2:", 				"funzione_2", 			"Funzione 2");
+						create_input(container, "Funzione 3:", 				"funzione_3", 			"Funzione 3");
+						create_input(container, "Nome 1:", 						"nome_1", 					"Nome 1");
+						create_input(container, "Nome 2:", 						"nome_2", 					"Nome 2");
+						create_input(container, "Nome 3:", 						"nome_3", 					"Antonella Pasquadibisceglie");
+						create_input(container, "Nome 4:", 						"nome_4", 					"Nome 4");
+						create_input(container, "Nome 5:", 						"nome_5", 					"Nome 5");
+						create_input(container, "Nome 6:", 						"nome_6", 					"Nome 6");
+						create_input(container, "Nome Centro:", 			"nome_centro", 			"Nome Centro");
+						create_input(container, "Specifica:", 				"specifica", 				"Specifica");
+						break;
+					case "Template1":
+						create_input(container, "Campo 1:", "campo_1", "Info Precompilate");
+						create_input(container, "Campo 2:", "campo_2");
+						create_input(container, "Campo 3:", "campo_3");
+						create_input(container, "Campo 4:", "campo_4");
+						break;
+					case "Template2":
+						create_input(container, "Campo 1:", "campo_1");
+						create_input(container, "Campo 2:", "campo_2");
+						break;
+
+				}
+			}
+
+			// helper function: creates inputs
+			function create_input(container, etichetta, id, value) {
+				var label = document.createElement("label");
+				label.textContent = etichetta;
+				var input = document.createElement("input");
+				input.setAttribute("type", "text");
+				input.setAttribute("class", "input_field");
+				input.setAttribute("id", id);
+				if (value) {
+					input.setAttribute("value", value);
+				};
+				input.setAttribute("autocomplete", "nope");
+				label.appendChild(input);
+				container.appendChild(label);
+			}
+
+
+
+
+			// ---------------------------------
+			// ---- CREATE PDF WITH PDFKIT -----
+			// ---------------------------------
+
+			// Helper function: converts mm to pdf-units
+			function mmToUnits(mm){
+				units = mm * 2.8368794326;
+				return units;
+			}
+
+			// Main function: aggiorna pdf e visualizza anteprima
+			function aggiorna_pdf(){
+
+				//Setup PDF document
+				doc = new PDFDocument({
+					autoFirstPage: false
+				});
+				stream = doc.pipe(blobStream())
+
+				// Aggiungi pagina
+				doc.addPage({
+					size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
+					margins: {
+						top: mmToUnits(pdf_msu),
+						bottom: mmToUnits(pdf_mgiu),
+						left: mmToUnits(pdf_msx),
+						right: mmToUnits(pdf_mdx)
+					}
+				});
+
+				// Mostra i margini se necessario
+				if (document.querySelector("#options-margins").checked == true) {
+
+					doc.rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
+						.fill("red")
+
+					doc.moveTo(0, mmToUnits(38))
+						.lineTo(mmToUnits(200), mmToUnits(38))
+						.lineWidth(.5)
+						.stroke("black");
+
+					doc.moveTo(0, mmToUnits(40.7))
+						.lineTo(mmToUnits(200), mmToUnits(40.7))
+						.lineWidth(.5)
+						.stroke("black");
+
+					doc.moveTo(0, mmToUnits(95))
+						.lineTo(mmToUnits(200), mmToUnits(95))
+						.lineWidth(.5)
+						.stroke("black");
+
+          doc.moveTo(0, mmToUnits(5))
+						.lineTo(mmToUnits(200), mmToUnits(5))
+						.lineWidth(1)
+						.stroke("blue");
+
+          doc.moveTo(0, mmToUnits(105))
+						.lineTo(mmToUnits(200), mmToUnits(105))
+						.lineWidth(1)
+						.stroke("blue");
+				}
+
+        // Select colors
+        var pdf_background = "#fff";
+        var pdf_foreground = "#000";
+        if (document.querySelector("#options-color-black").checked == true) {
+          pdf_background = "#000";
+          pdf_foreground = "#fff";
+
+          doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
+            .fill(pdf_background)
+        }
+
+
+
+				// Carica contenuto
+				/*
+				Come scrivere questa parte: dividerla in tre momenti
+
+				- momento 1: inizializzazione e reset variabili
+				- momento 2: caricamento informazioni
+					una funzione carica le info dagli input fields e assegna ogni informazione a delle variabili predeterminate
+				- momento 3: scrittura PDF
+					pdf kit scrive sul pdf in posizioni prefissate delle righe di testo per tutte le variabili che trova riempite
+				*/
+
+
+
+				// Helper function: loads information
+				/*
+				function load_info() {
+					var tipo = document.querySelector("#tipo_selector").value;
+					var container = document.querySelector("#input-fields");
+
+					figli = container.children;
+					var figli_2 = container.getElementsByClassName("input_field");				console.log(figli_2);
+
+					var nomi_list=['#nome_1', '#nome_2', '#nome_3']
+					var nomi=[]
+					for (var x in nomi_list) {
+						nomi[x]=document.querySelector(nomi_list[x]).value;
+					}
+					console.log(nomi);
+					return nomi;
+				}
+
+				// Carica informazioni da form
+				var nomi = load_info();
+			*/
+
+        // Carica informazioni
+				var St_b1 = document.querySelector("#struttura_b1").value;
+				var St_b2 = document.querySelector("#struttura_b2").value;
+				var St_b3 = document.querySelector("#struttura_b3").value;
+				var St_l1 = document.querySelector("#struttura_l1").value;
+				var St_l2 = document.querySelector("#struttura_l2").value;
+				var Fu_1 = document.querySelector("#funzione_1").value;
+				var Fu_2 = document.querySelector("#funzione_2").value;
+				var Fu_3 = document.querySelector("#funzione_3").value;
+
+        var Nomi = [];
+
+				Nomi[0] = document.querySelector("#nome_1").value;
+				Nomi[1] = document.querySelector("#nome_2").value;
+				Nomi[2] = document.querySelector("#nome_3").value;
+				Nomi[3] = document.querySelector("#nome_4").value;
+				Nomi[4] = document.querySelector("#nome_5").value;
+				Nomi[5] = document.querySelector("#nome_6").value;
+
+				Nomi[6] = document.querySelector("#nome_centro").value;
+				Nomi[7] = document.querySelector("#specifica").value;
+
+
+        // impostazioni per andare a capo
+				var right_textbox_width = mmToUnits(90);
+				var left_textbox_width = mmToUnits(90);
+        var nomi_options = { align: 'right', width: right_textbox_width, lineGap: -8, paragraphGap: 4};
+
+        // calcola allineamento parte destra
+        doc.font(helvetica75, 20); // sets ght fonts for the right calculations
+        var lines_total_height= 0;
+        Nomi.forEach (function(e) {
+          var w = doc.widthOfString(e, nomi_options);
+          var h = doc.heightOfString(e, nomi_options);
+          lines_total_height += doc.heightOfString(e, nomi_options)
+          console.log (e + " // width: " + w.toFixed(1) + " height: " + h);
+        });
+
+        console.log ("altezza totale: " + lines_total_height)
+        offset = 241 - lines_total_height;
+        console.log ("offset (199-h): " + offset);
+
+
+
+
+
+        // Scrivi info su PDF
+				doc.fill (pdf_foreground);
+
+				doc.font(helvetica95, 30)
+					.text(St_b1,              { width: left_textbox_width, paragraphGap: mmToUnits(-3.4) })
+					.text(St_b2,              { width: left_textbox_width, paragraphGap: mmToUnits(-3.4) })
+					.text(St_b3,              { width: left_textbox_width, paragraphGap: mmToUnits(-3) })
+					.font(helvetica45, 18)
+					.text(St_l1,              { width: left_textbox_width, paragraphGap: mmToUnits(-1) })
+					.text(St_l2,              { width: left_textbox_width, paragraphGap: mmToUnits(2) })
+					.font(helvetica65, 20)
+					.text(Fu_1,               { width: left_textbox_width, lineGap: mmToUnits(-1.4) })
+					.text(Fu_2,               { width: left_textbox_width, lineGap: mmToUnits(-1.4) })
+					.text(Fu_3,               { width: left_textbox_width, lineGap: mmToUnits(-1.4) });
+
+          // lineGap: -1.4
+
+					doc.font(helvetica75, 20)
+						.text(Nomi[0], mmToUnits(pdf_msx)+left_textbox_width, mmToUnits(pdf_msu)+offset,
+																		nomi_options)
+						.text(Nomi[1], 					nomi_options)
+						.text(Nomi[2], 					nomi_options)
+						.text(Nomi[3], 					nomi_options)
+						.text(Nomi[4], 					nomi_options)
+						.text(Nomi[5], 					nomi_options)
+						.text(Nomi[6], 					nomi_options)
+						.font(helvetica45, 20)
+						.text(Nomi[7], 					nomi_options);
+
+
+				// Chiudi PDF e visualizza
+				doc.end();
+				stream.on('finish', function() {
+					pdf_url = stream.toBlobURL('application/pdf')
+					// iframe.src = pdf_url;
+					aggiorna_PDF(pdf_url);
+					link=document.querySelector("#scarica_link");
+					link.href=pdf_url;
+				});
+			}
+
+
+			// ---------------------------------
+			// ----- VISUALIZE WITH PDF.JS -----
+			// ---------------------------------
+
+			PDFJS.workerSrc = 'js/pdf.worker.js';
+
+			// Asynchronous download of PDF
+
+			var aggiorna_PDF = function(url) {
+				var loadingTask = PDFJS.getDocument(url);
+				loadingTask.promise.then(function(pdf) {
+					console.log('PDF loaded');
+
+					// Fetch the first page
+					var pageNumber = 1;
+					pdf.getPage(pageNumber).then(function(page) {
+						console.log('Page loaded');
+
+						var scale = 5;
+						var viewport = page.getViewport(scale);
+
+						// Prepare canvas using PDF page dimensions
+						var canvas = document.getElementById('the-canvas');
+						var context = canvas.getContext('2d');
+						canvas.height = viewport.height;
+						canvas.width = viewport.width;
+						canvas.style.width = "100%";
+						canvas.style.height = "100%";
+
+						// Render PDF page into canvas context
+						var renderContext = {
+							canvasContext: context,
+							viewport: viewport
+						};
+						var renderTask = page.render(renderContext);
+						renderTask.then(function () {
+							console.log('Page rendered');
+						});
+					});
+				}, function (reason) {
+					// PDF loading error
+					console.error(reason);
+				});
+			};
+
+			// ---------------------------------
+			// ----------- INIZIALIZZA ---------
+			// ---------------------------------
+
+			show_input_fields();
+
+			// setTimeout(aggiorna_pdf, 0);
+
+		</script>
+
+	</body>
 </html>
