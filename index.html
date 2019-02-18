@@ -198,42 +198,6 @@
       }
 
 
-
-
-
-      /*
-      function show_text_fields_old() {
-				var tipo = document.querySelector("#tipo_selector").value;
-				var container = document.querySelector("#text_input_container");
-
-				while (container.firstChild) {
-					container.removeChild(container.firstChild);
-				}
-				switch (tipo) {
-					case "Libera":
-						create_text_input(container, "Struttura Bold 1:", 	"struttura_b1", 		"Struttura Bold 1");
-						create_text_input(container, "Struttura Bold 2:", 	"struttura_b2", 		"Struttura Bold 2");
-						create_text_input(container, "Struttura Bold 3:", 	"struttura_b3", 		"Struttura Bold 3");
-						create_text_input(container, "Struttura Light 1:", "struttura_l1", 		"Struttura Light 1");
-						create_text_input(container, "Struttura Light 2:", "struttura_l2", 		"Struttura Light 2");
-            create_other_inputs();
-						break;
-          case "DSG":
-            create_disabled_text_input(container, "Struttura Bold 1:",  "struttura_b1", 	  "DSG");
-            create_disabled_text_input(container, "Struttura Light 1:", "struttura_l1", 		"Dipartimento di");
-            create_disabled_text_input(container, "Struttura Light 2:", "struttura_l2", 		"Scienze Giuridiche");
-            create_other_inputs();
-						break;
-          case "Giurisprudenza":
-            create_disabled_text_input(container, "Struttura Bold 1:", 	"struttura_b1", 	"Scuola di");
-            create_disabled_text_input(container, "Struttura Bold 2:", 	"struttura_b2", 	"Giuripsrudenza");
-            create_other_inputs();
-						break;
-				}
-        aggiorna_pdf();
-			}
-      */
-
 			// ---------------------------------
 			// ---- CREATE PDF WITH PDFKIT -----
 			// ---------------------------------
@@ -319,31 +283,6 @@
 				- momento 3: scrittura PDF
 					pdf kit scrive sul pdf in posizioni prefissate delle righe di testo per tutte le variabili che trova riempite
 				*/
-
-
-
-				// Helper function: loads information
-				/*
-				function load_info() {
-					var tipo = document.querySelector("#tipo_selector").value;
-					var container = document.querySelector("#input-fields");
-
-					figli = container.children;
-					var figli_2 = container.getElementsByClassName("input_field");				console.log(figli_2);
-
-					var nomi_list=['#nome_1', '#nome_2', '#nome_3']
-					var nomi=[]
-					for (var x in nomi_list) {
-						nomi[x]=document.querySelector(nomi_list[x]).value;
-					}
-					console.log(nomi);
-					return nomi;
-				}
-
-				// Carica informazioni da form
-				var nomi = load_info();
-			*/
-
 
         // Crea variabili informazioni
 
