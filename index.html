@@ -174,12 +174,19 @@
         while (container.firstChild) {
           container.removeChild(container.firstChild);
         }
+        // crea gli input di struttura
         create_text_input(container, "disabled", "Struttura Bold 1:",  "struttura_b1", 	 struttura.struttura_bold_1);
         create_text_input(container, "disabled", "Struttura Bold 2:", "struttura_b2", 		struttura.struttura_bold_2);
         create_text_input(container, "disabled", "Struttura Bold 3:", "struttura_b3", 		struttura.struttura_bold_3);
         create_text_input(container, "disabled", "Struttura Light 1:", "struttura_l1", 		struttura.struttura_light_1);
         create_text_input(container, "disabled", "Struttura Light 2:", "struttura_l2", 		struttura.struttura_light_2);
+        // crea gli altri input
         create_other_inputs(container);
+        // aggiunge nota in fondo
+        let note = document.createElement("h6");
+        NB: note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
+        container.appendChild(note);
+        // aggiorna il PDF
         aggiorna_pdf();
       }
 
@@ -188,12 +195,12 @@
         create_text_input(container, "enabled", "Funzione 2:", 				"funzione_2", 			"Funzione 2");
         create_text_input(container, "enabled", "Funzione 3:", 				"funzione_3", 			"Funzione 3");
         create_text_input(container, "enabled", "Nome 1:", 						"nome_1", 					"Nome 1");
-        create_text_input(container, "enabled", "Nome 2:", 						"nome_2", 					"Nome 2");
-        create_text_input(container, "enabled", "Nome 3:", 						"nome_3", 					"Antonella Pasquadibisceglie");
-        create_text_input(container, "enabled", "Nome 4:", 						"nome_4", 					"Nome 4");
-        create_text_input(container, "enabled", "Nome 5:", 						"nome_5", 					"Nome 5");
-        create_text_input(container, "enabled", "Nome 6:", 						"nome_6", 					"Nome 6");
-        create_text_input(container, "enabled", "Nome Centro:", 			"nome_centro", 			"Nome Centro");
+        create_text_input(container, "enabled", "Nome 2:", 						"nome_2", 					"");
+        create_text_input(container, "enabled", "Nome 3:", 						"nome_3", 					"");
+        create_text_input(container, "enabled", "Nome 4:", 						"nome_4", 					"");
+        create_text_input(container, "enabled", "Nome 5:", 						"nome_5", 					"");
+        create_text_input(container, "enabled", "Nome 6:", 						"nome_6", 					"");
+        create_text_input(container, "enabled", "Nome 7:", 			      "nome_7", 			    "");
         create_text_input(container, "enabled", "Specifica:", 				"specifica", 				"Specifica");
       }
 
@@ -316,7 +323,7 @@
 				Nomi[3] = document.querySelector("#nome_4") ? document.querySelector("#nome_4").value : "";
 				Nomi[4] = document.querySelector("#nome_5") ? document.querySelector("#nome_5").value : "";
 				Nomi[5] = document.querySelector("#nome_6") ? document.querySelector("#nome_6").value : "";
-				Nomi[6] = document.querySelector("#nome_centro") ? document.querySelector("#nome_centro").value : "";
+				Nomi[6] = document.querySelector("#nome_7") ? document.querySelector("#nome_7").value : "";
 				Nomi[7] = document.querySelector("#specifica") ? document.querySelector("#specifica").value : "";
 
 
