@@ -26,20 +26,9 @@
 
 			<main class="main_input-container">
 
-        <!--
-        <label>Scegli una struttura:
-					<select onchange="show_text_fields()" id="tipo_selector">
-            <option value="DSG"> DSG </option>
-            <option value="Giurisprudenza"> Scuola di Giurisprudenza </option>
-            <option value="Libera">Compilazione Libera</option>
-					</select>
-				</label>
-				<br>
-       -->
-
         <div id="select_container">
           <label>Scegli una struttura:
-  					<select onchange="show_text_fields()" id="struttura_selector">
+  					<select onchange="popola_info_struttura()" id="struttura_selector">
   					</select>
   				</label>
         </div>
@@ -52,7 +41,8 @@
             <input type="radio" name="options-color" id="options-color-black" value="black" checked>
 						<label class=radio-label>Sfondo nero</label>
             <input type="radio" name="options-color" d="options-color-white" value="white">
-            <label class=radio-label>Sfondo bianco</label>						<input type="checkbox" id="options-margins" >
+            <label class=radio-label>Sfondo bianco</label>
+            <input type="checkbox" id="options-margins" >
 						<label class=checkbox-label>Mostra le guide</label>
 					</div>
 					<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Aggiorna l'anteprima</button>
@@ -95,29 +85,49 @@
 
       var lista_strutture = [
         {
-          value_menu: "DSG",
-          nome_menu: "DSG",
+          option_ref: "DipDISEI",
+          option_name: "DISEI",
+          struttura_bold_1: "DISEI",
+          struttura_light_1: "Dipartimento di",
+          struttura_light_2: "Scienze per l'Economia e per l'Impresa"
+        },
+        {
+          option_ref: "DipDSG",
+          option_name: "DSG",
           struttura_bold_1: "DSG",
           struttura_light_1: "Dipartimento di",
           struttura_light_2: "Scienze Giuridiche"
         },
         {
-          value_menu: "ScGiuripsrudenza",
-          nome_menu: "Scuola di Giuripsrudenza",
+        option_ref: "DipDSPS",
+        option_name: "DSPS",
+        struttura_bold_1: "DSPS",
+        struttura_light_1: "Dipartimento di",
+        struttura_light_2: "Scienze Politiche e Sociali"
+        },
+        {
+          option_ref: "ScGiuripsrudenza",
+          option_name: "Scuola di Giuripsrudenza",
           struttura_bold_1: "Scuola di",
           struttura_bold_2: "Giurisprudenza",
         },
         {
-          value_menu: "Libera",
-          nome_menu: "-- Compilazione libera --",
-          struttura_bold_1: "Scuola di",
-          struttura_bold_2: "Giurisprudenza",
-        }
+          option_ref: "Libera",
+          option_name: "-- Compilazione libera --",
+          struttura_bold_1: "Struttura Bold 1",
+          struttura_bold_2: "Struttura Bold 2",
+          struttura_bold_3: "Struttura Bold 3",
+          struttura_light_1: "Struttuera Light 1",
+          struttura_light_2: "Struttura Light 2"        }
       ];
 
-			// ---------------------------------
+      var struttura_current;
+
+
+      // ---------------------------------
 			// ---- generates input fields -----
 			// ---------------------------------
+
 
       function create_select_input(container) {
         var select = document.querySelector("#struttura_selector");
@@ -128,19 +138,22 @@
         select.appendChild(first_option);
         for (i=0; i < lista_strutture.length; i++) {
           var option = document.createElement("option");
-          option.value = lista_strutture[i].value_menu;
-          option.innerHTML = lista_strutture[i].nome_menu;
+          option.value = lista_strutture[i].option_ref;
+          option.innerHTML = lista_strutture[i].option_name;
           select.appendChild(option)
         };
       }
 
-      function create_text_input(container, etichetta, id, value) {
+      function create_text_input(container, status, etichetta, id, value, ) {
 				var label = document.createElement("label");
 				label.textContent = etichetta;
 				var input = document.createElement("input");
 				input.setAttribute("type", "text");
 				input.setAttribute("class", "input_field");
 				input.setAttribute("id", id);
+        if (status == "disabled") {
+					input.setAttribute("disabled", "disabled");
+				};
 				if (value) {
 					input.setAttribute("value", value);
 				};
@@ -149,48 +162,39 @@
 				container.appendChild(label);
 			}
 
-      function create_disabled_text_input(container, etichetta, id, value) {
-				var label = document.createElement("label");
-				label.textContent = etichetta;
-				var input = document.createElement("input");
-				input.setAttribute("type", "text");
-				input.setAttribute("class", "input_field");
-				input.setAttribute("id", id);
-        input.setAttribute("disabled", "disabled");
-				if (value) {
-					input.setAttribute("value", value);
-				};
-				input.setAttribute("autocomplete", "nope");
-				label.appendChild(input);
-				container.appendChild(label);
-			}
+      function popola_info_struttura() {
+        let index = document.querySelector("#struttura_selector").selectedIndex;
+        console.log(index);
+        struttura_selezionata = (lista_strutture[index-1]);
+        show_text_fields(struttura_selezionata);
+      }
 
-
-      function show_text_fields() {
+      function show_text_fields(struttura) {
         container = document.querySelector("#text_input_container");
         while (container.firstChild) {
-          console.log(container.firstChild);
           container.removeChild(container.firstChild);
         }
-        create_disabled_text_input(container, "Struttura Bold 1:",  "struttura_b1", 	  "DSG");
-        create_disabled_text_input(container, "Struttura Light 1:", "struttura_l1", 		"Dipartimento di");
-        create_disabled_text_input(container, "Struttura Light 2:", "struttura_l2", 		"Scienze Giuridiche");
+        create_text_input(container, "disabled", "Struttura Bold 1:",  "struttura_b1", 	 struttura.struttura_bold_1);
+        create_text_input(container, "disabled", "Struttura Bold 2:", "struttura_b2", 		struttura.struttura_bold_2);
+        create_text_input(container, "disabled", "Struttura Bold 3:", "struttura_b3", 		struttura.struttura_bold_3);
+        create_text_input(container, "disabled", "Struttura Light 1:", "struttura_l1", 		struttura.struttura_light_1);
+        create_text_input(container, "disabled", "Struttura Light 2:", "struttura_l2", 		struttura.struttura_light_2);
         create_other_inputs(container);
         aggiorna_pdf();
       }
 
       function create_other_inputs(container) {
-        create_text_input(container, "Funzione 1:", 				"funzione_1", 			"Funzione 1");
-        create_text_input(container, "Funzione 2:", 				"funzione_2", 			"Funzione 2");
-        create_text_input(container, "Funzione 3:", 				"funzione_3", 			"Funzione 3");
-        create_text_input(container, "Nome 1:", 						"nome_1", 					"Nome 1");
-        create_text_input(container, "Nome 2:", 						"nome_2", 					"Nome 2");
-        create_text_input(container, "Nome 3:", 						"nome_3", 					"Antonella Pasquadibisceglie");
-        create_text_input(container, "Nome 4:", 						"nome_4", 					"Nome 4");
-        create_text_input(container, "Nome 5:", 						"nome_5", 					"Nome 5");
-        create_text_input(container, "Nome 6:", 						"nome_6", 					"Nome 6");
-        create_text_input(container, "Nome Centro:", 			"nome_centro", 			"Nome Centro");
-        create_text_input(container, "Specifica:", 				"specifica", 				"Specifica");
+        create_text_input(container, "enabled", "Funzione 1:", 				"funzione_1", 			"Funzione 1");
+        create_text_input(container, "enabled", "Funzione 2:", 				"funzione_2", 			"Funzione 2");
+        create_text_input(container, "enabled", "Funzione 3:", 				"funzione_3", 			"Funzione 3");
+        create_text_input(container, "enabled", "Nome 1:", 						"nome_1", 					"Nome 1");
+        create_text_input(container, "enabled", "Nome 2:", 						"nome_2", 					"Nome 2");
+        create_text_input(container, "enabled", "Nome 3:", 						"nome_3", 					"Antonella Pasquadibisceglie");
+        create_text_input(container, "enabled", "Nome 4:", 						"nome_4", 					"Nome 4");
+        create_text_input(container, "enabled", "Nome 5:", 						"nome_5", 					"Nome 5");
+        create_text_input(container, "enabled", "Nome 6:", 						"nome_6", 					"Nome 6");
+        create_text_input(container, "enabled", "Nome Centro:", 			"nome_centro", 			"Nome Centro");
+        create_text_input(container, "enabled", "Specifica:", 				"specifica", 				"Specifica");
       }
 
 
