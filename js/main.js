@@ -37,18 +37,17 @@ function mmToUnits(mm) {
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
-function create_select_input(container) {
-  var select = document.querySelector("#struttura_selector");
+function populate_select_input(selector) {
   first_option = document.createElement("option");
   first_option.setAttribute("selected", "selected");
   first_option.setAttribute("disabled", "disabled");
   first_option.innerHTML = "...";
-  select.appendChild(first_option);
+  selector.appendChild(first_option);
   for (i = 0; i < lista_strutture.length; i++) {
     var option = document.createElement("option");
     option.value = lista_strutture[i].option_ref;
     option.innerHTML = lista_strutture[i].option_name;
-    select.appendChild(option)
+    selector.appendChild(option)
   };
 }
 
@@ -70,56 +69,69 @@ function create_text_input(container, enabled, etichetta, id, value, ) {
   container.appendChild(label);
 }
 
+
 function popola_info_struttura() {
-  let index = document.querySelector("#struttura_selector").selectedIndex;
+  let index = struttura_selector.selectedIndex;
   console.log("index: " + index);
   struttura_selezionata = (lista_strutture[index - 1]);
-  show_text_fields(struttura_selezionata);
+  show_text_fields(struttura_selezionata, text_input_container);
 }
 
-function show_text_fields(struttura) {
-  container = document.querySelector("#text_input_container");
+
+function show_text_fields(struttura, container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
-  // crea gli input di struttura
-  enabled = (struttura.option_ref === "Libera") ? true : false;
-  create_text_input(container, enabled, "Struttura Bold 1:", "struttura_b1", struttura.struttura_bold_1);
-  create_text_input(container, enabled, "Struttura Bold 2:", "struttura_b2", struttura.struttura_bold_2);
-  create_text_input(container, enabled, "Struttura Bold 3:", "struttura_b3", struttura.struttura_bold_3);
-  create_text_input(container, enabled, "Struttura Light 1:", "struttura_l1", struttura.struttura_light_1);
-  create_text_input(container, enabled, "Struttura Light 2:", "struttura_l2", struttura.struttura_light_2);
-  // crea gli altri input
-  create_inputs_funzioni(container);
-  create_inputs_nomi(container);
+  // crea gli input
+  append_input_strutture(container, struttura);
+  append_inputs_funzioni(container);
+  append_inputs_nomi(container);
+
   // aggiunge nota in fondo
   let note = document.createElement("h6");
-  NB: note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
+  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
   container.appendChild(note);
   // aggiorna il PDF
   aggiorna_pdf();
 }
 
-function create_inputs_funzioni(container) {
+function append_input_strutture(container, strutt) {
+  enabled = (strutt.option_ref === "Libera") ? true : false;
+  create_text_input(container, enabled, "Struttura Bold 1:", "struttura_b1", strutt.struttura_bold_1);
+  create_text_input(container, enabled, "Struttura Bold 2:", "struttura_b2", strutt.struttura_bold_2);
+  create_text_input(container, enabled, "Struttura Bold 3:", "struttura_b3", strutt.struttura_bold_3);
+  create_text_input(container, enabled, "Struttura Light 1:", "struttura_l1", strutt.struttura_light_1);
+  create_text_input(container, enabled, "Struttura Light 2:", "struttura_l2", strutt.struttura_light_2);
+}
+
+function append_inputs_funzioni(container) {
   let box = document.createElement("div");
   box.setAttribute("class", "input_box");
-  create_text_input(box, "enabled", "Funzione 1:", "funzione_1", "Funzione 1");
-  create_text_input(box, "enabled", "Funzione 2:", "funzione_2", "Funzione 2");
-  create_text_input(box, "enabled", "Funzione 3:", "funzione_3", "Funzione 3");
+  create_text_input(box, true, "Funzione 1:", "funzione_1", "Funzione 1");
+  create_text_input(box, true, "Funzione 2:", "funzione_2", "Funzione 2");
+  create_text_input(box, true, "Funzione 3:", "funzione_3", "Funzione 3");
   container.appendChild(box);
 }
 
-function create_inputs_nomi(container) {
-  create_text_input(container, "enabled", "Nome 1:", "nome_1", "Nome 1");
-  create_text_input(container, "enabled", "Nome 2:", "nome_2", "");
-  create_text_input(container, "enabled", "Nome 3:", "nome_3", "");
-  create_text_input(container, "enabled", "Nome 4:", "nome_4", "");
-  create_text_input(container, "enabled", "Nome 5:", "nome_5", "");
-  create_text_input(container, "enabled", "Nome 6:", "nome_6", "");
-  create_text_input(container, "enabled", "Nome 7:", "nome_7", "");
-  create_text_input(container, "enabled", "Specifica:", "specifica", "Specifica");
+function append_inputs_nomi(container) {
+  create_text_input(container, true, "Nome 1:", "nome_1", "Nome 1");
+  create_text_input(container, true, "Nome 2:", "nome_2", "");
+  create_text_input(container, true, "Nome 3:", "nome_3", "");
+  create_text_input(container, true, "Nome 4:", "nome_4", "");
+  create_text_input(container, true, "Nome 5:", "nome_5", "");
+  create_text_input(container, true, "Nome 6:", "nome_6", "");
+  create_text_input(container, true, "Nome 7:", "nome_7", "");
+  create_text_input(container, true, "Specifica:", "specifica", "Specifica");
 }
 
+
+
+
+
+
+// ----------------------------------------------------
+// ---- FETCH INFO FROM INPUT FIELDS TO OBJECT --------
+// ----------------------------------------------------
 
 // Carica informazioni
 function fetch_info() {
@@ -147,6 +159,8 @@ function fetch_info() {
 
   return infos;
 }
+
+
 
 
 // ---------------------------------
@@ -487,6 +501,11 @@ var lista_strutture = [{
 // ----------- INIZIALIZZA ---------
 // ---------------------------------
 
+var struttura_selector;
+var text_input_container;
+
 document.addEventListener("DOMContentLoaded", function(event) {
-  create_select_input(document.querySelector("#select_container"));
+  struttura_selector = document.querySelector("#struttura_selector");
+  text_input_container = document.querySelector("#text_input_container");
+  populate_select_input(struttura_selector);
 });
