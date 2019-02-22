@@ -25,6 +25,7 @@ var pdf_mgiu = 10;
 var pdf_msx = 10;
 var pdf_mdx = 10;
 
+// Helper function: converts mm to pdf-units (pt)
 function mmToUnits(mm) {
   units = mm * 2.8368794326;
   return units;
@@ -120,30 +121,31 @@ function create_inputs_nomi(container) {
 }
 
 
-// Crea variabili informazioni
-var info = {}
-
 // Carica informazioni
-var fetch_info = function() {
-  info.St_b1 = document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value : "";
-  info.St_b2 = document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value : "";
-  info.St_b3 = document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value : "";
-  info.St_l1 = document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value : "";
-  info.St_l2 = document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value : "";
+function fetch_info() {
+  let infos = {}
 
-  info.Fu_1 = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
-  info.Fu_2 = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
-  info.Fu_3 = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
+  infos.St_b1 = document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value : "";
+  infos.St_b2 = document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value : "";
+  infos.St_b3 = document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value : "";
+  infos.St_l1 = document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value : "";
+  infos.St_l2 = document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value : "";
 
-  info.Nomi = [];
-  info.Nomi[0] = document.querySelector("#nome_1") ? document.querySelector("#nome_1").value : "";
-  info.Nomi[1] = document.querySelector("#nome_2") ? document.querySelector("#nome_2").value : "";
-  info.Nomi[2] = document.querySelector("#nome_3") ? document.querySelector("#nome_3").value : "";
-  info.Nomi[3] = document.querySelector("#nome_4") ? document.querySelector("#nome_4").value : "";
-  info.Nomi[4] = document.querySelector("#nome_5") ? document.querySelector("#nome_5").value : "";
-  info.Nomi[5] = document.querySelector("#nome_6") ? document.querySelector("#nome_6").value : "";
-  info.Nomi[6] = document.querySelector("#nome_7") ? document.querySelector("#nome_7").value : "";
-  info.Nomi[7] = document.querySelector("#specifica") ? document.querySelector("#specifica").value : "";
+  infos.Fu_1 = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
+  infos.Fu_2 = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
+  infos.Fu_3 = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
+
+  infos.Nomi = [];
+  infos.Nomi[0] = document.querySelector("#nome_1") ? document.querySelector("#nome_1").value : "";
+  infos.Nomi[1] = document.querySelector("#nome_2") ? document.querySelector("#nome_2").value : "";
+  infos.Nomi[2] = document.querySelector("#nome_3") ? document.querySelector("#nome_3").value : "";
+  infos.Nomi[3] = document.querySelector("#nome_4") ? document.querySelector("#nome_4").value : "";
+  infos.Nomi[4] = document.querySelector("#nome_5") ? document.querySelector("#nome_5").value : "";
+  infos.Nomi[5] = document.querySelector("#nome_6") ? document.querySelector("#nome_6").value : "";
+  infos.Nomi[6] = document.querySelector("#nome_7") ? document.querySelector("#nome_7").value : "";
+  infos.Nomi[7] = document.querySelector("#specifica") ? document.querySelector("#specifica").value : "";
+
+  return infos;
 }
 
 
@@ -151,13 +153,43 @@ var fetch_info = function() {
 // ---- CREATE PDF WITH PDFKIT -----
 // ---------------------------------
 
-// Helper function: converts mm to pdf-units
-
-
 // Main function: aggiorna pdf e visualizza anteprima
 function aggiorna_pdf() {
+  crea_pdf(fetch_info());
+}
 
-  fetch_info();
+
+// Main functionality: creates pdf from info object
+function crea_pdf(info) {
+
+  // Impostazioni layout
+  let left_textbox_width = mmToUnits(130);
+  let right_textbox_width = mmToUnits(90);
+
+  // Impostazioni colori
+  let pdf_background = "#fff";
+  let pdf_foreground = "#000";
+  if (document.querySelector("#options-color-black").checked == true) {
+    pdf_background = "#000";
+    pdf_foreground = "#fff";
+
+  // NOMI: carattere 20/16pt spazio sotto 4pt
+  var nomi_options = {
+    align: 'right',
+    width: right_textbox_width,
+    lineGap: -8,
+    paragraphGap: 4
+  };
+
+  // NOMI: carattere 20/16pt spazio sotto 4pt
+  var strutture_options = {
+    align: 'right',
+    width: left_textbox_width,
+    lineGap: -8,
+    paragraphGap: 4
+  };
+
+
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -179,161 +211,110 @@ function aggiorna_pdf() {
   // Mostra i margini se necessario
   if (document.querySelector("#options-margins").checked == true) {
 
-    doc.rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
-      .fill("red")
+    doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
+        .fill("red")
 
-    doc.moveTo(0, mmToUnits(38))
-      .lineTo(mmToUnits(200), mmToUnits(38))
-      .lineWidth(.5)
-      .stroke("black");
+        .moveTo(0, mmToUnits(38))
+        .lineTo(mmToUnits(200), mmToUnits(38))
+        .lineWidth(.5)
+        .stroke("black")
 
-    doc.moveTo(0, mmToUnits(40.7))
-      .lineTo(mmToUnits(200), mmToUnits(40.7))
-      .lineWidth(.5)
-      .stroke("black");
+        .moveTo(0, mmToUnits(40.7))
+        .lineTo(mmToUnits(200), mmToUnits(40.7))
+        .lineWidth(.5)
+        .stroke("black")
 
-    doc.moveTo(0, mmToUnits(95))
-      .lineTo(mmToUnits(200), mmToUnits(95))
-      .lineWidth(.5)
-      .stroke("black");
+        .moveTo(0, mmToUnits(95))
+        .lineTo(mmToUnits(200), mmToUnits(95))
+        .lineWidth(.5)
+        .stroke("black")
 
-    doc.moveTo(0, mmToUnits(5))
-      .lineTo(mmToUnits(200), mmToUnits(5))
-      .lineWidth(1)
-      .stroke("blue");
+        .moveTo(0, mmToUnits(5))
+        .lineTo(mmToUnits(200), mmToUnits(5))
+        .lineWidth(1)
+        .stroke("blue")
 
-    doc.moveTo(0, mmToUnits(105))
-      .lineTo(mmToUnits(200), mmToUnits(105))
-      .lineWidth(1)
-      .stroke("blue");
-  }
-
-  // Select colors
-  var pdf_background = "#fff";
-  var pdf_foreground = "#000";
-  if (document.querySelector("#options-color-black").checked == true) {
-    pdf_background = "#000";
-    pdf_foreground = "#fff";
-
-    doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
-      .fill(pdf_background)
+        .moveTo(0, mmToUnits(105))
+        .lineTo(mmToUnits(200), mmToUnits(105))
+        .lineWidth(1)
+        .stroke("blue");
   }
 
 
+    // Crea rettangolo di background
+  doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
+    .fill(pdf_background)
+  }
 
-  // Carica contenuto
-  /*
-  Come scrivere questa parte: dividerla in tre momenti
-
-  - momento 1: inizializzazione e reset variabili
-  - momento 2: caricamento informazioni
-    una funzione carica le info dagli input fields e assegna ogni informazione a delle variabili predeterminate
-  - momento 3: scrittura PDF
-    pdf kit scrive sul pdf in posizioni prefissate delle righe di testo per tutte le variabili che trova riempite
-  */
-
-
-  // Impostazioni layout
-  var left_textbox_width = mmToUnits(130);
-  var right_textbox_width = mmToUnits(90);
-
-  // NOMI: carattere 20/16pt spazio sotto 4pt
-  var nomi_options = {
-    align: 'right',
-    width: right_textbox_width,
-    lineGap: -8,
-    paragraphGap: 4
-  };
-
-  // NOMI: carattere 20/16pt spazio sotto 4pt
-  var strutture_options = {
-    align: 'right',
-    width: left_textbox_width,
-    lineGap: -8,
-    paragraphGap: 4
-  };
-
-
-  // Calcolo allineamento parte destra
+  // Calcola allineamento parte destra
   doc.font(helvetica75, 20); // sets ght fonts for the right calculations
-  var lines_total_height = 0;
+  let lines_total_height = 0;
   info.Nomi.forEach(function(e) {
-    var w = doc.widthOfString(e, nomi_options);
-    var h = doc.heightOfString(e, nomi_options);
+    let w = doc.widthOfString(e, nomi_options);
+    let h = doc.heightOfString(e, nomi_options);
     lines_total_height += doc.heightOfString(e, nomi_options)
-    // console.log (e + " // width: " + w.toFixed(1) + " height: " + h);
   });
   offset = 241 - lines_total_height;
-  // console.log ("altezza totale: " + lines_total_height)
-  // console.log ("offset (199-h): " + offset);
 
+  // Scrivi le scritte sul pdf
+  doc .fill(pdf_foreground)
+      .font(helvetica95, 30)
+      .text(info.St_b1, {
+        width: left_textbox_width,
+        paragraphGap: mmToUnits(-3.4)
+      })
+      .text(info.St_b2, {
+        width: left_textbox_width,
+        paragraphGap: mmToUnits(-3.4)
+      })
+      .text(info.St_b3, {
+        width: left_textbox_width,
+        paragraphGap: mmToUnits(-3)
+      })
+      .font(helvetica45, 18)
+      .text(info.St_l1, {
+        width: left_textbox_width,
+        paragraphGap: mmToUnits(-1)
+      })
+      .text(info.St_l2, {
+        width: left_textbox_width,
+        paragraphGap: mmToUnits(0)
+      })
+      .font(helvetica65, 2).text(" ") // questa linea serve come interlinea (brutto ma funziona)
+      .font(helvetica65, 20)
+      .text(info.Fu_1, {
+        width: left_textbox_width,
+        lineGap: mmToUnits(-1.4)
+      })
+      .text(info.Fu_2, {
+        width: left_textbox_width,
+        lineGap: mmToUnits(-1.4)
+      })
+      .text(info.Fu_3, {
+        width: left_textbox_width,
+        lineGap: mmToUnits(-1.4)
+      })
 
+      .font(helvetica75, 20)
+      .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
+      .text(info.Nomi[1], nomi_options)
+      .text(info.Nomi[2], nomi_options)
+      .text(info.Nomi[3], nomi_options)
+      .text(info.Nomi[4], nomi_options)
+      .text(info.Nomi[5], nomi_options)
+      .text(info.Nomi[6], nomi_options)
 
+      .font(helvetica45, 20)
+      .text(info.Nomi[7], nomi_options)
 
+  // chiude il pdf
+      .end();
 
-  // Scrivi info su PDF
-  doc.fill(pdf_foreground);
-
-  doc.font(helvetica95, 30)
-    .text(info.St_b1, {
-      width: left_textbox_width,
-      paragraphGap: mmToUnits(-3.4)
-    })
-    .text(info.St_b2, {
-      width: left_textbox_width,
-      paragraphGap: mmToUnits(-3.4)
-    })
-    .text(info.St_b3, {
-      width: left_textbox_width,
-      paragraphGap: mmToUnits(-3)
-    })
-    .font(helvetica45, 18)
-    .text(info.St_l1, {
-      width: left_textbox_width,
-      paragraphGap: mmToUnits(-1)
-    })
-    .text(info.St_l2, {
-      width: left_textbox_width,
-      paragraphGap: mmToUnits(0)
-    })
-    .font(helvetica65, 2).text(" ") // questa linea serve come interlinea (brutto ma funziona)
-    .font(helvetica65, 20)
-    .text(info.Fu_1, {
-      width: left_textbox_width,
-      lineGap: mmToUnits(-1.4)
-    })
-    .text(info.Fu_2, {
-      width: left_textbox_width,
-      lineGap: mmToUnits(-1.4)
-    })
-    .text(info.Fu_3, {
-      width: left_textbox_width,
-      lineGap: mmToUnits(-1.4)
-    });
-
-  // lineGap: -1.4
-
-  doc.font(helvetica75, 20)
-    .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
-    .text(info.Nomi[1], nomi_options)
-    .text(info.Nomi[2], nomi_options)
-    .text(info.Nomi[3], nomi_options)
-    .text(info.Nomi[4], nomi_options)
-    .text(info.Nomi[5], nomi_options)
-    .text(info.Nomi[6], nomi_options)
-    .font(helvetica45, 20)
-    .text(info.Nomi[7], nomi_options);
-
-
-  // Chiudi PDF e visualizza
-  doc.end();
+  // aggiorna link "scarica pdf" e l'anteprima
   stream.on('finish', function() {
     pdf_url = stream.toBlobURL('application/pdf')
-    // iframe.src = pdf_url;
-
-    link = document.querySelector("#scarica_link");
-    link.href = pdf_url;
-
+    scaricaPdf_link = document.querySelector("#scarica_link");
+    scaricaPdf_link.href = pdf_url;
     aggiorna_preview(pdf_url);
   });
 }
@@ -343,7 +324,7 @@ function aggiorna_pdf() {
 // ----- VISUALIZE WITH PDF.JS -----
 // ---------------------------------
 
-var aggiorna_preview = function(url) {
+function aggiorna_preview(url) {
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
     console.log('PDF loaded');
@@ -497,8 +478,6 @@ var lista_strutture = [{
     struttura_light_2: "Struttura Light 2"
   }
 ];
-
-
 
 
 
