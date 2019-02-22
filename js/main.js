@@ -8,7 +8,7 @@ pdf.js          required for preview visualization
 pdf.worker.js   comes together with pdf.js
 */
 
-
+PDFJS.workerSrc = 'js/pdf.worker.js';
 
 
 // ---------------------------------
@@ -25,7 +25,10 @@ var pdf_mgiu = 10;
 var pdf_msx = 10;
 var pdf_mdx = 10;
 
-
+function mmToUnits(mm) {
+  units = mm * 2.8368794326;
+  return units;
+}
 
 
 
@@ -68,7 +71,7 @@ function create_text_input(container, enabled, etichetta, id, value, ) {
 
 function popola_info_struttura() {
   let index = document.querySelector("#struttura_selector").selectedIndex;
-  console.log(index);
+  console.log("index: " + index);
   struttura_selezionata = (lista_strutture[index - 1]);
   show_text_fields(struttura_selezionata);
 }
@@ -117,18 +120,44 @@ function create_inputs_nomi(container) {
 }
 
 
+// Crea variabili informazioni
+var info = {}
+
+// Carica informazioni
+var fetch_info = function() {
+  info.St_b1 = document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value : "";
+  info.St_b2 = document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value : "";
+  info.St_b3 = document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value : "";
+  info.St_l1 = document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value : "";
+  info.St_l2 = document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value : "";
+
+  info.Fu_1 = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
+  info.Fu_2 = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
+  info.Fu_3 = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
+
+  info.Nomi = [];
+  info.Nomi[0] = document.querySelector("#nome_1") ? document.querySelector("#nome_1").value : "";
+  info.Nomi[1] = document.querySelector("#nome_2") ? document.querySelector("#nome_2").value : "";
+  info.Nomi[2] = document.querySelector("#nome_3") ? document.querySelector("#nome_3").value : "";
+  info.Nomi[3] = document.querySelector("#nome_4") ? document.querySelector("#nome_4").value : "";
+  info.Nomi[4] = document.querySelector("#nome_5") ? document.querySelector("#nome_5").value : "";
+  info.Nomi[5] = document.querySelector("#nome_6") ? document.querySelector("#nome_6").value : "";
+  info.Nomi[6] = document.querySelector("#nome_7") ? document.querySelector("#nome_7").value : "";
+  info.Nomi[7] = document.querySelector("#specifica") ? document.querySelector("#specifica").value : "";
+}
+
+
 // ---------------------------------
 // ---- CREATE PDF WITH PDFKIT -----
 // ---------------------------------
 
 // Helper function: converts mm to pdf-units
-function mmToUnits(mm) {
-  units = mm * 2.8368794326;
-  return units;
-}
+
 
 // Main function: aggiorna pdf e visualizza anteprima
 function aggiorna_pdf() {
+
+  fetch_info();
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -203,42 +232,6 @@ function aggiorna_pdf() {
     pdf kit scrive sul pdf in posizioni prefissate delle righe di testo per tutte le variabili che trova riempite
   */
 
-  // Crea variabili informazioni
-
-  var St_b1 = "";
-  var St_b2 = "";
-  var St_b3 = "";
-  var St_l1 = "";
-  var St_l2 = "";
-  var Fu_1 = "";
-  var Fu_2 = "";
-  var Fu_3 = "";
-  var Nomi = [];
-
-
-  // Carica informazioni
-
-  St_b1 = document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value : "";
-  St_b2 = document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value : "";
-  St_b3 = document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value : "";
-  St_l1 = document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value : "";
-  St_l2 = document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value : "";
-
-  Fu_1 = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
-  Fu_2 = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
-  Fu_3 = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
-
-  Nomi = [];
-  Nomi[0] = document.querySelector("#nome_1") ? document.querySelector("#nome_1").value : "";
-  Nomi[1] = document.querySelector("#nome_2") ? document.querySelector("#nome_2").value : "";
-  Nomi[2] = document.querySelector("#nome_3") ? document.querySelector("#nome_3").value : "";
-  Nomi[3] = document.querySelector("#nome_4") ? document.querySelector("#nome_4").value : "";
-  Nomi[4] = document.querySelector("#nome_5") ? document.querySelector("#nome_5").value : "";
-  Nomi[5] = document.querySelector("#nome_6") ? document.querySelector("#nome_6").value : "";
-  Nomi[6] = document.querySelector("#nome_7") ? document.querySelector("#nome_7").value : "";
-  Nomi[7] = document.querySelector("#specifica") ? document.querySelector("#specifica").value : "";
-
-
 
   // Impostazioni layout
   var left_textbox_width = mmToUnits(130);
@@ -264,7 +257,7 @@ function aggiorna_pdf() {
   // Calcolo allineamento parte destra
   doc.font(helvetica75, 20); // sets ght fonts for the right calculations
   var lines_total_height = 0;
-  Nomi.forEach(function(e) {
+  info.Nomi.forEach(function(e) {
     var w = doc.widthOfString(e, nomi_options);
     var h = doc.heightOfString(e, nomi_options);
     lines_total_height += doc.heightOfString(e, nomi_options)
@@ -282,38 +275,38 @@ function aggiorna_pdf() {
   doc.fill(pdf_foreground);
 
   doc.font(helvetica95, 30)
-    .text(St_b1, {
+    .text(info.St_b1, {
       width: left_textbox_width,
       paragraphGap: mmToUnits(-3.4)
     })
-    .text(St_b2, {
+    .text(info.St_b2, {
       width: left_textbox_width,
       paragraphGap: mmToUnits(-3.4)
     })
-    .text(St_b3, {
+    .text(info.St_b3, {
       width: left_textbox_width,
       paragraphGap: mmToUnits(-3)
     })
     .font(helvetica45, 18)
-    .text(St_l1, {
+    .text(info.St_l1, {
       width: left_textbox_width,
       paragraphGap: mmToUnits(-1)
     })
-    .text(St_l2, {
+    .text(info.St_l2, {
       width: left_textbox_width,
       paragraphGap: mmToUnits(0)
     })
     .font(helvetica65, 2).text(" ") // questa linea serve come interlinea (brutto ma funziona)
     .font(helvetica65, 20)
-    .text(Fu_1, {
+    .text(info.Fu_1, {
       width: left_textbox_width,
       lineGap: mmToUnits(-1.4)
     })
-    .text(Fu_2, {
+    .text(info.Fu_2, {
       width: left_textbox_width,
       lineGap: mmToUnits(-1.4)
     })
-    .text(Fu_3, {
+    .text(info.Fu_3, {
       width: left_textbox_width,
       lineGap: mmToUnits(-1.4)
     });
@@ -321,16 +314,15 @@ function aggiorna_pdf() {
   // lineGap: -1.4
 
   doc.font(helvetica75, 20)
-    .text(Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset,
-      nomi_options)
-    .text(Nomi[1], nomi_options)
-    .text(Nomi[2], nomi_options)
-    .text(Nomi[3], nomi_options)
-    .text(Nomi[4], nomi_options)
-    .text(Nomi[5], nomi_options)
-    .text(Nomi[6], nomi_options)
+    .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
+    .text(info.Nomi[1], nomi_options)
+    .text(info.Nomi[2], nomi_options)
+    .text(info.Nomi[3], nomi_options)
+    .text(info.Nomi[4], nomi_options)
+    .text(info.Nomi[5], nomi_options)
+    .text(info.Nomi[6], nomi_options)
     .font(helvetica45, 20)
-    .text(Nomi[7], nomi_options);
+    .text(info.Nomi[7], nomi_options);
 
 
   // Chiudi PDF e visualizza
@@ -338,10 +330,11 @@ function aggiorna_pdf() {
   stream.on('finish', function() {
     pdf_url = stream.toBlobURL('application/pdf')
     // iframe.src = pdf_url;
-    aggiorna_preview(pdf_url);
-    console.log(pdf_url);
+
     link = document.querySelector("#scarica_link");
     link.href = pdf_url;
+
+    aggiorna_preview(pdf_url);
   });
 }
 
@@ -349,10 +342,6 @@ function aggiorna_pdf() {
 // ---------------------------------
 // ----- VISUALIZE WITH PDF.JS -----
 // ---------------------------------
-
-PDFJS.workerSrc = 'js/pdf.worker.js';
-
-// Asynchronous download of PDF
 
 var aggiorna_preview = function(url) {
   var loadingTask = PDFJS.getDocument(url);
@@ -368,7 +357,7 @@ var aggiorna_preview = function(url) {
       var viewport = page.getViewport(scale);
 
       // Prepare canvas using PDF page dimensions
-      var canvas = document.getElementById('the-canvas');
+      var canvas = document.querySelector("#the-canvas");
       var context = canvas.getContext('2d');
       canvas.height = viewport.height;
       canvas.width = viewport.width;
