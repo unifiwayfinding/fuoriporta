@@ -1,14 +1,8 @@
-# PDF experiments
-Experiments in browser PDF composing
+# PDF composer
+Generatore di fuoriporta per UNIFI wayfinding
 
-## Libraries:
-1. jsPDF
-	* Missing custom font support - Beta plugin [here](https://github.com/sphilee/jsPDF-CustomFonts-support)
+v0.2
+Implementato il popolamento automatico dei dati delle strutture con un dropdown.
 
-2. [PDFkit](http://pdfkit.org/)
-	* Engine powering PDFmake
-	* Should have custom font support
-	* Broser DEMO -> [pdfkit.org/demo/browser.html](http://pdfkit.org/demo/browser.html)
-
-3. PDFmake
-	* Deisnged to work with text flow, not with manual positions
+v0.1
+Primo prototipo funzionante, inserimento completamente manuale.
