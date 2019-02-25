@@ -37,16 +37,17 @@ function mmToUnits(mm) {
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
-function populate_select_input(selector) {
+// popola un dato select a partire da una lista
+var populate_select_input = function (selector, lista) {
   first_option = document.createElement("option");
   first_option.setAttribute("selected", "selected");
   first_option.setAttribute("disabled", "disabled");
   first_option.innerHTML = "...";
   selector.appendChild(first_option);
-  for (i = 0; i < lista_strutture.length; i++) {
+  for (i = 0; i < lista.length; i++) {
     var option = document.createElement("option");
-    option.value = lista_strutture[i].option_ref;
-    option.innerHTML = lista_strutture[i].option_name;
+    option.value = lista[i].option_ref;
+    option.innerHTML = lista[i].option_name;
     selector.appendChild(option)
   };
 }
@@ -507,5 +508,5 @@ var text_input_container;
 document.addEventListener("DOMContentLoaded", function(event) {
   struttura_selector = document.querySelector("#struttura_selector");
   text_input_container = document.querySelector("#text_input_container");
-  populate_select_input(struttura_selector);
+  populate_select_input(struttura_selector, lista_strutture);
 });
