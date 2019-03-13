@@ -187,7 +187,7 @@ function crea_pdf(info) {
   if (document.querySelector("#options-color-black").checked == true) {
     pdf_background = "#000";
     pdf_foreground = "#fff";
-
+}
   // NOMI: carattere 20/16pt spazio sotto 4pt
   var nomi_options = {
     align: 'right',
@@ -224,7 +224,7 @@ function crea_pdf(info) {
   });
 
   // Mostra i margini se necessario
-  if (document.querySelector("#options-margins").checked == true) {
+  if (document.querySelector("#options-margins").checked === true) {
 
     doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
         .fill("red")
@@ -259,7 +259,7 @@ function crea_pdf(info) {
     // Crea rettangolo di background
   doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
     .fill(pdf_background)
-  }
+
 
   // Calcola allineamento parte destra
   doc.font(helvetica75, 20); // sets ght fonts for the right calculations
@@ -482,6 +482,19 @@ var lista_strutture = [{
     option_name: "Scuola di Giuripsrudenza",
     struttura_bold_1: "Scuola di",
     struttura_bold_2: "Giurisprudenza",
+  },
+  {
+    option_ref: "ScScienzePolitiche",
+    option_name: "Scuola di Scienze Politiche",
+    struttura_bold_1: "Scuola di",
+    struttura_bold_2: "Scienze Politiche",
+    struttura_bold_2: "Cesare Alfieri",
+  },
+  {
+    option_ref: "ScEconomia",
+    option_name: "Scuola di Economia e Management",
+    struttura_bold_1: "Scuola di",
+    struttura_bold_2: "Economia e Management",
   },
   {
     option_ref: "Libera",
