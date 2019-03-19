@@ -134,30 +134,38 @@ function append_inputs_nomi(container) {
 // ---- FETCH INFO FROM INPUT FIELDS TO OBJECT --------
 // ----------------------------------------------------
 
+
+var fetch_one_info = function (selector) {
+  value = document.querySelector(selector) ? document.querySelector(selector).value : "";
+  return value;
+}
+
+
 // Carica informazioni
 function fetch_info() {
   let infos = {}
 
-  infos.St_b1 = document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value : "";
-  infos.St_b2 = document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value : "";
-  infos.St_b3 = document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value : "";
-  infos.St_l1 = document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value : "";
-  infos.St_l2 = document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value : "";
+  infos.St_b1 = fetch_one_info("#struttura_b1");
+  infos.St_b2 = fetch_one_info("#struttura_b2");
+  infos.St_b3 = fetch_one_info("#struttura_b3");
+  infos.St_l1 = fetch_one_info("#struttura_l1");
+  infos.St_l2 = fetch_one_info("#struttura_l2");
 
   infos.Funzioni = [];
-  infos.Funzioni[0] = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
-  infos.Funzioni[1] = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
-  infos.Funzioni[2] = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
+  infos.Funzioni[0] = fetch_one_info("#funzione_1").toLowerCase();
+  infos.Funzioni[1] = fetch_one_info("#funzione_2").toLowerCase();
+  infos.Funzioni[2] = fetch_one_info("#funzione_3").toLowerCase();
 
   infos.Nomi = [];
-  infos.Nomi[0] = document.querySelector("#nome_1") ? document.querySelector("#nome_1").value : "";
-  infos.Nomi[1] = document.querySelector("#nome_2") ? document.querySelector("#nome_2").value : "";
-  infos.Nomi[2] = document.querySelector("#nome_3") ? document.querySelector("#nome_3").value : "";
-  infos.Nomi[3] = document.querySelector("#nome_4") ? document.querySelector("#nome_4").value : "";
-  infos.Nomi[4] = document.querySelector("#nome_5") ? document.querySelector("#nome_5").value : "";
-  infos.Nomi[5] = document.querySelector("#nome_6") ? document.querySelector("#nome_6").value : "";
-  infos.Nomi[6] = document.querySelector("#nome_7") ? document.querySelector("#nome_7").value : "";
-  infos.Nomi[7] = document.querySelector("#specifica") ? document.querySelector("#specifica").value : "";
+  infos.Nomi[0] = fetch_one_info("#nome_1");
+  infos.Nomi[1] = fetch_one_info("#nome_2");
+  infos.Nomi[2] = fetch_one_info("#nome_3");
+  infos.Nomi[3] = fetch_one_info("#nome_4");
+  infos.Nomi[4] = fetch_one_info("#nome_5");
+  infos.Nomi[5] = fetch_one_info("#nome_6");
+  infos.Nomi[6] = fetch_one_info("#nome_7");
+
+  infos.Nomi[7] = fetch_one_info("#specifica");
 
   return infos;
 }
@@ -304,6 +312,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         width: left_textbox_width,
         paragraphGap: mmToUnits(0)
       })
+
       .font(helvetica65, 2).text(" ") // questa linea serve come interlinea (brutto ma funziona)
       .font(helvetica65, 20)
 
