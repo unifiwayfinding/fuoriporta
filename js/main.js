@@ -37,19 +37,10 @@ function mmToUnits(mm) {
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
-// viene chiamato dall'onchange del selector pincipale
-// ATTENZIONE: FUNZIONE INPURA
-var show_inputs = function() {
-  let index = struttura_selector.selectedIndex;
-  console.log("index: " + index);
-  struttura_selezionata = (lista_strutture[index - 1]);
-  show_input_fields(text_input_container, struttura_selezionata,);
-}
 
-// -- DA QUI IN POI HELPER FUNCTIONS:
 
 // popola un dato select a partire da una lista
-// la lista ha il seguente formato
+// questa viene chiamata durante l'inizializzazione
 var populate_select_input = function (selector, lista) {
   first_option = document.createElement("option");
   first_option.setAttribute("selected", "selected");
@@ -63,6 +54,18 @@ var populate_select_input = function (selector, lista) {
     selector.appendChild(option)
   };
 }
+
+// viene chiamato dall'onchange del selector pincipale
+// ATTENZIONE: FUNZIONE IMPURA - CHIAMA "lista_strutture" che è esterno
+var show_inputs = function(index) {
+  struttura_selezionata = (lista_strutture[index - 1]);
+  show_input_fields(text_input_container, struttura_selezionata,);
+}
+
+
+
+
+// -- DA QUI IN POI HELPER FUNCTIONS:
 
 // crea un campo di testo a partire da container, enabled si/no, etichetta, id, value di precompilazione
 var create_text_input = function (container, enabled, etichetta, id, value, ) {
@@ -84,6 +87,10 @@ var create_text_input = function (container, enabled, etichetta, id, value, ) {
 }
 
 
+// crea un select associato ad un campo di testo
+var create_select_and_text = function (container, etichetta, id, lista) {
+  var label = document.createElement("label");
+  label.textContent = etichetta;}
 
 
 // popola i campi di input sulla base della scelta nel selector principale
