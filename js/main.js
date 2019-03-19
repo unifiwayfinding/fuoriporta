@@ -37,7 +37,19 @@ function mmToUnits(mm) {
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
+// viene chiamato dall'onchange del selector pincipale
+// ATTENZIONE: FUNZIONE INPURA
+var show_inputs = function() {
+  let index = struttura_selector.selectedIndex;
+  console.log("index: " + index);
+  struttura_selezionata = (lista_strutture[index - 1]);
+  show_input_fields(text_input_container, struttura_selezionata,);
+}
+
+// -- DA QUI IN POI HELPER FUNCTIONS:
+
 // popola un dato select a partire da una lista
+// la lista ha il seguente formato
 var populate_select_input = function (selector, lista) {
   first_option = document.createElement("option");
   first_option.setAttribute("selected", "selected");
@@ -52,6 +64,7 @@ var populate_select_input = function (selector, lista) {
   };
 }
 
+// crea un campo di testo a partire da container, enabled si/no, etichetta, id, value di precompilazione
 var create_text_input = function (container, enabled, etichetta, id, value, ) {
   var label = document.createElement("label");
   label.textContent = etichetta;
@@ -71,22 +84,36 @@ var create_text_input = function (container, enabled, etichetta, id, value, ) {
 }
 
 
-var popola_info_struttura = function() {
-  let index = struttura_selector.selectedIndex;
-  console.log("index: " + index);
-  struttura_selezionata = (lista_strutture[index - 1]);
-  show_text_fields(struttura_selezionata, text_input_container);
-}
 
 
-var show_text_fields = function(struttura, container) {
+// popola i campi di input sulla base della scelta nel selector principale
+var show_input_fields = function(container, struttura) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
+
   // crea gli input
-  append_input_strutture(container, struttura);
-  append_inputs_funzioni(container);
-  append_inputs_nomi(container);
+  var enabled = (struttura.option_ref === "Libera") ? true : false;
+  create_text_input(container, enabled, "Struttura Bold 1:", "struttura_b1", struttura.struttura_bold_1);
+  create_text_input(container, enabled, "Struttura Bold 2:", "struttura_b2", struttura.struttura_bold_2);
+  create_text_input(container, enabled, "Struttura Bold 3:", "struttura_b3", struttura.struttura_bold_3);
+  create_text_input(container, enabled, "Struttura Light 1:", "struttura_l1", struttura.struttura_light_1);
+  create_text_input(container, enabled, "Struttura Light 2:", "struttura_l2", struttura.struttura_light_2);
+
+  let box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  create_text_input(box, true, "Funzione 1:", "funzione_1", "Responsabile amministrativo");
+  create_text_input(box, true, "Funzione 2:", "funzione_2", "");
+  create_text_input(box, true, "Funzione 3:", "funzione_3", "");
+  container.appendChild(box);
+
+  create_text_input(container, true, "Nome 1:", "nome_1", "Barbara Napolitano");
+  create_text_input(container, true, "Nome 2:", "nome_2", "");
+  create_text_input(container, true, "Nome 3:", "nome_3", "");
+  create_text_input(container, true, "Nome 4:", "nome_4", "");
+  create_text_input(container, true, "Nome 5:", "nome_5", "");
+  create_text_input(container, true, "Specifica:", "specifica", "");
+
 
   // aggiunge nota in fondo
   let note = document.createElement("h6");
@@ -96,43 +123,6 @@ var show_text_fields = function(struttura, container) {
   aggiorna_pdf();
 }
 
-var append_input_strutture = function(container, strutt) {
-  enabled = (strutt.option_ref === "Libera") ? true : false;
-  create_text_input(container, enabled, "Struttura Bold 1:", "struttura_b1", strutt.struttura_bold_1);
-  create_text_input(container, enabled, "Struttura Bold 2:", "struttura_b2", strutt.struttura_bold_2);
-  create_text_input(container, enabled, "Struttura Bold 3:", "struttura_b3", strutt.struttura_bold_3);
-  create_text_input(container, enabled, "Struttura Light 1:", "struttura_l1", strutt.struttura_light_1);
-  create_text_input(container, enabled, "Struttura Light 2:", "struttura_l2", strutt.struttura_light_2);
-}
-
-var append_inputs_funzioni = function(container) {
-  let box = document.createElement("div");
-  box.setAttribute("class", "input_box");
-  create_text_input(box, true, "Funzione 1:", "funzione_1", "Responsabile amministrativo");
-  create_text_input(box, true, "Funzione 2:", "funzione_2", "");
-  create_text_input(box, true, "Funzione 3:", "funzione_3", "");
-  container.appendChild(box);
-}
-
-var append_inputs_nomi = function(container) {
-  create_text_input(container, true, "Nome 1:", "nome_1", "Barbara Napolitano");
-  create_text_input(container, true, "Nome 2:", "nome_2", "");
-  create_text_input(container, true, "Nome 3:", "nome_3", "");
-  create_text_input(container, true, "Nome 4:", "nome_4", "");
-  create_text_input(container, true, "Nome 5:", "nome_5", "");
-  create_text_input(container, true, "Specifica:", "specifica", "");
-}
-
-/*
-function append_inputs_nomi(container) {
-  create_text_input(container, true, "Nome 1:", "nome_1", "Nome 1");
-  create_text_input(container, true, "Nome 2:", "nome_2", "Nome 2");
-  create_text_input(container, true, "Nome 3:", "nome_3", "Nome 3");
-  create_text_input(container, true, "Nome 4:", "nome_4", "Nome 4");
-  create_text_input(container, true, "Nome 5:", "nome_5", "Nome 5");
-  create_text_input(container, true, "Specifica:", "specifica", "Specifica");
-}
-*/
 
 
 
