@@ -144,9 +144,10 @@ function fetch_info() {
   infos.St_l1 = document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value : "";
   infos.St_l2 = document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value : "";
 
-  infos.Fu_1 = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
-  infos.Fu_2 = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
-  infos.Fu_3 = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
+  infos.Funzioni = [];
+  infos.Funzioni[0] = document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value : "";
+  infos.Funzioni[1] = document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value : "";
+  infos.Funzioni[2] = document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value : "";
 
   infos.Nomi = [];
   infos.Nomi[0] = document.querySelector("#nome_1") ? document.querySelector("#nome_1").value : "";
@@ -168,13 +169,22 @@ function fetch_info() {
 // ---- CREATE PDF WITH PDFKIT -----
 // ---------------------------------
 
-// Main function: aggiorna pdf e visualizza anteprima
-function aggiorna_pdf() {
+/**
+ * Aggiorna il PDF sia nell'anteprima che nel blog che può essere scaricato
+ */
+
+ function aggiorna_pdf() {
   crea_pdf(fetch_info());
 }
 
 
-// Main functionality: creates pdf from info object
+
+
+/**
+ * Crea il PDF a partire dalle informazioni
+ * @param {object} title - Le informazioni per il fuoriporta.
+ */
+
 function crea_pdf(info) {
 
   // Impostazioni layout
@@ -188,6 +198,14 @@ function crea_pdf(info) {
     pdf_background = "#000";
     pdf_foreground = "#fff";
 }
+
+
+  // FUNZIONI
+  var funzioni_options = {
+    width: left_textbox_width,
+    lineGap: -4,
+  };
+
   // NOMI: carattere 20/16pt spazio sotto 4pt
   var nomi_options = {
     align: 'right',
@@ -195,16 +213,6 @@ function crea_pdf(info) {
     lineGap: -8,
     paragraphGap: 4
   };
-
-  // NOMI: carattere 20/16pt spazio sotto 4pt
-  var strutture_options = {
-    align: 'right',
-    width: left_textbox_width,
-    lineGap: -8,
-    paragraphGap: 4
-  };
-
-
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -223,42 +231,43 @@ function crea_pdf(info) {
     }
   });
 
-  // Mostra i margini se necessario
+  // Crea rettangolo di background
+doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
+  .fill(pdf_background)
+
+
+  // Mostra le guide se necessario
   if (document.querySelector("#options-margins").checked === true) {
 
     doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
-        .fill("red")
+        .stroke("red")
 
-        .moveTo(0, mmToUnits(38))
-        .lineTo(mmToUnits(200), mmToUnits(38))
-        .lineWidth(.5)
-        .stroke("black")
-
-        .moveTo(0, mmToUnits(40.7))
-        .lineTo(mmToUnits(200), mmToUnits(40.7))
-        .lineWidth(.5)
-        .stroke("black")
-
-        .moveTo(0, mmToUnits(95))
-        .lineTo(mmToUnits(200), mmToUnits(95))
-        .lineWidth(.5)
-        .stroke("black")
-
-        .moveTo(0, mmToUnits(5))
-        .lineTo(mmToUnits(200), mmToUnits(5))
+        .moveTo(mmToUnits(0), mmToUnits(5))
+        .lineTo(mmToUnits(pdf_larg), mmToUnits(5))
         .lineWidth(1)
         .stroke("blue")
 
-        .moveTo(0, mmToUnits(105))
-        .lineTo(mmToUnits(200), mmToUnits(105))
+        .moveTo(mmToUnits(0), mmToUnits(105))
+        .lineTo(mmToUnits(pdf_larg), mmToUnits(105))
         .lineWidth(1)
-        .stroke("blue");
+        .stroke("blue")
+
+        .moveTo(mmToUnits(pdf_msx), mmToUnits(38))
+        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(38))
+        .lineWidth(.5)
+        .stroke("black")
+
+        .moveTo(mmToUnits(pdf_msx), mmToUnits(40.7))
+        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(40.7))
+        .lineWidth(.5)
+        .stroke("black")
+
+        .moveTo(mmToUnits(pdf_msx), mmToUnits(95))
+        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(95))
+        .lineWidth(.5)
+        .stroke("black")
   }
 
-
-    // Crea rettangolo di background
-  doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
-    .fill(pdf_background)
 
 
   // Calcola allineamento parte destra
@@ -297,18 +306,10 @@ function crea_pdf(info) {
       })
       .font(helvetica65, 2).text(" ") // questa linea serve come interlinea (brutto ma funziona)
       .font(helvetica65, 20)
-      .text(info.Fu_1, {
-        width: left_textbox_width,
-        lineGap: mmToUnits(-1.4)
-      })
-      .text(info.Fu_2, {
-        width: left_textbox_width,
-        lineGap: mmToUnits(-1.4)
-      })
-      .text(info.Fu_3, {
-        width: left_textbox_width,
-        lineGap: mmToUnits(-1.4)
-      })
+
+      .text(info.Funzioni[0], funzioni_options)
+      .text(info.Funzioni[1], funzioni_options)
+      .text(info.Funzioni[2], funzioni_options)
 
       .font(helvetica75, 20)
       .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
@@ -335,9 +336,11 @@ function crea_pdf(info) {
 }
 
 
-// ---------------------------------
-// ----- VISUALIZE WITH PDF.JS -----
-// ---------------------------------
+
+
+// -------------------------------------
+// ----- VISUALIZE PDF WITH PDF.JS -----
+// -------------------------------------
 
 function aggiorna_preview(url) {
   var loadingTask = PDFJS.getDocument(url);
@@ -488,13 +491,14 @@ var lista_strutture = [{
     option_name: "Scuola di Scienze Politiche",
     struttura_bold_1: "Scuola di",
     struttura_bold_2: "Scienze Politiche",
-    struttura_bold_2: "Cesare Alfieri",
+    struttura_bold_3: "Cesare Alfieri",
   },
   {
     option_ref: "ScEconomia",
     option_name: "Scuola di Economia e Management",
     struttura_bold_1: "Scuola di",
-    struttura_bold_2: "Economia e Management",
+    struttura_bold_2: "Economia",
+    struttura_bold_3: "e Management",
   },
   {
     option_ref: "Libera",
