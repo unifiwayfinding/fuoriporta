@@ -67,25 +67,7 @@ var show_inputs = function(index) {
 
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
-// crea un campo di testo a partire da container, enabled si/no, etichetta, id, value di precompilazione
-var create_text_input2 = function (container, enabled, etichetta, id, value, ) {
-  var label = document.createElement("label");
-  label.textContent = etichetta;
-  var input = document.createElement("input");
-  input.setAttribute("type", "text");
-  input.setAttribute("class", "input_field");
-  input.setAttribute("id", id);
-  if (!enabled) {
-    input.setAttribute("disabled", "disabled");
-  };
-  if (value) {
-    input.setAttribute("value", value);
-  };
-  input.setAttribute("autocomplete", "nope");
-  label.appendChild(input);
-  container.appendChild(label);
-}
-
+// return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
 var create_text_input = function (enabled, etichetta, id, value, ) {
   var label = document.createElement("label");
   label.textContent = etichetta;
@@ -106,11 +88,35 @@ var create_text_input = function (enabled, etichetta, id, value, ) {
 
 
 // crea un select associato ad un campo di testo
-var create_select_and_text = function (container, etichetta, id, lista) {
-  var label = document.createElement("label");
-  label.textContent = etichetta;
+var create_select_and_text = function (etichetta, id, lista) {
+  let section = document.createElement("div");
 
-  create_text_input(container, true, "someEtichetta", "someId", "someText")
+  var select_label = document.createElement("label");
+  select_label.textContent = etichetta;
+  var select = document.createElement("select");
+  for (i = 0; i < lista.length; i++) {
+    var option = document.createElement("option");
+    option.value = lista[i].option_ref;
+    option.innerHTML = lista[i].option_name;
+    select.appendChild(option)
+  };
+
+  select_label.appendChild(select);
+  section.appendChild(select_label);
+
+  let box = document.createElement("div");
+  section.appendChild(box);
+
+  select.onchange = function(){
+    while (box.firstChild) {
+      box.removeChild(box.firstChild);
+    }
+    var text = create_text_input(false, "_", id, this.value);
+    box.appendChild(text);
+    aggiorna_pdf();
+  };
+
+  return section;
 }
 
 
@@ -130,9 +136,14 @@ var show_input_fields = function(container, struttura) {
 
   let box = document.createElement("div");
   box.setAttribute("class", "input_box");
-  box.appendChild( create_text_input(true, "Funzione 1:", "funzione_1", "Responsabile amministrativo") );
-  box.appendChild( create_text_input(true, "Funzione 2:", "funzione_2", "") );
-  box.appendChild( create_text_input(true, "Funzione 3:", "funzione_3", "") );
+  // box.appendChild( create_text_input(true, "Funzione 1:", "funzione_1", "Responsabile amministrativo") );
+  // box.appendChild( create_text_input(true, "Funzione 2:", "funzione_2", "") );
+  // box.appendChild( create_text_input(true, "Funzione 3:", "funzione_3", "") );
+
+  box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
+  box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
+  box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
+
   container.appendChild(box);
 
   container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Barbara Napolitano") );
@@ -502,7 +513,8 @@ function async_trigger() {
 
 
 
-var lista_strutture = [{
+var lista_strutture = [
+  {
     option_ref: "DipDISEI",
     option_name: "DISEI",
     struttura_bold_1: "DISEI",
@@ -554,7 +566,25 @@ var lista_strutture = [{
   }
 ];
 
+var lista_funzioni = [
+  {
+    option_ref: "",
+    option_name: "...",
+  },
+  {
+    option_ref: "amministrazione",
+    option_name: "amministrazione",
+  },
+  {
+    option_ref: "responsabile amministrativo",
+    option_name: "responsabile amministrativo",
+  },
+  {
+    option_ref: "studi docenti",
+    option_name: "studi docenti",
+  }
 
+];
 
 
 
