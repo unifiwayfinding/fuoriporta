@@ -64,6 +64,14 @@ var show_inputs = function(index) {
 
 
 
+var timeout = null;
+var update = function (e) {
+  clearTimeout(timeout);
+  timeout = setTimeout(function () {
+      aggiorna_pdf();
+  }, 500);
+}
+
 
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
@@ -75,6 +83,7 @@ var create_text_input = function (enabled, etichetta, id, value, ) {
   input.setAttribute("type", "text");
   input.setAttribute("class", "input_field");
   input.setAttribute("id", id);
+  input.onkeyup = update;
   if (!enabled) {
     input.setAttribute("disabled", "disabled");
   };
@@ -155,7 +164,6 @@ var show_input_fields = function(container, struttura) {
   container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
   container.appendChild( create_text_input(true, "Nome 5:", "nome_5", "") );
   container.appendChild( create_text_input(true, "Specifica:", "specifica", "") );
-
 
 
   // aggiunge nota in fondo
@@ -591,7 +599,6 @@ var lista_funzioni = [
     option_ref: "altro",
     option_name: "-- inserimento manuale --",
   }
-
 ];
 
 
