@@ -31,3 +31,4 @@
 - [ ] Il pdf deve essere impaginato in un A4?
 - [ ] La preview deve essere inclusa in un fuoriporta intero?
 - [ ] Aggiorna fuoriporta con INVIO
+- [ ] Inserire nei campi testo invece di testo vero dei suggerimenti che poi spariscono (svincolare primo render del pdf dai contenuti dei campi)
