@@ -52,7 +52,7 @@ var populate_select_input = function (selector, lista) {
   };
 }
 
-function create_text_input(container, enabled, etichetta, id, value, ) {
+var create_text_input = function (container, enabled, etichetta, id, value, ) {
   var label = document.createElement("label");
   label.textContent = etichetta;
   var input = document.createElement("input");
@@ -71,7 +71,7 @@ function create_text_input(container, enabled, etichetta, id, value, ) {
 }
 
 
-function popola_info_struttura() {
+var popola_info_struttura = function() {
   let index = struttura_selector.selectedIndex;
   console.log("index: " + index);
   struttura_selezionata = (lista_strutture[index - 1]);
@@ -79,7 +79,7 @@ function popola_info_struttura() {
 }
 
 
-function show_text_fields(struttura, container) {
+var show_text_fields = function(struttura, container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
@@ -96,7 +96,7 @@ function show_text_fields(struttura, container) {
   aggiorna_pdf();
 }
 
-function append_input_strutture(container, strutt) {
+var append_input_strutture = function(container, strutt) {
   enabled = (strutt.option_ref === "Libera") ? true : false;
   create_text_input(container, enabled, "Struttura Bold 1:", "struttura_b1", strutt.struttura_bold_1);
   create_text_input(container, enabled, "Struttura Bold 2:", "struttura_b2", strutt.struttura_bold_2);
@@ -105,36 +105,34 @@ function append_input_strutture(container, strutt) {
   create_text_input(container, enabled, "Struttura Light 2:", "struttura_l2", strutt.struttura_light_2);
 }
 
-function append_inputs_funzioni(container) {
+var append_inputs_funzioni = function(container) {
   let box = document.createElement("div");
   box.setAttribute("class", "input_box");
-  create_text_input(box, true, "Funzione 1:", "funzione_1", "Funzione 1");
-  create_text_input(box, true, "Funzione 2:", "funzione_2", "Funzione 2");
-  create_text_input(box, true, "Funzione 3:", "funzione_3", "Funzione 3");
+  create_text_input(box, true, "Funzione 1:", "funzione_1", "Responsabile amministrativo");
+  create_text_input(box, true, "Funzione 2:", "funzione_2", "");
+  create_text_input(box, true, "Funzione 3:", "funzione_3", "");
   container.appendChild(box);
 }
 
-function append_inputs_nomi(container) {
-  create_text_input(container, true, "Nome 1:", "nome_1", "Nome 1");
+var append_inputs_nomi = function(container) {
+  create_text_input(container, true, "Nome 1:", "nome_1", "Barbara Napolitano");
   create_text_input(container, true, "Nome 2:", "nome_2", "");
   create_text_input(container, true, "Nome 3:", "nome_3", "");
   create_text_input(container, true, "Nome 4:", "nome_4", "");
   create_text_input(container, true, "Nome 5:", "nome_5", "");
-  create_text_input(container, true, "Nome 6:", "nome_6", "");
-  create_text_input(container, true, "Nome 7:", "nome_7", "");
-  create_text_input(container, true, "Specifica:", "specifica", "Specifica");
+  create_text_input(container, true, "Specifica:", "specifica", "");
 }
 
+/*
 function append_inputs_nomi(container) {
   create_text_input(container, true, "Nome 1:", "nome_1", "Nome 1");
   create_text_input(container, true, "Nome 2:", "nome_2", "Nome 2");
   create_text_input(container, true, "Nome 3:", "nome_3", "Nome 3");
   create_text_input(container, true, "Nome 4:", "nome_4", "Nome 4");
   create_text_input(container, true, "Nome 5:", "nome_5", "Nome 5");
-  create_text_input(container, true, "Nome 6:", "nome_6", "Nome 6");
-  create_text_input(container, true, "Nome 7:", "nome_7", "Nome 7");
   create_text_input(container, true, "Specifica:", "specifica", "Specifica");
 }
+*/
 
 
 
@@ -152,7 +150,7 @@ var fetch_one_info = function (selector) {
 
 
 // Carica informazioni
-function fetch_info() {
+var  fetch_info = function() {
   let infos = {}
 
   infos.St_b1 = fetch_one_info("#struttura_b1");
@@ -172,8 +170,6 @@ function fetch_info() {
   infos.Nomi[2] = fetch_one_info("#nome_3");
   infos.Nomi[3] = fetch_one_info("#nome_4");
   infos.Nomi[4] = fetch_one_info("#nome_5");
-  infos.Nomi[5] = fetch_one_info("#nome_6");
-  infos.Nomi[6] = fetch_one_info("#nome_7");
 
   infos.Nomi[7] = fetch_one_info("#specifica");
 
@@ -191,7 +187,7 @@ function fetch_info() {
  * Aggiorna il PDF sia nell'anteprima che nel blog che può essere scaricato
  */
 
- function aggiorna_pdf() {
+ var  aggiorna_pdf = function() {
   crea_pdf(fetch_info());
 }
 
@@ -203,7 +199,7 @@ function fetch_info() {
  * @param {object} title - Le informazioni per il fuoriporta.
  */
 
-function crea_pdf(info) {
+var crea_pdf = function(info) {
 
   // Impostazioni layout
   let strutture_textbox_width = mmToUnits(180);
@@ -225,13 +221,24 @@ function crea_pdf(info) {
     lineGap: -4,
   };
 
-  // NOMI: carattere 20/16pt spazio sotto 4pt
+  // NOMI ORIGINALE: carattere 20/16pt spazio sotto 4pt
+  var corpo_nomi = 20;
   var nomi_options = {
     align: 'right',
     width: right_textbox_width,
     lineGap: -8,
     paragraphGap: 4
   };
+
+  /* NOMI ORIGINALE: carattere 26/25pt spazio sotto 4pt
+  var corpo_nomi = 26;
+  var nomi_options = {
+    align: 'right',
+    width: right_textbox_width,
+    lineGap: -6,
+    paragraphGap: 6
+  };
+  */
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -290,7 +297,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
   // Calcola allineamento parte destra
-  doc.font(helvetica75, 20); // sets ght fonts for the right calculations
+  doc.font(helvetica75, corpo_nomi); // sets ght fonts for the right calculations
   let lines_total_height = 0;
   info.Nomi.forEach(function(e) {
     let w = doc.widthOfString(e, nomi_options);
@@ -331,14 +338,12 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       .text(info.Funzioni[1], funzioni_options)
       .text(info.Funzioni[2], funzioni_options)
 
-      .font(helvetica75, 20)
+      .font(helvetica75, corpo_nomi)
       .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
       .text(info.Nomi[1], nomi_options)
       .text(info.Nomi[2], nomi_options)
       .text(info.Nomi[3], nomi_options)
       .text(info.Nomi[4], nomi_options)
-      .text(info.Nomi[5], nomi_options)
-      .text(info.Nomi[6], nomi_options)
 
       .font(helvetica45, 20)
       .text(info.Nomi[7], nomi_options)
@@ -362,7 +367,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-function aggiorna_preview(url) {
+var aggiorna_preview = function(url) {
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
     console.log('PDF loaded');
