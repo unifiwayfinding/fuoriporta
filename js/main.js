@@ -94,6 +94,7 @@ var create_select_and_text = function (etichetta, id, lista) {
   var select_label = document.createElement("label");
   select_label.textContent = etichetta;
   var select = document.createElement("select");
+  select.setAttribute("id", id);
   for (i = 0; i < lista.length; i++) {
     var option = document.createElement("option");
     option.value = lista[i].option_ref;
@@ -107,12 +108,19 @@ var create_select_and_text = function (etichetta, id, lista) {
   let box = document.createElement("div");
   section.appendChild(box);
 
+
   select.onchange = function(){
+    select.setAttribute("id", id);
     while (box.firstChild) {
       box.removeChild(box.firstChild);
     }
-    var text = create_text_input(false, "_", id, this.value);
-    box.appendChild(text);
+
+    if (this.value === "altro") {
+      select.setAttribute("id", "");
+      var text_field = create_text_input(true, "=>", id, "inserire testo");
+      box.appendChild(text_field);
+    }
+
     aggiorna_pdf();
   };
 
@@ -136,14 +144,9 @@ var show_input_fields = function(container, struttura) {
 
   let box = document.createElement("div");
   box.setAttribute("class", "input_box");
-  // box.appendChild( create_text_input(true, "Funzione 1:", "funzione_1", "Responsabile amministrativo") );
-  // box.appendChild( create_text_input(true, "Funzione 2:", "funzione_2", "") );
-  // box.appendChild( create_text_input(true, "Funzione 3:", "funzione_3", "") );
-
   box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
   box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
-
   container.appendChild(box);
 
   container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Barbara Napolitano") );
@@ -152,6 +155,7 @@ var show_input_fields = function(container, struttura) {
   container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
   container.appendChild( create_text_input(true, "Nome 5:", "nome_5", "") );
   container.appendChild( create_text_input(true, "Specifica:", "specifica", "") );
+
 
 
   // aggiunge nota in fondo
@@ -582,6 +586,10 @@ var lista_funzioni = [
   {
     option_ref: "studi docenti",
     option_name: "studi docenti",
+  },
+  {
+    option_ref: "altro",
+    option_name: "-- inserimento manuale --",
   }
 
 ];
