@@ -125,6 +125,16 @@ function append_inputs_nomi(container) {
   create_text_input(container, true, "Specifica:", "specifica", "Specifica");
 }
 
+function append_inputs_nomi(container) {
+  create_text_input(container, true, "Nome 1:", "nome_1", "Nome 1");
+  create_text_input(container, true, "Nome 2:", "nome_2", "Nome 2");
+  create_text_input(container, true, "Nome 3:", "nome_3", "Nome 3");
+  create_text_input(container, true, "Nome 4:", "nome_4", "Nome 4");
+  create_text_input(container, true, "Nome 5:", "nome_5", "Nome 5");
+  create_text_input(container, true, "Nome 6:", "nome_6", "Nome 6");
+  create_text_input(container, true, "Nome 7:", "nome_7", "Nome 7");
+  create_text_input(container, true, "Specifica:", "specifica", "Specifica");
+}
 
 
 
@@ -196,7 +206,8 @@ function fetch_info() {
 function crea_pdf(info) {
 
   // Impostazioni layout
-  let left_textbox_width = mmToUnits(130);
+  let strutture_textbox_width = mmToUnits(180);
+  let funzioni_textbox_width = mmToUnits(130);
   let right_textbox_width = mmToUnits(90);
 
   // Impostazioni colori
@@ -210,7 +221,7 @@ function crea_pdf(info) {
 
   // FUNZIONI
   var funzioni_options = {
-    width: left_textbox_width,
+    width: funzioni_textbox_width,
     lineGap: -4,
   };
 
@@ -263,17 +274,17 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         .moveTo(mmToUnits(pdf_msx), mmToUnits(38))
         .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(38))
         .lineWidth(.5)
-        .stroke("black")
+        .stroke("green")
 
         .moveTo(mmToUnits(pdf_msx), mmToUnits(40.7))
         .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(40.7))
         .lineWidth(.5)
-        .stroke("black")
+        .stroke("green")
 
         .moveTo(mmToUnits(pdf_msx), mmToUnits(95))
         .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(95))
         .lineWidth(.5)
-        .stroke("black")
+        .stroke("green")
   }
 
 
@@ -292,24 +303,24 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
   doc .fill(pdf_foreground)
       .font(helvetica95, 30)
       .text(info.St_b1, {
-        width: left_textbox_width,
+        width: strutture_textbox_width,
         paragraphGap: mmToUnits(-3.4)
       })
       .text(info.St_b2, {
-        width: left_textbox_width,
+        width: strutture_textbox_width,
         paragraphGap: mmToUnits(-3.4)
       })
       .text(info.St_b3, {
-        width: left_textbox_width,
+        width: strutture_textbox_width,
         paragraphGap: mmToUnits(-3)
       })
       .font(helvetica45, 18)
       .text(info.St_l1, {
-        width: left_textbox_width,
+        width: strutture_textbox_width,
         paragraphGap: mmToUnits(-1)
       })
       .text(info.St_l2, {
-        width: left_textbox_width,
+        width: strutture_textbox_width,
         paragraphGap: mmToUnits(0)
       })
 
@@ -506,8 +517,8 @@ var lista_strutture = [{
     option_ref: "ScEconomia",
     option_name: "Scuola di Economia e Management",
     struttura_bold_1: "Scuola di",
-    struttura_bold_2: "Economia",
-    struttura_bold_3: "e Management",
+    struttura_bold_2: "Economia e",
+    struttura_bold_3: "Management",
   },
   {
     option_ref: "Libera",
@@ -528,11 +539,8 @@ var lista_strutture = [{
 // ----------- INIZIALIZZA ---------
 // ---------------------------------
 
-var struttura_selector;
-var text_input_container;
-
 document.addEventListener("DOMContentLoaded", function(event) {
-  struttura_selector = document.querySelector("#struttura_selector");
-  text_input_container = document.querySelector("#text_input_container");
+  var struttura_selector = document.querySelector("#struttura_selector");
+  var text_input_container = document.querySelector("#text_input_container");
   populate_select_input(struttura_selector, lista_strutture);
 });
