@@ -68,7 +68,7 @@ var show_inputs = function(index) {
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
 // crea un campo di testo a partire da container, enabled si/no, etichetta, id, value di precompilazione
-var create_text_input = function (container, enabled, etichetta, id, value, ) {
+var create_text_input2 = function (container, enabled, etichetta, id, value, ) {
   var label = document.createElement("label");
   label.textContent = etichetta;
   var input = document.createElement("input");
@@ -86,11 +86,32 @@ var create_text_input = function (container, enabled, etichetta, id, value, ) {
   container.appendChild(label);
 }
 
+var create_text_input = function (enabled, etichetta, id, value, ) {
+  var label = document.createElement("label");
+  label.textContent = etichetta;
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("class", "input_field");
+  input.setAttribute("id", id);
+  if (!enabled) {
+    input.setAttribute("disabled", "disabled");
+  };
+  if (value) {
+    input.setAttribute("value", value);
+  };
+  input.setAttribute("autocomplete", "nope");
+  label.appendChild(input);
+  return label;
+}
+
 
 // crea un select associato ad un campo di testo
 var create_select_and_text = function (container, etichetta, id, lista) {
   var label = document.createElement("label");
-  label.textContent = etichetta;}
+  label.textContent = etichetta;
+
+  create_text_input(container, true, "someEtichetta", "someId", "someText")
+}
 
 
 // popola i campi di input sulla base della scelta nel selector principale
@@ -101,25 +122,25 @@ var show_input_fields = function(container, struttura) {
 
   // crea gli input
   var enabled = (struttura.option_ref === "Libera") ? true : false;
-  create_text_input(container, enabled, "Struttura Bold 1:", "struttura_b1", struttura.struttura_bold_1);
-  create_text_input(container, enabled, "Struttura Bold 2:", "struttura_b2", struttura.struttura_bold_2);
-  create_text_input(container, enabled, "Struttura Bold 3:", "struttura_b3", struttura.struttura_bold_3);
-  create_text_input(container, enabled, "Struttura Light 1:", "struttura_l1", struttura.struttura_light_1);
-  create_text_input(container, enabled, "Struttura Light 2:", "struttura_l2", struttura.struttura_light_2);
+  container.appendChild( create_text_input(enabled, "Struttura Bold 1:", "struttura_b1", struttura.struttura_bold_1) );
+  container.appendChild( create_text_input(enabled, "Struttura Bold 2:", "struttura_b2", struttura.struttura_bold_2) );
+  container.appendChild( create_text_input(enabled, "Struttura Bold 3:", "struttura_b3", struttura.struttura_bold_3) );
+  container.appendChild( create_text_input(enabled, "Struttura Light 1:", "struttura_l1", struttura.struttura_light_1) );
+  container.appendChild( create_text_input(enabled, "Struttura Light 2:", "struttura_l2", struttura.struttura_light_2) );
 
   let box = document.createElement("div");
   box.setAttribute("class", "input_box");
-  create_text_input(box, true, "Funzione 1:", "funzione_1", "Responsabile amministrativo");
-  create_text_input(box, true, "Funzione 2:", "funzione_2", "");
-  create_text_input(box, true, "Funzione 3:", "funzione_3", "");
+  box.appendChild( create_text_input(true, "Funzione 1:", "funzione_1", "Responsabile amministrativo") );
+  box.appendChild( create_text_input(true, "Funzione 2:", "funzione_2", "") );
+  box.appendChild( create_text_input(true, "Funzione 3:", "funzione_3", "") );
   container.appendChild(box);
 
-  create_text_input(container, true, "Nome 1:", "nome_1", "Barbara Napolitano");
-  create_text_input(container, true, "Nome 2:", "nome_2", "");
-  create_text_input(container, true, "Nome 3:", "nome_3", "");
-  create_text_input(container, true, "Nome 4:", "nome_4", "");
-  create_text_input(container, true, "Nome 5:", "nome_5", "");
-  create_text_input(container, true, "Specifica:", "specifica", "");
+  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Barbara Napolitano") );
+  container.appendChild( create_text_input(true, "Nome 2:", "nome_2", "") );
+  container.appendChild( create_text_input(true, "Nome 3:", "nome_3", "") );
+  container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
+  container.appendChild( create_text_input(true, "Nome 5:", "nome_5", "") );
+  container.appendChild( create_text_input(true, "Specifica:", "specifica", "") );
 
 
   // aggiunge nota in fondo
