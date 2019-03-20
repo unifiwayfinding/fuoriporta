@@ -40,18 +40,18 @@ function mmToUnits(mm) {
 
 // popola un dato select a partire da una lista
 // questa viene chiamata durante l'inizializzazione
-var populate_select_input = function (selector, lista) {
-  first_option = document.createElement("option");
-  first_option.setAttribute("selected", "selected");
-  first_option.setAttribute("disabled", "disabled");
-  first_option.label = "...";
-  selector.appendChild(first_option);
+var populate_select_input = function (select, lista) {
+  let option = document.createElement("option");
+  option.setAttribute("selected", "selected");
+  option.setAttribute("disabled", "disabled");
+  option.label = "...";
+  select.appendChild(option);
   for (i = 0; i < lista.length; i++) {
-    var option = document.createElement("option");
+    option = document.createElement("option");
     option.label = lista[i].option_label;
     option.value = lista[i].option_value;
-    selector.appendChild(option)
-  };
+    select.appendChild(option)
+  }
 }
 
 // viene chiamato dall'onchange del selector pincipale
@@ -105,19 +105,27 @@ var create_select_and_text = function (etichetta, id, lista) {
   select_label.textContent = etichetta;
   var select = document.createElement("select");
   select.setAttribute("id", id);
+
+  option = document.createElement("option");
+  option.label = "...";
+  option.value = "";
+  select.appendChild(option);
   for (i = 0; i < lista.length; i++) {
-    var option = document.createElement("option");
-    option.label = lista[i].option_label;
-    option.value = lista[i].option_value;
-    select.appendChild(option)
-  };
+    let option = document.createElement("option");
+    option.label = lista[i];
+    option.value = lista[i];
+    select.appendChild(option);
+  }
+  option = document.createElement("option");
+  option.label = "Altro.. (inserimento manuale)";
+  option.value = "altro";
+  select.appendChild(option);
 
   select_label.appendChild(select);
   section.appendChild(select_label);
 
   let box = document.createElement("div");
   section.appendChild(box);
-
 
   select.onchange = function(){
     select.setAttribute("id", id);
@@ -127,7 +135,7 @@ var create_select_and_text = function (etichetta, id, lista) {
 
     if (this.value === "altro") {
       select.setAttribute("id", "");
-      var text_field = create_text_input(true, "=>", id, "inserire testo");
+      var text_field = create_text_input(true, "Inserire funzione:", id, "");
       box.appendChild(text_field);
     }
 
@@ -145,12 +153,12 @@ var show_input_fields = function(container, struttura) {
   }
 
   // crea gli input
-  var enabled = (struttura.option_value === "Libera") ? true : false;
-  container.appendChild( create_text_input(enabled, "Struttura Bold 1:", "struttura_b1", struttura.struttura_bold_1) );
-  container.appendChild( create_text_input(enabled, "Struttura Bold 2:", "struttura_b2", struttura.struttura_bold_2) );
-  container.appendChild( create_text_input(enabled, "Struttura Bold 3:", "struttura_b3", struttura.struttura_bold_3) );
-  container.appendChild( create_text_input(enabled, "Struttura Light 1:", "struttura_l1", struttura.struttura_light_1) );
-  container.appendChild( create_text_input(enabled, "Struttura Light 2:", "struttura_l2", struttura.struttura_light_2) );
+  var enabled = (struttura.option_value === "altro") ? true : false;
+  container.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
+  container.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
+  container.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
+  container.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
+  container.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
 
   let box = document.createElement("div");
   box.setAttribute("class", "input_box");
