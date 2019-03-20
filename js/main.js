@@ -76,7 +76,7 @@ var update = function (e) {
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
 // return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
-var create_text_input = function (enabled, etichetta, id, value, ) {
+var create_text_input = function (enabled, etichetta, id, value) {
   var label = document.createElement("label");
   label.textContent = etichetta;
   var input = document.createElement("input");
@@ -91,6 +91,8 @@ var create_text_input = function (enabled, etichetta, id, value, ) {
     input.setAttribute("value", value);
   };
   input.setAttribute("autocomplete", "nope");
+  // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
+  input.setAttribute("name", Math.random().toString(36).substring(2, 15));
   label.appendChild(input);
   return label;
 }
