@@ -216,6 +216,9 @@ var  fetch_info = function() {
 
   infos.Nomi[7] = fetch_one_info("#specifica");
 
+  infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
+  infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
+
   return infos;
 }
 
@@ -294,7 +297,7 @@ var crea_pdf = function(info) {
     size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
     margins: {
       top: mmToUnits(pdf_msu),
-      bottom: mmToUnits(pdf_mgiu),
+      bottom: 0,
       left: mmToUnits(pdf_msx),
       right: mmToUnits(pdf_mdx)
     }
@@ -349,8 +352,11 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
   });
   offset = 241 - lines_total_height;
 
-  // Scrivi le scritte sul pdf
+
+  // Scrive le scritte sul pdf
+
   doc .fill(pdf_foreground)
+      // strutture
       .font(helvetica95, 30)
       .text(info.St_b1, {
         width: strutture_textbox_width,
@@ -374,13 +380,16 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         paragraphGap: mmToUnits(0)
       })
 
-      .font(helvetica65, 2).text(" ") // questa linea serve come interlinea (brutto ma funziona)
+      // questa linea serve come interlinea (brutto ma funziona)
+      .font(helvetica65, 2).text(" ")
       .font(helvetica65, 20)
 
+      // funzioni
       .text(info.Funzioni[0], funzioni_options)
       .text(info.Funzioni[1], funzioni_options)
       .text(info.Funzioni[2], funzioni_options)
 
+      // nomi
       .font(helvetica75, corpo_nomi)
       .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
       .text(info.Nomi[1], nomi_options)
@@ -388,11 +397,18 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       .text(info.Nomi[3], nomi_options)
       .text(info.Nomi[4], nomi_options)
 
+      // specifica
       .font(helvetica45, 20)
       .text(info.Nomi[7], nomi_options)
 
+      // annotazioni sulla riga in basso
+      .font(helvetica45, 8)
+      .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
+      .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
+
+
   // chiude il pdf
-      .end();
+  doc.end();
 
   // aggiorna link "scarica pdf" e l'anteprima
   stream.on('finish', function() {
