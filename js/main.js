@@ -10,7 +10,6 @@ pdf.worker.js   comes together with pdf.js
 
 PDFJS.workerSrc = 'js/pdf.worker.js';
 
-
 // ---------------------------------
 // ----------- SETTINGS ------------
 // ---------------------------------
@@ -45,12 +44,12 @@ var populate_select_input = function (selector, lista) {
   first_option = document.createElement("option");
   first_option.setAttribute("selected", "selected");
   first_option.setAttribute("disabled", "disabled");
-  first_option.innerHTML = "...";
+  first_option.label = "...";
   selector.appendChild(first_option);
   for (i = 0; i < lista.length; i++) {
     var option = document.createElement("option");
-    option.value = lista[i].option_ref;
-    option.innerHTML = lista[i].option_name;
+    option.label = lista[i].option_label;
+    option.value = lista[i].option_value;
     selector.appendChild(option)
   };
 }
@@ -108,8 +107,8 @@ var create_select_and_text = function (etichetta, id, lista) {
   select.setAttribute("id", id);
   for (i = 0; i < lista.length; i++) {
     var option = document.createElement("option");
-    option.value = lista[i].option_ref;
-    option.innerHTML = lista[i].option_name;
+    option.label = lista[i].option_label;
+    option.value = lista[i].option_value;
     select.appendChild(option)
   };
 
@@ -146,7 +145,7 @@ var show_input_fields = function(container, struttura) {
   }
 
   // crea gli input
-  var enabled = (struttura.option_ref === "Libera") ? true : false;
+  var enabled = (struttura.option_value === "Libera") ? true : false;
   container.appendChild( create_text_input(enabled, "Struttura Bold 1:", "struttura_b1", struttura.struttura_bold_1) );
   container.appendChild( create_text_input(enabled, "Struttura Bold 2:", "struttura_b2", struttura.struttura_bold_2) );
   container.appendChild( create_text_input(enabled, "Struttura Bold 3:", "struttura_b3", struttura.struttura_bold_3) );
@@ -542,82 +541,6 @@ function async_trigger() {
 
 
 
-
-var lista_strutture = [
-  {
-    option_ref: "DipDISEI",
-    option_name: "DISEI",
-    struttura_bold_1: "DISEI",
-    struttura_light_1: "Dipartimento di",
-    struttura_light_2: "Scienze per l'Economia e per l'Impresa"
-  },
-  {
-    option_ref: "DipDSG",
-    option_name: "DSG",
-    struttura_bold_1: "DSG",
-    struttura_light_1: "Dipartimento di",
-    struttura_light_2: "Scienze Giuridiche"
-  },
-  {
-    option_ref: "DipDSPS",
-    option_name: "DSPS",
-    struttura_bold_1: "DSPS",
-    struttura_light_1: "Dipartimento di",
-    struttura_light_2: "Scienze Politiche e Sociali"
-  },
-  {
-    option_ref: "ScGiuripsrudenza",
-    option_name: "Scuola di Giuripsrudenza",
-    struttura_bold_1: "Scuola di",
-    struttura_bold_2: "Giurisprudenza",
-  },
-  {
-    option_ref: "ScScienzePolitiche",
-    option_name: "Scuola di Scienze Politiche",
-    struttura_bold_1: "Scuola di",
-    struttura_bold_2: "Scienze Politiche",
-    struttura_bold_3: "Cesare Alfieri",
-  },
-  {
-    option_ref: "ScEconomia",
-    option_name: "Scuola di Economia e Management",
-    struttura_bold_1: "Scuola di",
-    struttura_bold_2: "Economia e",
-    struttura_bold_3: "Management",
-  },
-  {
-    option_ref: "Libera",
-    option_name: "-- Compilazione libera --",
-    struttura_bold_1: "Struttura Bold 1",
-    struttura_bold_2: "Struttura Bold 2",
-    struttura_bold_3: "Struttura Bold 3",
-    struttura_light_1: "Struttuera Light 1",
-    struttura_light_2: "Struttura Light 2"
-  }
-];
-
-var lista_funzioni = [
-  {
-    option_ref: "",
-    option_name: "...",
-  },
-  {
-    option_ref: "amministrazione",
-    option_name: "amministrazione",
-  },
-  {
-    option_ref: "responsabile amministrativo",
-    option_name: "responsabile amministrativo",
-  },
-  {
-    option_ref: "studi docenti",
-    option_name: "studi docenti",
-  },
-  {
-    option_ref: "altro",
-    option_name: "-- inserimento manuale --",
-  }
-];
 
 
 
