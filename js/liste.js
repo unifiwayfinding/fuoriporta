@@ -58,19 +58,63 @@ var lista_funzioni = [
     "option_label" : "...",
   },
   {
-    "option_value" : "amministrazione",
-    "option_label" : "amministrazione",
+    "option_label" : "Assegnisti",
+    "option_value" : "Assegnisti"
   },
   {
-    "option_value" : "responsabile amministrativo",
-    "option_label" : "responsabile amministrativo",
+    "option_label" : "Archivio",
+    "option_value" : "Archivio"
   },
   {
-    "option_value" : "studi docenti",
-    "option_label" : "studi docenti",
+    "option_label" : "Borsisti",
+    "option_value" : "Borsisti"
+  },
+  {
+    "option_label" : "Direttore",
+    "option_value" : "Direttore"
+  },
+  {
+    "option_label" : "Dottorandi",
+    "option_value" : "Dottorandi"
+  },
+  {
+    "option_label" : "Presidenza",
+    "option_value" : "Presidenza"
+  },
+  {
+    "option_label" : "Responsabile amministrativo",
+    "option_value" : "Responsabile amministrativo"
+  },
+  {
+    "option_label" : "Ricerca",
+    "option_value" : "Ricerca"
+  },
+  {
+    "option_label" : "Sala riunioni",
+    "option_value" : "Sala riunioni"
+  },
+  {
+    "option_label" : "Segreteria amministrativa",
+    "option_value" : "Segreteria amministrativa"
+  },
+  {
+    "option_label" : "Segreteria didattica",
+    "option_value" : "Segreteria didattica"
+  },
+  {
+    "option_label" : "Servizi relazioni internazionali",
+    "option_value" : "Servizi relazioni internazionali"
+  },
+  {
+    "option_label" : "Studi docenti",
+    "option_value" : "Studi docenti"
+  },
+  {
+    "option_label" : "Tutor",
+    "option_value" : "Tutor"
   },
   {
     "option_value" : "altro",
-    "option_label" : "-- inserimento manuale --",
+    "option_label" : "Altro ...",
   }
 ];
