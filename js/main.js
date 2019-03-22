@@ -167,7 +167,7 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
-  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Barbara Napolitano") );
+  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Nome Cognome") );
   container.appendChild( create_text_input(true, "Nome 2:", "nome_2", "") );
   container.appendChild( create_text_input(true, "Nome 3:", "nome_3", "") );
   container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
