@@ -2,7 +2,7 @@
 // ----------- DEPENDENCIES ------------
 // -------------------------------------
 /*
-pdf-worker.js   required for pdf creation
+pdfkit.js       required for pdf creation
 blob-stream.js  required for writing to blob stream
 pdf.js          required for preview visualization
 pdf.worker.js   comes together with pdf.js
