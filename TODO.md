@@ -15,7 +15,10 @@
 - [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
 - [x] Funzioni con menu a discesa, con possibilità di inserimento manuale
 - [ ] Inserire opzione per nome oppure specifica sui campi nome
-- [ ] Aggiungere qr code
+- [ ] Aggiungere qr code per giombetti
+      https://github.com/soldair/node-qrcode
+      https://github.com/papnkukn/qrcode-svg (sembra il più semplice)
+      https://github.com/davidshimjs/qrcodejs
 
 
 **LAYOUT FUORIPORTA**
