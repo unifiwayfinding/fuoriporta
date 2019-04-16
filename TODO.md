@@ -24,9 +24,9 @@
 **LAYOUT FUORIPORTA**
 - [x] Aggiungere annotazioni nella riga in basso (sicuramente "creato con..." la data).
 - [ ] Aggiungere "loading" o "qualcosa non ha funzionato" che rimanga nel caso l'antemprima non si carichi per qualsiasi motivo.
-- [ ] Cambiare corpi
-- [ ] Regolare interlinea tra strutture e funzioni
-- [ ] Regolare accapo e eventuale interlinea su campo sinistro (strutture + funzioni)
+- [x] Cambiare corpi
+- [x] Regolare interlinea tra strutture e funzioni
+- [x] Regolare accapo e eventuale interlinea su campo sinistro (strutture + funzioni)
 
 
 **LAYOUT SITO**

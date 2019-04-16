@@ -167,7 +167,7 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
-  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Barbara Napolitano") );
+  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Nome Cognome") );
   container.appendChild( create_text_input(true, "Nome 2:", "nome_2", "") );
   container.appendChild( create_text_input(true, "Nome 3:", "nome_3", "") );
   container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
@@ -252,12 +252,7 @@ var  fetch_info = function() {
  * @param {object} title - Le informazioni per il fuoriporta.
  */
 
-var crea_pdf = function(info) {
-
-  // Impostazioni layout
-  let strutture_textbox_width = mmToUnits(180);
-  let funzioni_textbox_width = mmToUnits(130);
-  let right_textbox_width = mmToUnits(90);
+const crea_pdf = function(info) {
 
   // Impostazioni colori
   let pdf_background = "#fff";
@@ -268,30 +263,59 @@ var crea_pdf = function(info) {
 }
 
 
-  // FUNZIONI
-  var funzioni_options = {
+  // Impostazioni layout
+  let strutture_textbox_width = mmToUnits(80);
+  let funzioni_textbox_width = mmToUnits(80);
+  let right_textbox_width = mmToUnits(95);
+
+  // Impostazioni font
+  // strutture bold
+  let strutture_bold_font = helvetica95;
+  let strutture_bold_corpo = 25;
+  let strutture_bold_options = {
+    align: 'left',
+    width: strutture_textbox_width,
+    lineGap: -9,
+    paragraphGap: 0
+  };
+  // strutture light
+  let strutture_light_font = helvetica45;
+  let strutture_light_corpo = 16;
+  let strutture_light_options = {
+    align: 'left',
+    width: strutture_textbox_width,
+    lineGap: -5.2,
+    paragraphGap: 0
+  };
+
+  // funzioni
+  let funzioni_font = helvetica65;
+  let funzioni_corpo = 20;
+  let funzioni_options = {
     width: funzioni_textbox_width,
-    lineGap: -4,
+    lineGap: -9,
+    paragraphGap: 5
   };
 
-  // NOMI ORIGINALE: carattere 20/16pt spazio sotto 4pt
-  var corpo_nomi = 20;
-  var nomi_options = {
+  // nomi
+  let nomi_font = helvetica45;
+  let nomi_corpo = 30;
+  let nomi_options = {
     align: 'right',
     width: right_textbox_width,
-    lineGap: -8,
-    paragraphGap: 4
-  };
-
-  /* NOMI ORIGINALE: carattere 26/25pt spazio sotto 4pt
-  var corpo_nomi = 26;
-  var nomi_options = {
-    align: 'right',
-    width: right_textbox_width,
-    lineGap: -6,
+    lineGap: -16,
     paragraphGap: 6
   };
-  */
+
+  // specifica
+  let specifica_font = helvetica45;
+  let specifica_corpo = 20;
+  let specifica_options = {
+    align: 'right',
+    width: right_textbox_width,
+    lineGap: -4,
+    paragraphGap: 0
+  };
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -350,7 +374,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
   // Calcola allineamento parte destra
-  doc.font(helvetica75, corpo_nomi); // sets ght fonts for the right calculations
+  doc.font(nomi_font, nomi_corpo); // sets fonts for the right calculations
   let lines_total_height = 0;
   info.Nomi.forEach(function(e) {
     let w = doc.widthOfString(e, nomi_options);
@@ -363,41 +387,28 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
   // Scrive le scritte sul pdf
 
   doc .fill(pdf_foreground)
-      // strutture
-      .font(helvetica95, 30)
-      .text(info.St_b1, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-3.4)
-      })
-      .text(info.St_b2, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-3.4)
-      })
-      .text(info.St_b3, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-3)
-      })
-      .font(helvetica45, 18)
-      .text(info.St_l1, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-1)
-      })
-      .text(info.St_l2, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(0)
-      })
+      // strutture bold
+      .font(strutture_bold_font, strutture_bold_corpo)
+      .text(info.St_b1, strutture_bold_options)
+      .text(info.St_b2, strutture_bold_options)
+      .text(info.St_b3, strutture_bold_options)
+      // strutture light
+
+      .font(strutture_light_font, strutture_light_corpo)
+      .text(info.St_l1, strutture_light_options)
+      .text(info.St_l2, strutture_light_options)
 
       // questa linea serve come interlinea (brutto ma funziona)
-      .font(helvetica65, 2).text(" ")
-      .font(helvetica65, 20)
+      .font(helvetica65, 8.5).text(" ")
 
       // funzioni
+      .font(funzioni_font, funzioni_corpo)
       .text(info.Funzioni[0], funzioni_options)
       .text(info.Funzioni[1], funzioni_options)
       .text(info.Funzioni[2], funzioni_options)
 
       // nomi
-      .font(helvetica75, corpo_nomi)
+      .font(nomi_font, nomi_corpo)
       .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
       .text(info.Nomi[1], nomi_options)
       .text(info.Nomi[2], nomi_options)
@@ -405,8 +416,8 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       .text(info.Nomi[4], nomi_options)
 
       // specifica
-      .font(helvetica45, 20)
-      .text(info.Nomi[7], nomi_options)
+      .font(specifica_font, specifica_corpo)
+      .text(info.Nomi[7], specifica_options)
 
       // annotazioni sulla riga in basso
       .font(helvetica45, 8)
