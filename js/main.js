@@ -210,18 +210,15 @@ var  fetch_info = function() {
   infos.St_l2 = fetch_one_info("#struttura_l2");
 
   infos.Funzioni = [];
-  infos.Funzioni[0] = fetch_one_info("#funzione_1").toLowerCase();
-  infos.Funzioni[1] = fetch_one_info("#funzione_2").toLowerCase();
-  infos.Funzioni[2] = fetch_one_info("#funzione_3").toLowerCase();
+  infos.Funzioni.push( fetch_one_info("#funzione_1").toLowerCase() );
+  infos.Funzioni.push( fetch_one_info("#funzione_2").toLowerCase() );
+  infos.Funzioni.push( fetch_one_info("#funzione_3").toLowerCase() );
 
   infos.Nomi = [];
-  infos.Nomi[0] = fetch_one_info("#nome_1");
-  infos.Nomi[1] = fetch_one_info("#nome_2");
-  infos.Nomi[2] = fetch_one_info("#nome_3");
-  infos.Nomi[3] = fetch_one_info("#nome_4");
-  infos.Nomi[4] = fetch_one_info("#nome_5");
-
-  infos.Nomi[7] = fetch_one_info("#specifica");
+  infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
+  infos.Nomi.push( {"content": "DISEI", "size": 20, "spaziosotto": 20} );
+  infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
+  infos.Nomi.push( {"content": "Antonella ", "size": 40, "spaziosotto": 10} );
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
@@ -249,8 +246,19 @@ var  fetch_info = function() {
 
 /**
  * Crea il PDF a partire dalle informazioni
- * @param {object} title - Le informazioni per il fuoriporta.
+ * @param {object} info - Le informazioni per il fuoriporta.
+ * @param {string} info.St_b1 - Info struttura
+ * @param {string} info.St_b2 - Info struttura
+ * @param {string} info.St_b3 - Info struttura
+ * @param {string} info.St_l1 - Info struttura
+ * @param {string} info.St_l2 - Info struttura
+ * @param {array} info.Funzioni - Array di stringhe per le funzioni
+ * @param {array} info.Nomi - Array di oggetti
+ * @param {string} info.Nomi[i].content - Nome o specifica
+ * @param {number} info.Nomi[i].size - Corpo font in pt
+ * @param {number} info.Nomi[i].spaziosotto - Spazio sotto paragrafo in pt
  */
+
 
 const crea_pdf = function(info) {
 
@@ -278,6 +286,7 @@ const crea_pdf = function(info) {
     lineGap: -9,
     paragraphGap: 0
   };
+
   // strutture light
   let strutture_light_font = helvetica45;
   let strutture_light_corpo = 16;
@@ -298,24 +307,8 @@ const crea_pdf = function(info) {
   };
 
   // nomi
-  let nomi_font = helvetica45;
-  let nomi_corpo = 30;
-  let nomi_options = {
-    align: 'right',
-    width: right_textbox_width,
-    lineGap: -16,
-    paragraphGap: 6
-  };
+  let nomilinegap = -12;
 
-  // specifica
-  let specifica_font = helvetica45;
-  let specifica_corpo = 20;
-  let specifica_options = {
-    align: 'right',
-    width: right_textbox_width,
-    lineGap: -4,
-    paragraphGap: 0
-  };
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -340,6 +333,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
   // Mostra le guide se necessario
+  document.querySelector("#options-margins").checked = true;              // uncomment this to force margin visualization
   if (document.querySelector("#options-margins").checked === true) {
 
     doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
@@ -373,22 +367,15 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
 
-  // Calcola allineamento parte destra
-  doc.font(nomi_font, nomi_corpo); // sets fonts for the right calculations
-  let lines_total_height = 0;
-  info.Nomi.forEach(function(e) {
-    let w = doc.widthOfString(e, nomi_options);
-    let h = doc.heightOfString(e, nomi_options);
-    lines_total_height += doc.heightOfString(e, nomi_options)
-  });
-  offset = 241 - lines_total_height;
 
 
   // Scrive le scritte sul pdf
 
-  doc .fill(pdf_foreground)
+      // imposta colore
+  doc .fill(pdf_foreground);
+
       // strutture bold
-      .font(strutture_bold_font, strutture_bold_corpo)
+  doc .font(strutture_bold_font, strutture_bold_corpo)
       .text(info.St_b1, strutture_bold_options)
       .text(info.St_b2, strutture_bold_options)
       .text(info.St_b3, strutture_bold_options)
@@ -403,24 +390,31 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
       // funzioni
       .font(funzioni_font, funzioni_corpo)
-      .text(info.Funzioni[0], funzioni_options)
-      .text(info.Funzioni[1], funzioni_options)
-      .text(info.Funzioni[2], funzioni_options)
+      info.Funzioni.forEach(function(e) {
+        doc.text(e, funzioni_options);
+      })
 
-      // nomi
-      .font(nomi_font, nomi_corpo)
-      .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
-      .text(info.Nomi[1], nomi_options)
-      .text(info.Nomi[2], nomi_options)
-      .text(info.Nomi[3], nomi_options)
-      .text(info.Nomi[4], nomi_options)
 
-      // specifica
-      .font(specifica_font, specifica_corpo)
-      .text(info.Nomi[7], specifica_options)
+      // Calcola allineamento parte destra
+      let lines_total_height = 0;
+      info.Nomi.forEach(function(e) {
+        doc.font(helvetica45, e.size); // sets fonts for the right calculations
+        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+        // console.log (w,h);
+        lines_total_height += h;
+      });
+      lines_total_height -= info.Nomi[info.Nomi.length - 1].spaziosotto;
+
+      // nomi e specifiche
+      doc .font(helvetica45, 1)
+          .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 241 - lines_total_height)
+      info.Nomi.forEach(function(e) {
+        doc .font(helvetica45, (e.size))
+            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+      })
 
       // annotazioni sulla riga in basso
-      .font(helvetica45, 8)
+  doc .font(helvetica45, 8)
       .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
       .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
 
