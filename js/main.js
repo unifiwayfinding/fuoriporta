@@ -2,7 +2,7 @@
 // ----------- DEPENDENCIES ------------
 // -------------------------------------
 /*
-pdf-worker.js   required for pdf creation
+pdfkit.js       required for pdf creation
 blob-stream.js  required for writing to blob stream
 pdf.js          required for preview visualization
 pdf.worker.js   comes together with pdf.js
@@ -146,6 +146,37 @@ var create_select_and_text = function (etichetta, id, lista) {
 }
 
 
+var create_text_plus = function(etichetta, etichetta2, id, value) {
+  let section = document.createElement("div");
+  section.setAttribute("id", id);
+
+  var label = document.createElement("label");
+  label.textContent = etichetta;
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", id);
+  input.onkeyup = update;
+  if (value) {
+    input.setAttribute("value", value);
+  };
+  input.setAttribute("autocomplete", "nope");
+  // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
+  input.setAttribute("name", Math.random().toString(36).substring(2, 15));
+  label.appendChild(input);
+  section.appendChild(label);
+
+  var label = document.createElement("label");
+  label.textContent = etichetta2;
+  label.setAttribute("class", "nomi-checkbox-label");
+  var input = document.createElement("input");
+  input.setAttribute("type", "checkbox");
+  label.appendChild(input);
+  section.appendChild(label);
+
+  return section;
+}
+
+
 // popola i campi di input sulla base della scelta nel selector principale
 var show_input_fields = function(container, struttura) {
   while (container.firstChild) {
@@ -167,12 +198,10 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
-  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Nome Cognome") );
-  container.appendChild( create_text_input(true, "Nome 2:", "nome_2", "") );
-  container.appendChild( create_text_input(true, "Nome 3:", "nome_3", "") );
-  container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
-  container.appendChild( create_text_input(true, "Nome 5:", "nome_5", "") );
-  container.appendChild( create_text_input(true, "Specifica:", "specifica", "") );
+  container.appendChild( create_text_plus("Nome 1:", "Specifica", "nome_1", "Nome Cognome") );
+  container.appendChild( create_text_plus("Nome 2:", "Specifica", "nome_2", "") );
+  container.appendChild( create_text_plus("Nome 3:", "Specifica", "nome_3", "") );
+  container.appendChild( create_text_plus("Nome 4:", "Specifica", "nome_4", "") );
 
 
   // aggiunge nota in fondo
@@ -194,8 +223,26 @@ var show_input_fields = function(container, struttura) {
 
 
 var fetch_one_info = function (selector) {
-  value = document.querySelector(selector) ? document.querySelector(selector).value : "";
+  let value = document.querySelector(selector) ? document.querySelector(selector).value : "";
   return value;
+}
+
+var fetch_nome = function (selector) {
+  let obj = {};
+  obj.content = "";
+  obj.size = 0;
+  obj.spaziosotto = 0;
+  let container = document.querySelector(selector);
+  if (container) {
+    obj.content = container.getElementsByTagName("label")[0].getElementsByTagName("input")[0].value;
+    obj.size = 30;
+    obj.spaziosotto = 10;
+    if (container.getElementsByTagName("label")[1].getElementsByTagName("input")[0].checked) {
+      obj.size = 20;
+      obj.spaziosotto = 20;
+    }
+  }
+  return obj;
 }
 
 
@@ -210,18 +257,17 @@ var  fetch_info = function() {
   infos.St_l2 = fetch_one_info("#struttura_l2");
 
   infos.Funzioni = [];
-  infos.Funzioni[0] = fetch_one_info("#funzione_1").toLowerCase();
-  infos.Funzioni[1] = fetch_one_info("#funzione_2").toLowerCase();
-  infos.Funzioni[2] = fetch_one_info("#funzione_3").toLowerCase();
+  infos.Funzioni.push( fetch_one_info("#funzione_1").toLowerCase() );
+  infos.Funzioni.push( fetch_one_info("#funzione_2").toLowerCase() );
+  infos.Funzioni.push( fetch_one_info("#funzione_3").toLowerCase() );
 
   infos.Nomi = [];
-  infos.Nomi[0] = fetch_one_info("#nome_1");
-  infos.Nomi[1] = fetch_one_info("#nome_2");
-  infos.Nomi[2] = fetch_one_info("#nome_3");
-  infos.Nomi[3] = fetch_one_info("#nome_4");
-  infos.Nomi[4] = fetch_one_info("#nome_5");
+  // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
 
-  infos.Nomi[7] = fetch_one_info("#specifica");
+  infos.Nomi.push(fetch_nome("#nome_1"));
+  infos.Nomi.push(fetch_nome("#nome_2"));
+  infos.Nomi.push(fetch_nome("#nome_3"));
+  infos.Nomi.push(fetch_nome("#nome_4"));
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
@@ -249,15 +295,21 @@ var  fetch_info = function() {
 
 /**
  * Crea il PDF a partire dalle informazioni
- * @param {object} title - Le informazioni per il fuoriporta.
+ * @param {object} info - Le informazioni per il fuoriporta.
+ * @param {string} info.St_b1 - Info struttura
+ * @param {string} info.St_b2 - Info struttura
+ * @param {string} info.St_b3 - Info struttura
+ * @param {string} info.St_l1 - Info struttura
+ * @param {string} info.St_l2 - Info struttura
+ * @param {array} info.Funzioni - Array di stringhe per le funzioni
+ * @param {array} info.Nomi - Array di oggetti
+ * @param {string} info.Nomi[i].content - Nome o specifica
+ * @param {number} info.Nomi[i].size - Corpo font in pt
+ * @param {number} info.Nomi[i].spaziosotto - Spazio sotto paragrafo in pt
  */
 
-var crea_pdf = function(info) {
 
-  // Impostazioni layout
-  let strutture_textbox_width = mmToUnits(180);
-  let funzioni_textbox_width = mmToUnits(130);
-  let right_textbox_width = mmToUnits(90);
+const crea_pdf = function(info) {
 
   // Impostazioni colori
   let pdf_background = "#fff";
@@ -268,30 +320,44 @@ var crea_pdf = function(info) {
 }
 
 
-  // FUNZIONI
-  var funzioni_options = {
+  // Impostazioni layout
+  let strutture_textbox_width = mmToUnits(80);
+  let funzioni_textbox_width = mmToUnits(80);
+  let right_textbox_width = mmToUnits(95);
+
+  // Impostazioni font
+  // strutture bold
+  let strutture_bold_font = helvetica95;
+  let strutture_bold_corpo = 25;
+  let strutture_bold_options = {
+    align: 'left',
+    width: strutture_textbox_width,
+    lineGap: -9,
+    paragraphGap: 0
+  };
+
+  // strutture light
+  let strutture_light_font = helvetica45;
+  let strutture_light_corpo = 16;
+  let strutture_light_options = {
+    align: 'left',
+    width: strutture_textbox_width,
+    lineGap: -5.2,
+    paragraphGap: 0
+  };
+
+  // funzioni
+  let funzioni_font = helvetica65;
+  let funzioni_corpo = 20;
+  let funzioni_options = {
     width: funzioni_textbox_width,
-    lineGap: -4,
+    lineGap: -9,
+    paragraphGap: 5
   };
 
-  // NOMI ORIGINALE: carattere 20/16pt spazio sotto 4pt
-  var corpo_nomi = 20;
-  var nomi_options = {
-    align: 'right',
-    width: right_textbox_width,
-    lineGap: -8,
-    paragraphGap: 4
-  };
+  // nomi
+  let nomilinegap = -12;
 
-  /* NOMI ORIGINALE: carattere 26/25pt spazio sotto 4pt
-  var corpo_nomi = 26;
-  var nomi_options = {
-    align: 'right',
-    width: right_textbox_width,
-    lineGap: -6,
-    paragraphGap: 6
-  };
-  */
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -316,6 +382,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
   // Mostra le guide se necessario
+  // document.querySelector("#options-margins").checked = true;              // uncomment this to force margin visualization
   if (document.querySelector("#options-margins").checked === true) {
 
     doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
@@ -349,67 +416,54 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
 
-  // Calcola allineamento parte destra
-  doc.font(helvetica75, corpo_nomi); // sets ght fonts for the right calculations
-  let lines_total_height = 0;
-  info.Nomi.forEach(function(e) {
-    let w = doc.widthOfString(e, nomi_options);
-    let h = doc.heightOfString(e, nomi_options);
-    lines_total_height += doc.heightOfString(e, nomi_options)
-  });
-  offset = 241 - lines_total_height;
 
 
   // Scrive le scritte sul pdf
 
-  doc .fill(pdf_foreground)
-      // strutture
-      .font(helvetica95, 30)
-      .text(info.St_b1, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-3.4)
-      })
-      .text(info.St_b2, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-3.4)
-      })
-      .text(info.St_b3, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-3)
-      })
-      .font(helvetica45, 18)
-      .text(info.St_l1, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(-1)
-      })
-      .text(info.St_l2, {
-        width: strutture_textbox_width,
-        paragraphGap: mmToUnits(0)
-      })
+      // imposta colore
+  doc .fill(pdf_foreground);
+
+      // strutture bold
+  doc .font(strutture_bold_font, strutture_bold_corpo)
+      .text(info.St_b1, strutture_bold_options)
+      .text(info.St_b2, strutture_bold_options)
+      .text(info.St_b3, strutture_bold_options)
+      // strutture light
+
+      .font(strutture_light_font, strutture_light_corpo)
+      .text(info.St_l1, strutture_light_options)
+      .text(info.St_l2, strutture_light_options)
 
       // questa linea serve come interlinea (brutto ma funziona)
-      .font(helvetica65, 2).text(" ")
-      .font(helvetica65, 20)
+      .font(helvetica65, 8.5).text(" ")
 
       // funzioni
-      .text(info.Funzioni[0], funzioni_options)
-      .text(info.Funzioni[1], funzioni_options)
-      .text(info.Funzioni[2], funzioni_options)
+      .font(funzioni_font, funzioni_corpo)
+      info.Funzioni.forEach(function(e) {
+        doc.text(e, funzioni_options);
+      })
 
-      // nomi
-      .font(helvetica75, corpo_nomi)
-      .text(info.Nomi[0], mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + offset, nomi_options)
-      .text(info.Nomi[1], nomi_options)
-      .text(info.Nomi[2], nomi_options)
-      .text(info.Nomi[3], nomi_options)
-      .text(info.Nomi[4], nomi_options)
 
-      // specifica
-      .font(helvetica45, 20)
-      .text(info.Nomi[7], nomi_options)
+      // Calcola allineamento parte destra
+      let lines_total_height = 0;
+      info.Nomi.forEach(function(e) {
+        doc.font(helvetica45, e.size); // sets fonts for the right calculations
+        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+        // console.log (w,h);
+        lines_total_height += h;
+      });
+      lines_total_height -= info.Nomi[info.Nomi.length - 1].spaziosotto;
+
+      // nomi e specifiche
+      doc .font(helvetica45, 1)
+          .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 241 - lines_total_height)
+      info.Nomi.forEach(function(e) {
+        doc .font(helvetica45, (e.size))
+            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+      })
 
       // annotazioni sulla riga in basso
-      .font(helvetica45, 8)
+  doc .font(helvetica45, 8)
       .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
       .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
 

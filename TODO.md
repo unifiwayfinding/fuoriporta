@@ -13,14 +13,20 @@
 - [x] Separare html da js
 - [x] Nei campi liberi di "funzione" dovrebbe essere imposto lowercase
 - [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
-- [ ] Funzioni con menu a discesa, con possibilità di inserimento manuale
+- [x] Funzioni con menu a discesa, con possibilità di inserimento manuale
+- [ ] Inserire opzione per nome oppure specifica sui campi nome
+- [ ] Aggiungere qr code per giombetti
+      https://github.com/soldair/node-qrcode
+      https://github.com/papnkukn/qrcode-svg (sembra il più semplice)
+      https://github.com/davidshimjs/qrcodejs
 
 
 **LAYOUT FUORIPORTA**
-- [ ] Aggiungere annotazioni nella riga in basso (sicuramente "creato con..." la data).
+- [x] Aggiungere annotazioni nella riga in basso (sicuramente "creato con..." la data).
 - [ ] Aggiungere "loading" o "qualcosa non ha funzionato" che rimanga nel caso l'antemprima non si carichi per qualsiasi motivo.
-- [ ] Regolare interlinea tra strutture e funzioni con spazio sotto la seconda linea di strutture light che diventa spazio sotto la prima linea se la seconda non c'è (if... {}) o spazio sotto l'ultima linea di
-- [ ] Regolare accapo e eventuale interlinea su campo sinistro (strutture + funzioni)
+- [x] Cambiare corpi
+- [x] Regolare interlinea tra strutture e funzioni
+- [x] Regolare accapo e eventuale interlinea su campo sinistro (strutture + funzioni)
 
 
 **LAYOUT SITO**

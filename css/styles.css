@@ -69,6 +69,7 @@ select, input[type=text] {
   height: 25px;
 }
 
+
 input:disabled {
     color: #999;
     cursor: default;
@@ -100,10 +101,6 @@ button, .options-input, #scarica_link {
 	display: block;
 }
 
-.options-input label {
-	display: inline;
-	margin: 0;
-}
 
 label {
 	font-weight: 400;
@@ -111,6 +108,18 @@ label {
 	margin-right: 328px;
 	margin-top: 11px;
 }
+
+label.radio-label {
+	display: inline;
+	margin: 0;
+}
+
+label.nomi-checkbox-label {
+	margin-right: 305px;
+	margin-top: -5px;
+}
+
+
 
 button {
 	background: #fff;

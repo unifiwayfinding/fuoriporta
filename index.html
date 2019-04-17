@@ -1,69 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
+
+<head>
+	<meta charset="utf-8">
 
 
-    <title>Generatore Fuoriporta</title>
-  
-    <script src="js/pdfkit.js"></script>
-		<script src="js/blob-stream.js"></script>
-    <script src="js/pdf.js"></script>
-		<script src="js/liste.js"></script>
-		<script src="js/main.js"></script>
+	<title>Generatore Fuoriporta</title>
 
-		<link rel="stylesheet" href="css/skeleton.min.css" >
-    <link rel="stylesheet" href="css/fonts.css" >
-    <link rel="stylesheet" href="css/styles.css" >
+	<script src="js/pdfkit.js"></script>
+	<script src="js/blob-stream.js"></script>
+	<script src="js/pdf.js"></script>
+	<script src="js/liste.js"></script>
+	<script src="js/main.js"></script>
 
-
-	</head>
-	<body>
-		<section id="control">
-			<header>
-				<!-- <img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto"> -->
-        <h5>Generatore Fuoriporta (beta)</h5>
-        <h6>versione 0.3</h6>
-			</header>
+	<link rel="stylesheet" href="css/skeleton.min.css">
+	<link rel="stylesheet" href="css/fonts.css">
+	<link rel="stylesheet" href="css/styles.css">
 
 
-			<main class="main_input-container">
+</head>
 
-        <div id="select_container">
-          <label>Scegli una struttura:
-  					<select onchange="show_inputs(this.selectedIndex)" id="struttura_selector">
-  					</select>
-  				</label>
-        </div>
+<body>
+	<section id="control">
+		<header>
+			<!-- <img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto"> -->
+			<h5>Generatore Fuoriporta (beta)</h5>
+			<h6>versione 0.4</h6>
+		</header>
 
-				<form id="text_input_container" autocomplete="off">
-				</form>
 
-				<div id="control-panel">
-					<div class="options-input">
-            <input type="radio" name="options-color" id="options-color-black" value="black" checked>
-						<label class=radio-label>Sfondo nero</label>
-            <input type="radio" name="options-color" d="options-color-white" value="white">
-            <label class=radio-label>Sfondo bianco</label>
-            <input type="checkbox" id="options-margins" >
-						<label class=checkbox-label>Mostra le guide</label>
-					</div>
-					<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Aggiorna l'anteprima</button>
-					<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
+		<main class="main_input-container">
+
+			<div id="select_container">
+				<label>Scegli una struttura:
+					<select onchange="show_inputs(this.selectedIndex)" id="struttura_selector">
+					</select>
+				</label>
+			</div>
+
+			<form id="text_input_container" autocomplete="off">
+			</form>
+
+
+			<div id="control-panel">
+				<div class="options-input">
+					<label class=radio-label>Sfondo nero
+						<input type="radio" name="options-color" id="options-color-black" value="black" checked>
+					</label>
+					<label class=radio-label>Sfondo bianco
+						<input type="radio" name="options-color" d="options-color-white" value="white">
+					</label>
+					<label class=radio-label>Mostra le guide
+						<input type="checkbox" id="options-margins">
+					</label>
 				</div>
+				<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Aggiorna l'anteprima</button>
+				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
+			</div>
 
-			</main>
-		</section>
+		</main>
+	</section>
 
-		<section id="preview">
-			<header>
-				<h5>Anteprima PDF</h5>
-			</header>
-			<main>
-				<canvas id="the-canvas"></canvas>
-			</main>
-		</section>
+	<section id="preview">
+		<header>
+			<h5>Anteprima PDF</h5>
+		</header>
+		<main>
+			<canvas id="the-canvas"></canvas>
+		</main>
+	</section>
 
 
-	</body>
+</body>
+
 </html>
