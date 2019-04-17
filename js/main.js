@@ -204,7 +204,6 @@ var show_input_fields = function(container, struttura) {
   container.appendChild( create_text_plus("Nome 4:", "Specifica", "nome_4", "") );
 
 
-
   // aggiunge nota in fondo
   let note = document.createElement("h6");
   note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
