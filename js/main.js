@@ -146,6 +146,37 @@ var create_select_and_text = function (etichetta, id, lista) {
 }
 
 
+var create_text_plus = function(etichetta, etichetta2, id, value) {
+  let section = document.createElement("div");
+  section.setAttribute("id", id);
+
+  var label = document.createElement("label");
+  label.textContent = etichetta;
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", id);
+  input.onkeyup = update;
+  if (value) {
+    input.setAttribute("value", value);
+  };
+  input.setAttribute("autocomplete", "nope");
+  // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
+  input.setAttribute("name", Math.random().toString(36).substring(2, 15));
+  label.appendChild(input);
+  section.appendChild(label);
+
+  var label = document.createElement("label");
+  label.textContent = etichetta2;
+  label.setAttribute("class", "nomi-checkbox-label");
+  var input = document.createElement("input");
+  input.setAttribute("type", "checkbox");
+  label.appendChild(input);
+  section.appendChild(label);
+
+  return section;
+}
+
+
 // popola i campi di input sulla base della scelta nel selector principale
 var show_input_fields = function(container, struttura) {
   while (container.firstChild) {
@@ -167,12 +198,11 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
-  container.appendChild( create_text_input(true, "Nome 1:", "nome_1", "Nome Cognome") );
-  container.appendChild( create_text_input(true, "Nome 2:", "nome_2", "") );
-  container.appendChild( create_text_input(true, "Nome 3:", "nome_3", "") );
-  container.appendChild( create_text_input(true, "Nome 4:", "nome_4", "") );
-  container.appendChild( create_text_input(true, "Nome 5:", "nome_5", "") );
-  container.appendChild( create_text_input(true, "Specifica:", "specifica", "") );
+  container.appendChild( create_text_plus("Nome 1:", "Specifica", "nome_1", "Nome Cognome") );
+  container.appendChild( create_text_plus("Nome 2:", "Specifica", "nome_2", "") );
+  container.appendChild( create_text_plus("Nome 3:", "Specifica", "nome_3", "") );
+  container.appendChild( create_text_plus("Nome 4:", "Specifica", "nome_4", "") );
+
 
 
   // aggiunge nota in fondo
@@ -194,8 +224,26 @@ var show_input_fields = function(container, struttura) {
 
 
 var fetch_one_info = function (selector) {
-  value = document.querySelector(selector) ? document.querySelector(selector).value : "";
+  let value = document.querySelector(selector) ? document.querySelector(selector).value : "";
   return value;
+}
+
+var fetch_nome = function (selector) {
+  let obj = {};
+  obj.content = "";
+  obj.size = 0;
+  obj.spaziosotto = 0;
+  let container = document.querySelector(selector);
+  if (container) {
+    obj.content = container.getElementsByTagName("label")[0].getElementsByTagName("input")[0].value;
+    obj.size = 30;
+    obj.spaziosotto = 10;
+    if (container.getElementsByTagName("label")[1].getElementsByTagName("input")[0].checked) {
+      obj.size = 20;
+      obj.spaziosotto = 20;
+    }
+  }
+  return obj;
 }
 
 
@@ -215,10 +263,12 @@ var  fetch_info = function() {
   infos.Funzioni.push( fetch_one_info("#funzione_3").toLowerCase() );
 
   infos.Nomi = [];
-  infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
-  infos.Nomi.push( {"content": "DISEI", "size": 20, "spaziosotto": 20} );
-  infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
-  infos.Nomi.push( {"content": "Antonella ", "size": 40, "spaziosotto": 10} );
+  // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
+
+  infos.Nomi.push(fetch_nome("#nome_1"));
+  infos.Nomi.push(fetch_nome("#nome_2"));
+  infos.Nomi.push(fetch_nome("#nome_3"));
+  infos.Nomi.push(fetch_nome("#nome_4"));
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
@@ -333,7 +383,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
 
   // Mostra le guide se necessario
-  document.querySelector("#options-margins").checked = true;              // uncomment this to force margin visualization
+  // document.querySelector("#options-margins").checked = true;              // uncomment this to force margin visualization
   if (document.querySelector("#options-margins").checked === true) {
 
     doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
