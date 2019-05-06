@@ -206,7 +206,8 @@ var show_input_fields = function(container, struttura) {
 
 
   // aggiunge nota in fondo
-  let note = document.createElement("h6");
+  let note = document.createElement("p");
+  note.setAttribute("class", "tiny");
   note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
   container.appendChild(note);
   // aggiorna il PDF
@@ -258,9 +259,9 @@ var  fetch_info = function() {
   infos.St_l2 = fetch_one_info("#struttura_l2");
 
   infos.Funzioni = [];
-  infos.Funzioni.push( fetch_one_info("#funzione_1").toLowerCase() );
-  infos.Funzioni.push( fetch_one_info("#funzione_2").toLowerCase() );
-  infos.Funzioni.push( fetch_one_info("#funzione_3").toLowerCase() );
+  infos.Funzioni.push( fetch_one_info("#funzione_1") );
+  infos.Funzioni.push( fetch_one_info("#funzione_2") );
+  infos.Funzioni.push( fetch_one_info("#funzione_3") );
 
   infos.Nomi = [];
   // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
