@@ -204,7 +204,6 @@ var show_input_fields = function(container, struttura) {
   container.appendChild( create_text_plus("Nome 4:", "Specifica", "nome_4", "") );
 
 
-
   // aggiunge nota in fondo
   let note = document.createElement("p");
   note.setAttribute("class", "tiny");

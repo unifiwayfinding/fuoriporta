@@ -1,6 +1,7 @@
 # PDF composer
 Generatore di fuoriporta per UNIFI wayfinding
 
+
 v0.4
 Implementata la scelta tra nome e spefifica.
 
