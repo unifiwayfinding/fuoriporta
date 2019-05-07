@@ -51,6 +51,9 @@ div.input_box {
   display: flex;
   height: 30px;
 }
+.input_line radio {
+  margin-left: 5px;
+}
 .label_box {
   width: 80px;
 }
@@ -59,6 +62,11 @@ label {
   font-weight: 400;
   font-size: 11px;
   margin-bottom: 0;
+}
+.headerline {
+  padding-left: 340px;
+  padding-bottom: 10px;
+  writing-mode: vertical-lr;
 }
 input {
   margin-bottom: 0;

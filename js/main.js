@@ -61,8 +61,6 @@ var show_inputs = function(index) {
   show_input_fields(text_input_container, struttura_selezionata,);
 }
 
-
-
 var timeout = null;
 var update = function (e) {
   clearTimeout(timeout);
@@ -71,6 +69,9 @@ var update = function (e) {
   }, 500);
 }
 
+let radio1 = "nome";
+let radio2 = "spec";
+let radio3 = "mini";
 
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
@@ -189,10 +190,6 @@ var create_text_plus = function(etichetta, id, value, type) {
   input_line.appendChild(input);
 
 
-  let radio1 = "nome";
-  let radio2 = "spec";
-  let radio3 = "mini";
-
   var radio = document.createElement("input");
   radio.setAttribute("type", "radio");
   radio.setAttribute("name", id+"_radio");
@@ -200,10 +197,6 @@ var create_text_plus = function(etichetta, id, value, type) {
   radio.onchange = aggiorna_pdf;
   if (type==radio1) {radio.setAttribute("checked", "checked");}
   input_line.appendChild(radio);
-  var radiolabel = document.createElement("label");
-  radiolabel.setAttribute("for", id+"_"+radio1);
-  radiolabel.textContent = radio1;
-  input_line.appendChild(radiolabel);
 
   var radio = document.createElement("input");
   radio.setAttribute("type", "radio");
@@ -212,10 +205,6 @@ var create_text_plus = function(etichetta, id, value, type) {
   radio.onchange = aggiorna_pdf;
   if (type==radio2) {radio.setAttribute("checked", "checked");}
   input_line.appendChild(radio);
-  var radiolabel = document.createElement("label");
-  radiolabel.setAttribute("for", id+"_"+radio2);
-  radiolabel.textContent = radio2;
-  input_line.appendChild(radiolabel);
 
   var radio = document.createElement("input");
   radio.setAttribute("type", "radio");
@@ -224,10 +213,6 @@ var create_text_plus = function(etichetta, id, value, type) {
   radio.onchange = aggiorna_pdf;
   if (type==radio3) {radio.setAttribute("checked", "checked");}
   input_line.appendChild(radio);
-  var radiolabel = document.createElement("label");
-  radiolabel.setAttribute("for", id+"_"+radio3);
-  radiolabel.textContent = radio3;
-  input_line.appendChild(radiolabel);
 
   return input_line;
 }
@@ -250,6 +235,7 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
   container.appendChild(box);
 
+
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
   box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
@@ -257,8 +243,23 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
+
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
+
+  var headerline = document.createElement("div");
+  headerline.setAttribute("class", "headerline");
+  var radiolabel = document.createElement("label");
+  radiolabel.textContent = radio1;
+  headerline.appendChild(radiolabel);
+  var radiolabel = document.createElement("label");
+  radiolabel.textContent = radio2;
+  headerline.appendChild(radiolabel);
+  var radiolabel = document.createElement("label");
+  radiolabel.textContent = radio3;
+  headerline.appendChild(radiolabel);
+  box.appendChild(headerline);
+
   box.appendChild( create_text_plus("Nome 1:", "nome_1", "Nome Cognome", "nome") );
   box.appendChild( create_text_plus("Nome 2:", "nome_2", "DIRETTORE", "spec") );
   box.appendChild( create_text_plus("Nome 3:", "nome_3", "DIMAI", "spec") );
@@ -273,7 +274,6 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_text_plus("Nome 12:", "nome_12") );
   box.appendChild( create_text_plus("Nome 13:", "nome_13") );
   box.appendChild( create_text_plus("Nome 14:", "nome_14") );
-
 
   // aggiunge nota in fondo
   let note = document.createElement("p");
