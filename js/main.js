@@ -260,14 +260,19 @@ var show_input_fields = function(container, struttura) {
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
   box.appendChild( create_text_plus("Nome 1:", "nome_1", "Nome Cognome", "nome") );
-  box.appendChild( create_text_plus("Nome 2:", "nome_2", "Un Nome Parecchio Parecchio Lungo", "nome") );
-  box.appendChild( create_text_plus("Nome 3:", "nome_3", "(DIMAI)", "spec") );
+  box.appendChild( create_text_plus("Nome 2:", "nome_2", "DIRETTORE", "spec") );
+  box.appendChild( create_text_plus("Nome 3:", "nome_3", "DIMAI", "spec") );
   box.appendChild( create_text_plus("Nome 4:", "nome_4", "Luigi Bianchi", "mini") );
   box.appendChild( create_text_plus("Nome 5:", "nome_5", "Salvatore Lupini", "mini") );
   box.appendChild( create_text_plus("Nome 6:", "nome_6", "Arnaldo Salutatu", "mini") );
   box.appendChild( create_text_plus("Nome 7:", "nome_7", "Giovanni Brunei", "mini") );
   box.appendChild( create_text_plus("Nome 8:", "nome_8", "Piero Detti", "mini") );
-  box.appendChild( create_text_plus("Nome 9:", "nome_9", "Alessandra Bariccolo", "mini") );
+  box.appendChild( create_text_plus("Nome 9:", "nome_9") );
+  box.appendChild( create_text_plus("Nome 10:", "nome_10") );
+  box.appendChild( create_text_plus("Nome 11:", "nome_11") );
+  box.appendChild( create_text_plus("Nome 12:", "nome_12") );
+  box.appendChild( create_text_plus("Nome 13:", "nome_13") );
+  box.appendChild( create_text_plus("Nome 14:", "nome_14") );
 
 
   // aggiunge nota in fondo
@@ -319,7 +324,7 @@ var fetch_nome = function (selector, radioname) {
     };
     //NOME MINI
     if (radio[2].checked) {
-      obj.size = 16;
+      obj.size = 15;
       obj.spaziosotto = 5;
       obj.linegap = -6
     };
@@ -356,6 +361,11 @@ var  fetch_info = function() {
   infos.Nomi.push(fetch_nome("#nome_7", "nome_7_radio"));
   infos.Nomi.push(fetch_nome("#nome_8", "nome_8_radio"));
   infos.Nomi.push(fetch_nome("#nome_9", "nome_9_radio"));
+  infos.Nomi.push(fetch_nome("#nome_10", "nome_10_radio"));
+  infos.Nomi.push(fetch_nome("#nome_11", "nome_11_radio"));
+  infos.Nomi.push(fetch_nome("#nome_12", "nome_12_radio"));
+  infos.Nomi.push(fetch_nome("#nome_13", "nome_13_radio"));
+  infos.Nomi.push(fetch_nome("#nome_14", "nome_14_radio"));
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
