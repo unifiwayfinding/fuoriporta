@@ -42,19 +42,22 @@ canvas {
 }
 #control h1,
 #control p {
-  margin-left: 80px;
+  margin-left: 130px;
 }
 div.input_box {
   margin: 25px 0;
 }
-label {
-  text-align: right;
-  margin-right: 380px;
+.input_line {
+  display: flex;
+  height: 30px;
+}
+.label_box {
+  width: 120px;
 }
 label {
+  text-align: right;
   font-weight: 400;
   font-size: 11px;
-  margin-top: 11px;
   margin-bottom: 0;
 }
 input {
@@ -62,8 +65,7 @@ input {
 }
 input[type=text],
 select {
-  position: absolute;
-  left: 80px;
+  display: inline;
   margin-left: 10px;
   width: 250px;
   margin-top: -5px;
@@ -83,10 +85,6 @@ label.radio-label {
   display: inline;
   margin: 0;
 }
-label.nomi-checkbox-label {
-  margin-right: 305px;
-  margin-top: -5px;
-}
 button {
   width: 250px;
   height: 40px;
@@ -96,6 +94,6 @@ button {
 .options-input,
 button {
   position: relative;
-  left: 80px;
+  left: 130px;
   display: block;
 }

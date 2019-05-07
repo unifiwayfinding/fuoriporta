@@ -2,7 +2,7 @@
 // GENERALI
 
 @larghezza-control: 450px;
-@allineamento: 80px;
+@allineamento: 130px;
 @larghezza-input: 250px;
 
 
@@ -83,15 +83,20 @@ div.input_box {
 
 
 //allineamento labels
-label {
-	text-align: right;
-	margin-right: @larghezza-control - @allineamento + 10;
+
+.input_line {
+	display: flex;
+	height: 30px;
+}
+
+.label_box {
+	width: @allineamento - 10;
 }
 
 label {
+	text-align: right;
 	font-weight: 400;
 	font-size: 11px;
-	margin-top: 11px;
 	margin-bottom: 0;
 }
 
@@ -101,8 +106,7 @@ input {
 
 input[type=text],
 select {
-	position: absolute;
-	left: @allineamento;
+	display: inline;
 	margin-left: 10px;
 	width: @larghezza-input;
 	margin-top: -5px;
@@ -128,11 +132,6 @@ input:disabled {
 label.radio-label {
 	display: inline;
 	margin: 0;
-}
-
-label.nomi-checkbox-label {
-	margin-right: 305px;
-	margin-top: -5px;
 }
 
 button {

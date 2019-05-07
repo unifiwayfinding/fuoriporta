@@ -76,9 +76,18 @@ var update = function (e) {
 
 // return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
 var create_text_input = function (enabled, etichetta, id, value) {
-  var label = document.createElement("label");
+  let input_line = document.createElement("div");
+  input_line.setAttribute("class", "input_line");
+
+  let label_box = document.createElement("div");
+  label_box.setAttribute("class", "label_box");
+  let label = document.createElement("label");
   label.textContent = etichetta;
-  var input = document.createElement("input");
+  label_box.appendChild(label);
+  input_line.appendChild(label_box);
+
+
+  let input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("class", "input_field");
   input.setAttribute("id", id);
@@ -92,18 +101,27 @@ var create_text_input = function (enabled, etichetta, id, value) {
   input.setAttribute("autocomplete", "nope");
   // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
   input.setAttribute("name", Math.random().toString(36).substring(2, 15));
-  label.appendChild(input);
-  return label;
+
+  input_line.appendChild(input);
+  return input_line;
 }
 
 
 // crea un select associato ad un campo di testo
 var create_select_and_text = function (etichetta, id, lista) {
-  let section = document.createElement("div");
+  let input_multiline = document.createElement("div");
 
-  var select_label = document.createElement("label");
-  select_label.textContent = etichetta;
-  var select = document.createElement("select");
+  let input_line = document.createElement("div");
+  input_line.setAttribute("class", "input_line");
+
+  let label_box = document.createElement("div");
+  label_box.setAttribute("class", "label_box");
+  let label = document.createElement("label");
+  label.textContent = etichetta;
+  label_box.appendChild(label);
+  input_line.appendChild(label_box);
+
+  let select = document.createElement("select");
   select.setAttribute("id", id);
 
   option = document.createElement("option");
@@ -121,11 +139,11 @@ var create_select_and_text = function (etichetta, id, lista) {
   option.value = "altro";
   select.appendChild(option);
 
-  select_label.appendChild(select);
-  section.appendChild(select_label);
+  input_line.appendChild(select);
+  input_multiline.appendChild(input_line);
 
   let box = document.createElement("div");
-  section.appendChild(box);
+  input_multiline.appendChild(box);
 
   select.onchange = function(){
     select.setAttribute("id", id);
@@ -135,23 +153,29 @@ var create_select_and_text = function (etichetta, id, lista) {
 
     if (this.value === "altro") {
       select.setAttribute("id", "");
-      var text_field = create_text_input(true, "Inserire funzione:", id, "");
+      var text_field = create_text_input(true, "Inserire:", id, "");
       box.appendChild(text_field);
     }
 
     aggiorna_pdf();
   };
 
-  return section;
+  return input_multiline;
 }
 
 
 var create_text_plus = function(etichetta, etichetta2, id, value) {
-  let section = document.createElement("div");
-  section.setAttribute("id", id);
+  let input_line = document.createElement("div");
+  input_line.setAttribute("class", "input_line");
+  input_line.setAttribute("id", id);
 
-  var label = document.createElement("label");
+  let label_box = document.createElement("div");
+  label_box.setAttribute("class", "label_box");
+  let label = document.createElement("label");
   label.textContent = etichetta;
+  label_box.appendChild(label);
+  input_line.appendChild(label_box);
+
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("id", id);
@@ -162,18 +186,17 @@ var create_text_plus = function(etichetta, etichetta2, id, value) {
   input.setAttribute("autocomplete", "nope");
   // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
   input.setAttribute("name", Math.random().toString(36).substring(2, 15));
-  label.appendChild(input);
-  section.appendChild(label);
+  input_line.appendChild(input);
 
-  var label = document.createElement("label");
-  label.textContent = etichetta2;
-  label.setAttribute("class", "nomi-checkbox-label");
+  var label2 = document.createElement("label");
+  label2.textContent = etichetta2;
+  label2.setAttribute("class", "nomi-checkbox-label");
   var input = document.createElement("input");
   input.setAttribute("type", "checkbox");
-  label.appendChild(input);
-  section.appendChild(label);
+  input_line.appendChild(input);
+  input_line.appendChild(label2);
 
-  return section;
+  return input_line;
 }
 
 
@@ -185,23 +208,26 @@ var show_input_fields = function(container, struttura) {
 
   // crea gli input
   var enabled = (struttura.option_value === "altro") ? true : false;
-  container.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
-  container.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
-  container.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
-  container.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
-  container.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
+  box.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
+  box.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
+  box.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
+  box.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
+  container.appendChild(box);
 
-  let box = document.createElement("div");
+  var box = document.createElement("div");
   box.setAttribute("class", "input_box");
   box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
   box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
-  container.appendChild( create_text_plus("Nome 1:", "Specifica", "nome_1", "Nome Cognome") );
-  container.appendChild( create_text_plus("Nome 2:", "Specifica", "nome_2", "") );
-  container.appendChild( create_text_plus("Nome 3:", "Specifica", "nome_3", "") );
-  container.appendChild( create_text_plus("Nome 4:", "Specifica", "nome_4", "") );
+  container.appendChild( create_text_plus("Nome 1:", "specifica", "nome_1", "Nome Cognome") );
+  container.appendChild( create_text_plus("Nome 2:", "specifica", "nome_2", "") );
+  container.appendChild( create_text_plus("Nome 3:", "specifica", "nome_3", "") );
+  container.appendChild( create_text_plus("Nome 4:", "specifica", "nome_4", "") );
 
 
   // aggiunge nota in fondo
@@ -235,13 +261,14 @@ var fetch_nome = function (selector) {
   obj.spaziosotto = 0;
   let container = document.querySelector(selector);
   if (container) {
-    obj.content = container.getElementsByTagName("label")[0].getElementsByTagName("input")[0].value;
+    obj.content = container.getElementsByTagName("input")[0].value;
     obj.size = 30;
     obj.spaziosotto = 10;
-    if (container.getElementsByTagName("label")[1].getElementsByTagName("input")[0].checked) {
+    if (container.getElementsByTagName("input")[1].checked) {
       obj.size = 20;
       obj.spaziosotto = 20;
     }
+
   }
   return obj;
 }
@@ -616,5 +643,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var text_input_container = document.querySelector("#text_input_container");
   populate_select_input(struttura_selector, lista_strutture);
 
-  show_inputs(1);   // uncomment this for production
+   // show_inputs(1);   // uncomment this for production
 });

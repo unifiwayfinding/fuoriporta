@@ -31,11 +31,13 @@
 
 		<main class="main_input-container">
 
-			<div id="select_container">
-				<label>Struttura:
-					<select onchange="show_inputs(this.selectedIndex)" id="struttura_selector">
-					</select>
-				</label>
+			<div id="select_container" class="input_line">
+				<div class="label_box">
+				<label>Struttura:</label>
+			</div>
+
+				<select onchange="show_inputs(this.selectedIndex)" id="struttura_selector">
+				</select>
 			</div>
 
 			<form id="text_input_container" autocomplete="off">
