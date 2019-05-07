@@ -615,4 +615,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var struttura_selector = document.querySelector("#struttura_selector");
   var text_input_container = document.querySelector("#text_input_container");
   populate_select_input(struttura_selector, lista_strutture);
+
+  show_inputs(1);   // uncomment this for production
 });
