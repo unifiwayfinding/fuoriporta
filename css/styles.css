@@ -42,14 +42,14 @@ canvas {
 }
 #control h1,
 #control p {
-  margin-left: 130px;
+  margin-left: 80px;
 }
 div.input_box {
   margin: 25px 0;
 }
 label {
   text-align: right;
-  margin-right: 328px;
+  margin-right: 380px;
 }
 label {
   font-weight: 400;
@@ -63,8 +63,9 @@ input {
 input[type=text],
 select {
   position: absolute;
-  left: 140px;
-  width: 300px;
+  left: 80px;
+  margin-left: 10px;
+  width: 250px;
   margin-top: -5px;
   height: 23px;
 }
@@ -87,7 +88,7 @@ label.nomi-checkbox-label {
   margin-top: -5px;
 }
 button {
-  width: 300px;
+  width: 250px;
   height: 40px;
   background: #fff;
 }
@@ -95,6 +96,6 @@ button {
 .options-input,
 button {
   position: relative;
-  left: 130px;
+  left: 80px;
   display: block;
 }

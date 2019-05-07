@@ -1,6 +1,11 @@
 //out: styles.css
 // GENERALI
 
+@larghezza-control: 450px;
+@allineamento: 80px;
+@larghezza-input: 250px;
+
+
 body {
 	background: #81a9e8;
 	font-family: 'Titillium Web', sans-serif;
@@ -59,7 +64,7 @@ canvas {
 #control {
 	float: left;
 	min-height: 800px;
-	width: 450px;
+	width: @larghezza-control;
 	padding-right: 50px;
 }
 
@@ -69,7 +74,7 @@ canvas {
 
 #control h1,
 #control p {
-	margin-left: 130px;
+	margin-left: @allineamento;
 }
 
 div.input_box {
@@ -80,7 +85,7 @@ div.input_box {
 //allineamento labels
 label {
 	text-align: right;
-	margin-right: 328px;
+	margin-right: @larghezza-control - @allineamento + 10;
 }
 
 label {
@@ -97,8 +102,9 @@ input {
 input[type=text],
 select {
 	position: absolute;
-	left: 140px;
-	width: 300px;
+	left: @allineamento;
+	margin-left: 10px;
+	width: @larghezza-input;
 	margin-top: -5px;
 	height: 23px;
 }
@@ -130,7 +136,7 @@ label.nomi-checkbox-label {
 }
 
 button {
-	width: 300px;
+	width: @larghezza-input;
 	height: 40px;
 	background: #fff;
 }
@@ -139,6 +145,6 @@ button {
 .options-input,
 button {
 	position: relative;
-	left: 130px;
+	left: @allineamento;
 	display: block;
 }
