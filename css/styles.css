@@ -65,7 +65,7 @@ select {
   position: absolute;
   left: 140px;
   width: 300px;
-  margin-top: -8px;
+  margin-top: -5px;
   height: 23px;
 }
 input:disabled {
