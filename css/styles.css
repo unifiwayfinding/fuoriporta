@@ -20,7 +20,7 @@ p {
 }
 #preview {
   float: left;
-  height: 800px;
+  height: 900px;
   width: 700px;
   align-content: center;
   text-align: center;
@@ -33,7 +33,7 @@ canvas {
 }
 #control {
   float: left;
-  min-height: 800px;
+  min-height: 900px;
   width: 450px;
   padding-right: 50px;
 }
@@ -42,7 +42,7 @@ canvas {
 }
 #control h1,
 #control p {
-  margin-left: 130px;
+  margin-left: 90px;
 }
 div.input_box {
   margin: 25px 0;
@@ -52,7 +52,7 @@ div.input_box {
   height: 30px;
 }
 .label_box {
-  width: 120px;
+  width: 80px;
 }
 label {
   text-align: right;
@@ -78,7 +78,7 @@ input:disabled {
 }
 #control-panel {
   position: absolute;
-  top: 720px;
+  top: 820px;
   margin-bottom: 40px;
 }
 label.radio-label {
@@ -94,6 +94,6 @@ button {
 .options-input,
 button {
   position: relative;
-  left: 130px;
+  left: 90px;
   display: block;
 }

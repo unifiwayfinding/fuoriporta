@@ -164,7 +164,7 @@ var create_select_and_text = function (etichetta, id, lista) {
 }
 
 
-var create_text_plus = function(etichetta, etichetta2, id, value) {
+var create_text_plus = function(etichetta, id, value, type) {
   let input_line = document.createElement("div");
   input_line.setAttribute("class", "input_line");
   input_line.setAttribute("id", id);
@@ -188,13 +188,46 @@ var create_text_plus = function(etichetta, etichetta2, id, value) {
   input.setAttribute("name", Math.random().toString(36).substring(2, 15));
   input_line.appendChild(input);
 
-  var label2 = document.createElement("label");
-  label2.textContent = etichetta2;
-  label2.setAttribute("class", "nomi-checkbox-label");
-  var input = document.createElement("input");
-  input.setAttribute("type", "checkbox");
-  input_line.appendChild(input);
-  input_line.appendChild(label2);
+
+  let radio1 = "nome";
+  let radio2 = "spec";
+  let radio3 = "mini";
+
+  var radio = document.createElement("input");
+  radio.setAttribute("type", "radio");
+  radio.setAttribute("name", id+"_radio");
+  radio.setAttribute("id", id+"_"+radio1);
+  radio.onchange = aggiorna_pdf;
+  if (type==radio1) {radio.setAttribute("checked", "checked");}
+  input_line.appendChild(radio);
+  var radiolabel = document.createElement("label");
+  radiolabel.setAttribute("for", id+"_"+radio1);
+  radiolabel.textContent = radio1;
+  input_line.appendChild(radiolabel);
+
+  var radio = document.createElement("input");
+  radio.setAttribute("type", "radio");
+  radio.setAttribute("name", id+"_radio");
+  radio.setAttribute("id", id+"_"+radio2);
+  radio.onchange = aggiorna_pdf;
+  if (type==radio2) {radio.setAttribute("checked", "checked");}
+  input_line.appendChild(radio);
+  var radiolabel = document.createElement("label");
+  radiolabel.setAttribute("for", id+"_"+radio2);
+  radiolabel.textContent = radio2;
+  input_line.appendChild(radiolabel);
+
+  var radio = document.createElement("input");
+  radio.setAttribute("type", "radio");
+  radio.setAttribute("name", id+"_radio");
+  radio.setAttribute("id", id+"_"+radio3);
+  radio.onchange = aggiorna_pdf;
+  if (type==radio3) {radio.setAttribute("checked", "checked");}
+  input_line.appendChild(radio);
+  var radiolabel = document.createElement("label");
+  radiolabel.setAttribute("for", id+"_"+radio3);
+  radiolabel.textContent = radio3;
+  input_line.appendChild(radiolabel);
 
   return input_line;
 }
@@ -224,17 +257,26 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
   container.appendChild(box);
 
-  container.appendChild( create_text_plus("Nome 1:", "specifica", "nome_1", "Nome Cognome") );
-  container.appendChild( create_text_plus("Nome 2:", "specifica", "nome_2", "") );
-  container.appendChild( create_text_plus("Nome 3:", "specifica", "nome_3", "") );
-  container.appendChild( create_text_plus("Nome 4:", "specifica", "nome_4", "") );
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.appendChild( create_text_plus("Nome 1:", "nome_1", "Nome Cognome", "nome") );
+  box.appendChild( create_text_plus("Nome 2:", "nome_2", "Un Nome Parecchio Parecchio Lungo", "nome") );
+  box.appendChild( create_text_plus("Nome 3:", "nome_3", "(DIMAI)", "spec") );
+  box.appendChild( create_text_plus("Nome 4:", "nome_4", "Luigi Bianchi", "mini") );
+  box.appendChild( create_text_plus("Nome 5:", "nome_5", "Salvatore Lupini", "mini") );
+  box.appendChild( create_text_plus("Nome 6:", "nome_6", "Arnaldo Salutatu", "mini") );
+  box.appendChild( create_text_plus("Nome 7:", "nome_7", "Giovanni Brunei", "mini") );
+  box.appendChild( create_text_plus("Nome 8:", "nome_8", "Piero Detti", "mini") );
+  box.appendChild( create_text_plus("Nome 9:", "nome_9", "Alessandra Bariccolo", "mini") );
 
 
   // aggiunge nota in fondo
   let note = document.createElement("p");
   note.setAttribute("class", "tiny");
   note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
-  container.appendChild(note);
+  box.appendChild(note);
+  container.appendChild(box);
+
   // aggiorna il PDF
   aggiorna_pdf();
 }
@@ -254,7 +296,7 @@ var fetch_one_info = function (selector) {
   return value;
 }
 
-var fetch_nome = function (selector) {
+var fetch_nome = function (selector, radioname) {
   let obj = {};
   obj.content = "";
   obj.size = 0;
@@ -262,12 +304,25 @@ var fetch_nome = function (selector) {
   let container = document.querySelector(selector);
   if (container) {
     obj.content = container.getElementsByTagName("input")[0].value;
-    obj.size = 30;
-    obj.spaziosotto = 10;
-    if (container.getElementsByTagName("input")[1].checked) {
+    let radio = document.getElementsByName(radioname);
+    //NOME
+    if (radio[0].checked) {
+      obj.size = 30;
+      obj.spaziosotto = 10;
+      obj.linegap = -12
+    };
+    //SPECIFICA
+    if (radio[1].checked) {
       obj.size = 20;
       obj.spaziosotto = 20;
-    }
+      obj.linegap = -8
+    };
+    //NOME MINI
+    if (radio[2].checked) {
+      obj.size = 16;
+      obj.spaziosotto = 5;
+      obj.linegap = -6
+    };
 
   }
   return obj;
@@ -292,10 +347,15 @@ var  fetch_info = function() {
   infos.Nomi = [];
   // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
 
-  infos.Nomi.push(fetch_nome("#nome_1"));
-  infos.Nomi.push(fetch_nome("#nome_2"));
-  infos.Nomi.push(fetch_nome("#nome_3"));
-  infos.Nomi.push(fetch_nome("#nome_4"));
+  infos.Nomi.push(fetch_nome("#nome_1", "nome_1_radio"));
+  infos.Nomi.push(fetch_nome("#nome_2", "nome_2_radio"));
+  infos.Nomi.push(fetch_nome("#nome_3", "nome_3_radio"));
+  infos.Nomi.push(fetch_nome("#nome_4", "nome_4_radio"));
+  infos.Nomi.push(fetch_nome("#nome_5", "nome_5_radio"));
+  infos.Nomi.push(fetch_nome("#nome_6", "nome_6_radio"));
+  infos.Nomi.push(fetch_nome("#nome_7", "nome_7_radio"));
+  infos.Nomi.push(fetch_nome("#nome_8", "nome_8_radio"));
+  infos.Nomi.push(fetch_nome("#nome_9", "nome_9_radio"));
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
@@ -382,9 +442,6 @@ const crea_pdf = function(info) {
     lineGap: -9,
     paragraphGap: 5
   };
-
-  // nomi
-  let nomilinegap = -12;
 
 
   //Setup PDF document
@@ -476,7 +533,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       let lines_total_height = 0;
       info.Nomi.forEach(function(e) {
         doc.font(helvetica45, e.size); // sets fonts for the right calculations
-        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: e.linegap, paragraphGap: e.spaziosotto});
         // console.log (w,h);
         lines_total_height += h;
       });
@@ -487,7 +544,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
           .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 241 - lines_total_height)
       info.Nomi.forEach(function(e) {
         doc .font(helvetica45, (e.size))
-            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: e.linegap, paragraphGap: e.spaziosotto});
       })
 
       // annotazioni sulla riga in basso
@@ -632,8 +689,6 @@ function async_trigger() {
 
 
 
-
-
 // ---------------------------------
 // ----------- INIZIALIZZA ---------
 // ---------------------------------
@@ -643,5 +698,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   var text_input_container = document.querySelector("#text_input_container");
   populate_select_input(struttura_selector, lista_strutture);
 
-   // show_inputs(1);   // uncomment this for production
+  // comment this for production
+  struttura_selector.selectedIndex = 1;
+  show_inputs(1);
 });
