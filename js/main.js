@@ -71,7 +71,6 @@ var update = function (e) {
 
 let radio1 = "nome";
 let radio2 = "spec";
-let radio3 = "mini";
 
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
@@ -206,14 +205,6 @@ var create_text_plus = function(etichetta, id, value, type) {
   if (type==radio2) {radio.setAttribute("checked", "checked");}
   input_line.appendChild(radio);
 
-  var radio = document.createElement("input");
-  radio.setAttribute("type", "radio");
-  radio.setAttribute("name", id+"_radio");
-  radio.setAttribute("id", id+"_"+radio3);
-  radio.onchange = aggiorna_pdf;
-  if (type==radio3) {radio.setAttribute("checked", "checked");}
-  input_line.appendChild(radio);
-
   return input_line;
 }
 
@@ -256,18 +247,16 @@ var show_input_fields = function(container, struttura) {
   radiolabel.textContent = radio2;
   headerline.appendChild(radiolabel);
   var radiolabel = document.createElement("label");
-  radiolabel.textContent = radio3;
-  headerline.appendChild(radiolabel);
   box.appendChild(headerline);
 
   box.appendChild( create_text_plus("Nome 1:", "nome_1", "Nome Cognome", "nome") );
-  box.appendChild( create_text_plus("Nome 2:", "nome_2", "DIRETTORE", "spec") );
+  box.appendChild( create_text_plus("Nome 2:", "nome_2", "Un nome molto lungo che va su tante righe", "nome") );
   box.appendChild( create_text_plus("Nome 3:", "nome_3", "DIMAI", "spec") );
-  box.appendChild( create_text_plus("Nome 4:", "nome_4", "Luigi Bianchi", "mini") );
-  box.appendChild( create_text_plus("Nome 5:", "nome_5", "Salvatore Lupini", "mini") );
-  box.appendChild( create_text_plus("Nome 6:", "nome_6", "Arnaldo Salutatu", "mini") );
-  box.appendChild( create_text_plus("Nome 7:", "nome_7", "Giovanni Brunei", "mini") );
-  box.appendChild( create_text_plus("Nome 8:", "nome_8", "Piero Detti", "mini") );
+  box.appendChild( create_text_plus("Nome 4:", "nome_4", "Un nome molto lungo che va su tante righe", "spec") );
+  box.appendChild( create_text_plus("Nome 5:", "nome_5") );
+  box.appendChild( create_text_plus("Nome 6:", "nome_6") );
+  box.appendChild( create_text_plus("Nome 7:", "nome_7") );
+  box.appendChild( create_text_plus("Nome 8:", "nome_8") );
   box.appendChild( create_text_plus("Nome 9:", "nome_9") );
   box.appendChild( create_text_plus("Nome 10:", "nome_10") );
   box.appendChild( create_text_plus("Nome 11:", "nome_11") );
@@ -313,20 +302,14 @@ var fetch_nome = function (selector, radioname) {
     //NOME
     if (radio[0].checked) {
       obj.size = 30;
-      obj.spaziosotto = 10;
-      obj.linegap = -12
+      obj.interlinea = 24;
+      obj.spaziosotto = 20;
     };
     //SPECIFICA
     if (radio[1].checked) {
-      obj.size = 20;
+      obj.size = 30;
+      obj.interlinea = 10;
       obj.spaziosotto = 20;
-      obj.linegap = -8
-    };
-    //NOME MINI
-    if (radio[2].checked) {
-      obj.size = 15;
-      obj.spaziosotto = 5;
-      obj.linegap = -6
     };
 
   }
@@ -427,29 +410,32 @@ const crea_pdf = function(info) {
   // strutture bold
   let strutture_bold_font = helvetica95;
   let strutture_bold_corpo = 25;
+  let strutture_bold_interlinea = 21;
   let strutture_bold_options = {
     align: 'left',
     width: strutture_textbox_width,
-    lineGap: -9,
+    lineGap: strutture_bold_interlinea-strutture_bold_corpo*1.2,
     paragraphGap: 0
   };
 
   // strutture light
   let strutture_light_font = helvetica45;
   let strutture_light_corpo = 16;
+  let strutture_light_interlinea = 14;
   let strutture_light_options = {
     align: 'left',
     width: strutture_textbox_width,
-    lineGap: -5.2,
+    lineGap: strutture_light_interlinea-strutture_light_corpo*1.2,
     paragraphGap: 0
   };
 
   // funzioni
   let funzioni_font = helvetica65;
   let funzioni_corpo = 20;
+  let funzioni_interlinea = 20;
   let funzioni_options = {
     width: funzioni_textbox_width,
-    lineGap: -9,
+    lineGap: funzioni_interlinea-funzioni_corpo*1.2,
     paragraphGap: 5
   };
 
@@ -543,7 +529,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       let lines_total_height = 0;
       info.Nomi.forEach(function(e) {
         doc.font(helvetica45, e.size); // sets fonts for the right calculations
-        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: e.linegap, paragraphGap: e.spaziosotto});
+        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto});
         // console.log (w,h);
         lines_total_height += h;
       });
@@ -554,7 +540,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
           .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 241 - lines_total_height)
       info.Nomi.forEach(function(e) {
         doc .font(helvetica45, (e.size))
-            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: e.linegap, paragraphGap: e.spaziosotto});
+            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto});
       })
 
       // annotazioni sulla riga in basso
