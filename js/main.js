@@ -282,12 +282,30 @@ var fetch_one_info = function (selector) {
   return value;
 }
 
-var fetch_nome = function (selector, checkbox_name) {
+var fetch_nome = function (selector, checkbox_name, next_name) {
+
+  // moltiplicatore per nomi petit
   let a = 1;
   let petit_checkbox = document.getElementsByName("petit");
   if (petit_checkbox[0].checked) {
   a = 1.5;
   }
+
+  // controllo spaziosotto per specifica dopo nome
+  let spec_dopo_nome = 1;
+  let this_checkbox = document.getElementsByName(checkbox_name);
+  let next_checkbox = document.getElementsByName(next_name);
+  console.log(checkbox_name);
+  console.log(this_checkbox);
+
+  console.log(next_name);
+  console.log(next_checkbox);
+  if (next_checkbox[0]) {
+    if (next_checkbox[0].checked) {
+      spec_dopo_nome = 0;
+    }
+  }
+
 
   let obj = {};
   obj.content = "";
@@ -297,14 +315,13 @@ var fetch_nome = function (selector, checkbox_name) {
   let container = document.querySelector(selector);
   if (container) {
     obj.content = container.getElementsByTagName("input")[0].value;
-    let checkbox = document.getElementsByName(checkbox_name);
     //NOME
     obj.size = 30/a;
     obj.interlinea = 24/a;
-    obj.spaziosotto = 5/a;
+    obj.spaziosotto = 10/a*spec_dopo_nome;
 
     //SPECIFICA
-    if (checkbox[0].checked) {
+    if (this_checkbox[0].checked) {
       obj.size = 20/a;
       obj.interlinea = 20/a;
       obj.spaziosotto = 5/a;
@@ -331,22 +348,21 @@ var  fetch_info = function() {
   infos.Funzioni.push( fetch_one_info("#funzione_3") );
 
   infos.Nomi = [];
-  // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
 
-  infos.Nomi.push(fetch_nome("#nome_1", "nome_1_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_2", "nome_2_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_3", "nome_3_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_4", "nome_4_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_5", "nome_5_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_6", "nome_6_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_7", "nome_7_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_8", "nome_8_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_9", "nome_9_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_10", "nome_10_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_11", "nome_11_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_12", "nome_12_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_13", "nome_13_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_14", "nome_14_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_1", "nome_1_checkbox", "nome_2_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_2", "nome_2_checkbox", "nome_3_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_3", "nome_3_checkbox", "nome_4_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_4", "nome_4_checkbox", "nome_5_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_5", "nome_5_checkbox", "nome_6_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_6", "nome_6_checkbox", "nome_7_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_7", "nome_7_checkbox", "nome_8_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_8", "nome_8_checkbox", "nome_9_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_9", "nome_9_checkbox", "nome_10_checkbox" ));
+  infos.Nomi.push(fetch_nome("#nome_10", "nome_10_checkbox", "nome_11_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_11", "nome_11_checkbox", "nome_12_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_12", "nome_12_checkbox", "nome_13_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_13", "nome_13_checkbox", "nome_14_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_14", "nome_14_checkbox", "nome_15_checkbox"));
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
@@ -368,9 +384,6 @@ var  fetch_info = function() {
  var  aggiorna_pdf = function() {
   crea_pdf(fetch_info());
 }
-
-
-
 
 /**
  * Crea il PDF a partire dalle informazioni
@@ -522,6 +535,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         doc.text(e, funzioni_options);
       })
 
+      console.log (info.Nomi);
 
       // Calcola allineamento parte destra
       let lines_total_height = 0;
