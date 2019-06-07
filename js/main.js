@@ -69,9 +69,6 @@ var update = function (e) {
   }, 500);
 }
 
-let radio1 = "nome";
-let radio2 = "spec";
-
 // -- DA QUI IN POI HELPER FUNCTIONS:
 
 // return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
@@ -189,21 +186,15 @@ var create_text_plus = function(etichetta, id, value, type) {
   input_line.appendChild(input);
 
 
-  var radio = document.createElement("input");
-  radio.setAttribute("type", "radio");
-  radio.setAttribute("name", id+"_radio");
-  radio.setAttribute("id", id+"_"+radio1);
-  radio.onchange = aggiorna_pdf;
-  if (type==radio1) {radio.setAttribute("checked", "checked");}
-  input_line.appendChild(radio);
-
-  var radio = document.createElement("input");
-  radio.setAttribute("type", "radio");
-  radio.setAttribute("name", id+"_radio");
-  radio.setAttribute("id", id+"_"+radio2);
-  radio.onchange = aggiorna_pdf;
-  if (type==radio2) {radio.setAttribute("checked", "checked");}
-  input_line.appendChild(radio);
+  var checkbox = document.createElement("input");
+  var checkbox_label = document.createElement("label");
+  checkbox_label.textContent = "specifica";
+  checkbox.setAttribute("type", "checkbox");
+  checkbox.setAttribute("name", id+"_checkbox");
+  checkbox.onchange = aggiorna_pdf;
+  if (type=="spec") {checkbox.setAttribute("checked", "checked");}
+  input_line.appendChild(checkbox);
+  input_line.appendChild(checkbox_label);
 
   return input_line;
 }
@@ -238,19 +229,20 @@ var show_input_fields = function(container, struttura) {
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
 
-  var headerline = document.createElement("div");
-  headerline.setAttribute("class", "headerline");
-  var radiolabel = document.createElement("label");
-  radiolabel.textContent = radio1;
-  headerline.appendChild(radiolabel);
-  var radiolabel = document.createElement("label");
-  radiolabel.textContent = radio2;
-  headerline.appendChild(radiolabel);
-  var radiolabel = document.createElement("label");
-  box.appendChild(headerline);
+  var petit_line = document.createElement("div");
+  petit_line.setAttribute("class", "input_line");
+  var petit_checkbox = document.createElement("input");
+  var petit_checkbox_label = document.createElement("label");
+  petit_checkbox_label.textContent = "nomi piccoli";
+  petit_checkbox.setAttribute("type", "checkbox");
+  petit_checkbox.setAttribute("name", "petit");
+  petit_checkbox.onchange = aggiorna_pdf;
+  petit_line.appendChild(petit_checkbox);
+  petit_line.appendChild(petit_checkbox_label);
+  box.appendChild(petit_line);
 
-  box.appendChild( create_text_plus("Nome 1:", "nome_1", "Nome Cognome", "nome") );
-  box.appendChild( create_text_plus("Nome 2:", "nome_2", "Un nome molto lungo che va su tante righe", "nome") );
+  box.appendChild( create_text_plus("Nome 1:", "nome_1", "Siri Nergard", "nome") );
+  box.appendChild( create_text_plus("Nome 2:", "nome_2", "Norvegese", "spec") );
   box.appendChild( create_text_plus("Nome 3:", "nome_3", "DIMAI", "spec") );
   box.appendChild( create_text_plus("Nome 4:", "nome_4", "Un nome molto lungo che va su tante righe", "spec") );
   box.appendChild( create_text_plus("Nome 5:", "nome_5") );
@@ -290,26 +282,32 @@ var fetch_one_info = function (selector) {
   return value;
 }
 
-var fetch_nome = function (selector, radioname) {
+var fetch_nome = function (selector, checkbox_name) {
+  let a = 1;
+  let petit_checkbox = document.getElementsByName("petit");
+  if (petit_checkbox[0].checked) {
+  a = 1.5;
+  }
+
   let obj = {};
   obj.content = "";
   obj.size = 0;
+  obj.interlinea = 0;
   obj.spaziosotto = 0;
   let container = document.querySelector(selector);
   if (container) {
     obj.content = container.getElementsByTagName("input")[0].value;
-    let radio = document.getElementsByName(radioname);
+    let checkbox = document.getElementsByName(checkbox_name);
     //NOME
-    if (radio[0].checked) {
-      obj.size = 30;
-      obj.interlinea = 24;
-      obj.spaziosotto = 20;
-    };
+    obj.size = 30/a;
+    obj.interlinea = 24/a;
+    obj.spaziosotto = 5/a;
+
     //SPECIFICA
-    if (radio[1].checked) {
-      obj.size = 30;
-      obj.interlinea = 10;
-      obj.spaziosotto = 20;
+    if (checkbox[0].checked) {
+      obj.size = 20/a;
+      obj.interlinea = 20/a;
+      obj.spaziosotto = 5/a;
     };
 
   }
@@ -335,20 +333,20 @@ var  fetch_info = function() {
   infos.Nomi = [];
   // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
 
-  infos.Nomi.push(fetch_nome("#nome_1", "nome_1_radio"));
-  infos.Nomi.push(fetch_nome("#nome_2", "nome_2_radio"));
-  infos.Nomi.push(fetch_nome("#nome_3", "nome_3_radio"));
-  infos.Nomi.push(fetch_nome("#nome_4", "nome_4_radio"));
-  infos.Nomi.push(fetch_nome("#nome_5", "nome_5_radio"));
-  infos.Nomi.push(fetch_nome("#nome_6", "nome_6_radio"));
-  infos.Nomi.push(fetch_nome("#nome_7", "nome_7_radio"));
-  infos.Nomi.push(fetch_nome("#nome_8", "nome_8_radio"));
-  infos.Nomi.push(fetch_nome("#nome_9", "nome_9_radio"));
-  infos.Nomi.push(fetch_nome("#nome_10", "nome_10_radio"));
-  infos.Nomi.push(fetch_nome("#nome_11", "nome_11_radio"));
-  infos.Nomi.push(fetch_nome("#nome_12", "nome_12_radio"));
-  infos.Nomi.push(fetch_nome("#nome_13", "nome_13_radio"));
-  infos.Nomi.push(fetch_nome("#nome_14", "nome_14_radio"));
+  infos.Nomi.push(fetch_nome("#nome_1", "nome_1_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_2", "nome_2_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_3", "nome_3_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_4", "nome_4_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_5", "nome_5_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_6", "nome_6_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_7", "nome_7_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_8", "nome_8_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_9", "nome_9_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_10", "nome_10_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_11", "nome_11_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_12", "nome_12_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_13", "nome_13_checkbox"));
+  infos.Nomi.push(fetch_nome("#nome_14", "nome_14_checkbox"));
 
   infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
