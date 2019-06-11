@@ -263,7 +263,7 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
 
   var petit_line = document.createElement("div");
-  petit_line.setAttribute("class", "input_line");
+  petit_line.setAttribute("class", "input_line petit_line");
   var petit_checkbox = document.createElement("input");
   var petit_checkbox_label = document.createElement("label");
   petit_checkbox_label.textContent = "usa nomi piccoli";
@@ -756,6 +756,38 @@ xhr.send();
 function async_trigger() {
   aggiorna_pdf();
 };
+
+
+
+
+
+
+
+// ---------------------------------
+// ----------- CARICA CSV ----------
+// ---------------------------------
+
+var carica_csv = function () {
+  alert("csv!");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

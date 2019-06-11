@@ -54,6 +54,9 @@ div.input_box {
 .input_line radio {
   margin-left: 5px;
 }
+.petit_line {
+  padding-left: 90px;
+}
 .label_box {
   width: 80px;
 }
@@ -62,6 +65,9 @@ label {
   font-weight: 400;
   font-size: 11px;
   margin-bottom: 0;
+}
+.input_line label {
+  text_align: left;
 }
 .headerline {
   padding-left: 340px;
@@ -86,7 +92,7 @@ input:disabled {
 }
 #control-panel {
   position: absolute;
-  top: 820px;
+  top: 720px;
   margin-bottom: 40px;
 }
 label.radio-label {
