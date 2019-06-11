@@ -19,16 +19,34 @@ var pdf_larg = 200;
 var pdf_alt = 110;
 
 var pdf_msu = 12;
-var pdf_mgiu = 10;
+var pdf_mgiu = 12;
 
 var pdf_msx = 10;
 var pdf_mdx = 10;
+
+var show_margins = true;
+var force_petit_checkbox = false;
+
+var font_settings = {
+  corpo_nomi: 30,
+  interlinea_nomi: 24,
+  spaziosotto_nomi: 8,
+  corpo_specifica: 20,
+  interlinea_specifica: 16,
+  spaziosotto_specifica: 8,
+  riduzione_nomi_piccoli: 1.75
+}
+
+
 
 // Helper function: converts mm to pdf-units (pt)
 function mmToUnits(mm) {
   units = mm * 2.8368794326;
   return units;
 }
+
+
+
 
 
 
@@ -229,32 +247,31 @@ var show_input_fields = function(container, struttura) {
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
 
+  box.appendChild( create_text_plus("1:", "nome_1", "Letteratura inglese", "spec") );
+  box.appendChild( create_text_plus("2:", "nome_2", "Beatrice Tottossi", "nome") );
+  box.appendChild( create_text_plus("3:", "nome_3", "Barbr Rossi", "nome") );
+  box.appendChild( create_text_plus("4:", "nome_4", " ", "nome") );
+  box.appendChild( create_text_plus("5:", "nome_5", "Editoria", "spec") );
+  box.appendChild( create_text_plus("6:", "nome_6", "Beatruce Tottossi", "nome") );
+  box.appendChild( create_text_plus("7:", "nome_7", "Arianna Antonelli", "nome") );
+  box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
+  box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
+  box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
+  box.appendChild( create_text_plus("11:", "nome_11", "", "nome") );
+  box.appendChild( create_text_plus("12:", "nome_12", "", "nome") );
+  box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
+
   var petit_line = document.createElement("div");
   petit_line.setAttribute("class", "input_line");
   var petit_checkbox = document.createElement("input");
   var petit_checkbox_label = document.createElement("label");
-  petit_checkbox_label.textContent = "nomi piccoli";
+  petit_checkbox_label.textContent = "usa nomi piccoli";
   petit_checkbox.setAttribute("type", "checkbox");
   petit_checkbox.setAttribute("name", "petit");
   petit_checkbox.onchange = aggiorna_pdf;
   petit_line.appendChild(petit_checkbox);
   petit_line.appendChild(petit_checkbox_label);
   box.appendChild(petit_line);
-
-  box.appendChild( create_text_plus("Nome 1:", "nome_1", "Siri Nergard", "nome") );
-  box.appendChild( create_text_plus("Nome 2:", "nome_2", "Norvegese", "spec") );
-  box.appendChild( create_text_plus("Nome 3:", "nome_3", "DIMAI", "spec") );
-  box.appendChild( create_text_plus("Nome 4:", "nome_4", "Un nome molto lungo che va su tante righe", "spec") );
-  box.appendChild( create_text_plus("Nome 5:", "nome_5") );
-  box.appendChild( create_text_plus("Nome 6:", "nome_6") );
-  box.appendChild( create_text_plus("Nome 7:", "nome_7") );
-  box.appendChild( create_text_plus("Nome 8:", "nome_8") );
-  box.appendChild( create_text_plus("Nome 9:", "nome_9") );
-  box.appendChild( create_text_plus("Nome 10:", "nome_10") );
-  box.appendChild( create_text_plus("Nome 11:", "nome_11") );
-  box.appendChild( create_text_plus("Nome 12:", "nome_12") );
-  box.appendChild( create_text_plus("Nome 13:", "nome_13") );
-  box.appendChild( create_text_plus("Nome 14:", "nome_14") );
 
   // aggiunge nota in fondo
   let note = document.createElement("p");
@@ -287,22 +304,18 @@ var fetch_nome = function (selector, checkbox_name, next_name) {
   // moltiplicatore per nomi petit
   let a = 1;
   let petit_checkbox = document.getElementsByName("petit");
-  if (petit_checkbox[0].checked) {
-  a = 1.5;
+  if (petit_checkbox[0].checked || force_petit_checkbox) {
+  a = font_settings.riduzione_nomi_piccoli;
   }
 
   // controllo spaziosotto per specifica dopo nome
   let spec_dopo_nome = 1;
   let this_checkbox = document.getElementsByName(checkbox_name);
   let next_checkbox = document.getElementsByName(next_name);
-  console.log(checkbox_name);
-  console.log(this_checkbox);
 
-  console.log(next_name);
-  console.log(next_checkbox);
   if (next_checkbox[0]) {
     if (next_checkbox[0].checked) {
-      spec_dopo_nome = 0;
+      spec_dopo_nome = 0.25;
     }
   }
 
@@ -316,15 +329,15 @@ var fetch_nome = function (selector, checkbox_name, next_name) {
   if (container) {
     obj.content = container.getElementsByTagName("input")[0].value;
     //NOME
-    obj.size = 30/a;
-    obj.interlinea = 24/a;
-    obj.spaziosotto = 10/a*spec_dopo_nome;
+    obj.size = font_settings.corpo_nomi/a;
+    obj.interlinea = font_settings.interlinea_nomi/a;
+    obj.spaziosotto = font_settings.spaziosotto_nomi/a*spec_dopo_nome;
 
     //SPECIFICA
     if (this_checkbox[0].checked) {
-      obj.size = 20/a;
-      obj.interlinea = 20/a;
-      obj.spaziosotto = 5/a;
+      obj.size = font_settings.corpo_specifica/a;
+      obj.interlinea = font_settings.interlinea_specifica/a;
+      obj.spaziosotto = font_settings.spaziosotto_specifica/a;
     };
 
   }
@@ -362,9 +375,8 @@ var  fetch_info = function() {
   infos.Nomi.push(fetch_nome("#nome_11", "nome_11_checkbox", "nome_12_checkbox"));
   infos.Nomi.push(fetch_nome("#nome_12", "nome_12_checkbox", "nome_13_checkbox"));
   infos.Nomi.push(fetch_nome("#nome_13", "nome_13_checkbox", "nome_14_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_14", "nome_14_checkbox", "nome_15_checkbox"));
 
-  infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
+  infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
   return infos;
@@ -413,9 +425,9 @@ const crea_pdf = function(info) {
 
 
   // Impostazioni layout
-  let strutture_textbox_width = mmToUnits(80);
-  let funzioni_textbox_width = mmToUnits(80);
-  let right_textbox_width = mmToUnits(95);
+  let strutture_textbox_width = mmToUnits(85);
+  let funzioni_textbox_width = mmToUnits(85);
+  let right_textbox_width = mmToUnits(90);
 
   // Impostazioni font
   // strutture bold
@@ -443,7 +455,7 @@ const crea_pdf = function(info) {
   // funzioni
   let funzioni_font = helvetica65;
   let funzioni_corpo = 20;
-  let funzioni_interlinea = 20;
+  let funzioni_interlinea = 18;
   let funzioni_options = {
     width: funzioni_textbox_width,
     lineGap: funzioni_interlinea-funzioni_corpo*1.2,
@@ -473,43 +485,6 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
   .fill(pdf_background)
 
 
-  // Mostra le guide se necessario
-  // document.querySelector("#options-margins").checked = true;              // uncomment this to force margin visualization
-  if (document.querySelector("#options-margins").checked === true) {
-
-    doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
-        .stroke("red")
-
-        .moveTo(mmToUnits(0), mmToUnits(5))
-        .lineTo(mmToUnits(pdf_larg), mmToUnits(5))
-        .lineWidth(1)
-        .stroke("blue")
-
-        .moveTo(mmToUnits(0), mmToUnits(105))
-        .lineTo(mmToUnits(pdf_larg), mmToUnits(105))
-        .lineWidth(1)
-        .stroke("blue")
-
-        .moveTo(mmToUnits(pdf_msx), mmToUnits(38))
-        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(38))
-        .lineWidth(.5)
-        .stroke("green")
-
-        .moveTo(mmToUnits(pdf_msx), mmToUnits(40.7))
-        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(40.7))
-        .lineWidth(.5)
-        .stroke("green")
-
-        .moveTo(mmToUnits(pdf_msx), mmToUnits(95))
-        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(95))
-        .lineWidth(.5)
-        .stroke("green")
-  }
-
-
-
-
-
   // Scrive le scritte sul pdf
 
       // imposta colore
@@ -535,31 +510,68 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         doc.text(e, funzioni_options);
       })
 
-      console.log (info.Nomi);
+      // annotazioni sulla riga in basso
+      doc .font(helvetica45, 8)
+          .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
+          .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
 
-      // Calcola allineamento parte destra
+      console.log (info);
+
+
+      // nomi e specifiche
+
+      // options per la parte nomi
+      var nomi_options = function(e) {
+        var options = {align: 'right', width: right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto}
+        return options
+      }
+
+      // calcola allineamento verticale
       let lines_total_height = 0;
       info.Nomi.forEach(function(e) {
         doc.font(helvetica45, e.size); // sets fonts for the right calculations
-        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto});
+        let h = doc.heightOfString(e.content, nomi_options(e));
         // console.log (w,h);
         lines_total_height += h;
       });
+      console.log(info.Nomi);
+      // qui c'è un bug: l'ultima riga non è l'ultima con un contenuto, ma l'ultima in assoluto
       lines_total_height -= info.Nomi[info.Nomi.length - 1].spaziosotto;
 
-      // nomi e specifiche
+
+      // scrive nomi e specifiche
       doc .font(helvetica45, 1)
-          .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 241 - lines_total_height)
+          .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 245 - lines_total_height)
       info.Nomi.forEach(function(e) {
         doc .font(helvetica45, (e.size))
-            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto});
+            .text(e.content, nomi_options(e));
       })
 
-      // annotazioni sulla riga in basso
-  doc .font(helvetica45, 8)
-      .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
-      .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
+      // crea un rettangolo per coprire l'overflow
+      doc .rect(10, 0, 550, 29)
+          .fill("black")
 
+      // Mostra le guide e i margini se necessario
+      if (show_margins === true) {
+
+        doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
+            .stroke("red")
+
+            .moveTo(mmToUnits(0), mmToUnits(5))
+            .lineTo(mmToUnits(pdf_larg), mmToUnits(5))
+            .lineWidth(1)
+            .stroke("blue")
+
+            .moveTo(mmToUnits(0), mmToUnits(105))
+            .lineTo(mmToUnits(pdf_larg), mmToUnits(105))
+            .lineWidth(1)
+            .stroke("blue")
+
+            .moveTo(mmToUnits(pdf_msx), mmToUnits(100))
+            .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(100))
+            .lineWidth(.5)
+            .stroke("yellow")
+      }
 
   // chiude il pdf
   doc.end();
