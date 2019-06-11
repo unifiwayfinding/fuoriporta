@@ -181,7 +181,7 @@ var create_select_and_text = function (etichetta, id, lista) {
 
 var create_text_plus = function(etichetta, id, value, type) {
   let input_line = document.createElement("div");
-  input_line.setAttribute("class", "input_line");
+  input_line.setAttribute("class", "input_line nomi_line");
   input_line.setAttribute("id", id);
 
   let label_box = document.createElement("div");
@@ -246,6 +246,7 @@ var show_input_fields = function(container, struttura) {
 
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
+  box.setAttribute("id", "nomi_box");
 
   box.appendChild( create_text_plus("1:", "nome_1", "Letteratura inglese", "spec") );
   box.appendChild( create_text_plus("2:", "nome_2", "Beatrice Tottossi", "nome") );
@@ -289,6 +290,10 @@ var show_input_fields = function(container, struttura) {
 
 
 
+
+
+
+
 // ----------------------------------------------------
 // ---- FETCH INFO FROM INPUT FIELDS TO OBJECT --------
 // ----------------------------------------------------
@@ -305,7 +310,7 @@ var fetch_nome = function (selector, checkbox_name, next_name) {
   let a = 1;
   let petit_checkbox = document.getElementsByName("petit");
   if (petit_checkbox[0].checked || force_petit_checkbox) {
-  a = font_settings.riduzione_nomi_piccoli;
+    a = font_settings.riduzione_nomi_piccoli;
   }
 
   // controllo spaziosotto per specifica dopo nome
@@ -344,6 +349,20 @@ var fetch_nome = function (selector, checkbox_name, next_name) {
   return obj;
 }
 
+var fetch_nomi = function (parent_selector) {
+  let array = [];
+  let lines = document.querySelector(parent_selector).getElementsByClassName("nomi_line");
+  for (var i = 0; i < lines.length; i++) {
+    let inputs = lines[i].getElementsByTagName("input");
+    let content = inputs[0].value;
+    if (inputs[0].value && inputs[1].checked) {
+      content = "*" + content;
+    }
+    array.push(content);
+  }
+
+  return array;
+}
 
 // Carica informazioni
 var  fetch_info = function() {
@@ -360,27 +379,23 @@ var  fetch_info = function() {
   infos.Funzioni.push( fetch_one_info("#funzione_2") );
   infos.Funzioni.push( fetch_one_info("#funzione_3") );
 
-  infos.Nomi = [];
+  infos.Nomi = fetch_nomi("#nomi_box");
 
-  infos.Nomi.push(fetch_nome("#nome_1", "nome_1_checkbox", "nome_2_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_2", "nome_2_checkbox", "nome_3_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_3", "nome_3_checkbox", "nome_4_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_4", "nome_4_checkbox", "nome_5_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_5", "nome_5_checkbox", "nome_6_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_6", "nome_6_checkbox", "nome_7_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_7", "nome_7_checkbox", "nome_8_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_8", "nome_8_checkbox", "nome_9_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_9", "nome_9_checkbox", "nome_10_checkbox" ));
-  infos.Nomi.push(fetch_nome("#nome_10", "nome_10_checkbox", "nome_11_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_11", "nome_11_checkbox", "nome_12_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_12", "nome_12_checkbox", "nome_13_checkbox"));
-  infos.Nomi.push(fetch_nome("#nome_13", "nome_13_checkbox", "nome_14_checkbox"));
+  infos.Nomi_piccoli = false;
+  if (document.getElementsByName("petit")[0].checked || force_petit_checkbox) {
+    infos.Nomi_piccoli = true;
+  }
+
 
   infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
   return infos;
 }
+
+
+
+
 
 
 
@@ -407,13 +422,12 @@ var  fetch_info = function() {
  * @param {string} info.St_l2 - Info struttura
  * @param {array} info.Funzioni - Array di stringhe per le funzioni
  * @param {array} info.Nomi - Array di oggetti
- * @param {string} info.Nomi[i].content - Nome o specifica
- * @param {number} info.Nomi[i].size - Corpo font in pt
- * @param {number} info.Nomi[i].spaziosotto - Spazio sotto paragrafo in pt
  */
 
-
 const crea_pdf = function(info) {
+
+  console.log (info);
+
 
   // Impostazioni colori
   let pdf_background = "#fff";
@@ -515,8 +529,6 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
           .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
           .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
 
-      console.log (info);
-
 
       // nomi e specifiche
 
@@ -528,21 +540,22 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
       // calcola allineamento verticale
       let lines_total_height = 0;
-      info.Nomi.forEach(function(e) {
+      let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli);
+
+      processedNomi.forEach(function(e) {
         doc.font(helvetica45, e.size); // sets fonts for the right calculations
         let h = doc.heightOfString(e.content, nomi_options(e));
         // console.log (w,h);
         lines_total_height += h;
       });
-      console.log(info.Nomi);
       // qui c'è un bug: l'ultima riga non è l'ultima con un contenuto, ma l'ultima in assoluto
-      lines_total_height -= info.Nomi[info.Nomi.length - 1].spaziosotto;
+      lines_total_height -= processedNomi[processedNomi.length - 1].spaziosotto;
 
 
       // scrive nomi e specifiche
       doc .font(helvetica45, 1)
           .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 245 - lines_total_height)
-      info.Nomi.forEach(function(e) {
+      processedNomi.forEach(function(e) {
         doc .font(helvetica45, (e.size))
             .text(e.content, nomi_options(e));
       })
@@ -585,6 +598,47 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
   });
 }
 
+
+var apply_fonts_to_nomi = function(nomi, nomipiccoli) {
+  let new_nomi = [];
+
+  // regola i nomi piccoli
+  let a = 1;
+  if (nomipiccoli || force_petit_checkbox) {
+    a = font_settings.riduzione_nomi_piccoli;
+  }
+
+  // regola lo spazio tra nome e specifica
+  let spec_dopo_nome = 1;
+
+  for (i = 0; i < nomi.length; i++) {
+    let x = nomi[i];
+
+    if (nomi[i+1] && nomi[i+1].charAt(0) === "*") {
+      spec_dopo_nome = 0.25;
+    }
+
+    if (x.charAt(0) === "*") {
+      x = x.substr(1);
+      new_nomi.push({
+        content: x,
+        size: font_settings.corpo_specifica / a,
+        interlinea: font_settings.interlinea_specifica / a,
+        spaziosotto: font_settings.spaziosotto_specifica / a
+      })
+    } else {
+      new_nomi.push({
+        content: x,
+        size: font_settings.corpo_nomi / a,
+        interlinea: font_settings.interlinea_nomi / a,
+        spaziosotto: font_settings.spaziosotto_nomi / a * spec_dopo_nome
+      })
+    }
+  }
+
+  return new_nomi;
+
+}
 
 
 
