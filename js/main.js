@@ -429,7 +429,7 @@ var  fetch_info = function() {
 
 const crea_pdf = function(info) {
 
-  console.log("crea_pdf started");
+  console.log("updating pdf preview...");
   console.log (info);
 
   // Impostazioni colori
@@ -770,10 +770,11 @@ function async_trigger() {
 // ---------------------------------
 
 var carica_csv = function() {
-  console.log("start");
+  let csv_counter = document.querySelector("#csv_page_counter");
+  console.log("loading csv data...");
 
   d3.dsv(";", "./import.csv").then(function(data) {
-    crea_pdf(fetch_info_da_csv(data[5]));
+    crea_pdf(fetch_info_da_csv(data[csv_counter.value]));
   })
 }
 
@@ -798,6 +799,24 @@ var fetch_info_da_csv = function(data_line){
 // STRUTTURA1a,STRUTTURA1b,STRUTTURA1c,STRUTTURA2a,STRUTTURA2b,PLESSO,N,FUNZIONE1,FUNZIONE2,FUNZIONE3,TEXT1,TEXT2,TEXT3,TEXT4,TEXT5,TEXT6,TEXT7
 
    return info;
+}
+
+var change_csv_page = function(action) {
+  let csv_counter = document.querySelector("#csv_page_counter");
+  console.log("value: " + csv_counter.value);
+
+
+  if (action === "prev") {
+    console.log("prev");
+    if (csv_counter.value > 1) {
+      csv_counter.value--;
+    }
+  } else if (action === "next") {
+    console.log("next");
+    csv_counter.value++;
+  }
+
+  carica_csv();
 }
 
 

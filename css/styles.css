@@ -22,7 +22,8 @@ p {
   float: left;
   height: 900px;
   width: 700px;
-  align-content: center;
+}
+#preview header {
   text-align: center;
 }
 #preview main {
@@ -103,11 +104,20 @@ button {
   width: 250px;
   height: 40px;
   background: #fff;
+  line-height: 0;
+}
+button.csv_controls {
+  width: 2px;
+  height: 20px;
+  display: inline;
+}
+#csv_page_counter {
+  width: 70px;
+  margin-bottom: 10px;
+  margin-left: 0;
 }
 #scarica_link,
 .options-input,
 button {
-  position: relative;
-  left: 90px;
   display: block;
 }

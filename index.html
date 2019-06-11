@@ -67,6 +67,10 @@
 				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
         <br>
         <br>
+        <button class="csv_controls" id="prev_csv" onclick="change_csv_page('prev')"><</button>
+          <input type="text" name="csv_page_counter" id="csv_page_counter" value="1">
+          <label class=radio-label>PAGINA</label>
+          <button class="csv_controls" id="next_csv" onclick="change_csv_page('next')">></button>
         <button id="carica_csv" onclick="carica_csv()">CARICA CSV</button>
         <button id="pdf_da_csv" onclick="pdf_da_csv()">CREA PDF DA CSV</button>
 			</div>
