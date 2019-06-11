@@ -92,7 +92,7 @@ input:disabled {
 }
 #control-panel {
   position: absolute;
-  top: 720px;
+  top: 620px;
   margin-bottom: 40px;
 }
 label.radio-label {

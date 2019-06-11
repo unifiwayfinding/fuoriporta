@@ -24,7 +24,7 @@ var pdf_mgiu = 12;
 var pdf_msx = 10;
 var pdf_mdx = 10;
 
-var show_margins = true;
+var show_margins = false;
 var force_petit_checkbox = false;
 
 var font_settings = {
@@ -421,13 +421,16 @@ var  fetch_info = function() {
  * @param {string} info.St_l1 - Info struttura
  * @param {string} info.St_l2 - Info struttura
  * @param {array} info.Funzioni - Array di stringhe per le funzioni
- * @param {array} info.Nomi - Array di oggetti
+ * @param {array} info.Nomi - Array di stringhe
+ * @param {boolean} info.Nomi_piccoli - boolean
+ * @param {string} Annotazioni_1 - Allinato a sinistra
+ * @param {string} Annotazioni_2 - Allineato a destra
  */
 
 const crea_pdf = function(info) {
 
+  console.log("crea_pdf started");
   console.log (info);
-
 
   // Impostazioni colori
   let pdf_background = "#fff";
@@ -494,6 +497,8 @@ const crea_pdf = function(info) {
     }
   });
 
+
+
   // Crea rettangolo di background
 doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
   .fill(pdf_background)
@@ -523,6 +528,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       info.Funzioni.forEach(function(e) {
         doc.text(e, funzioni_options);
       })
+
 
       // annotazioni sulla riga in basso
       doc .font(helvetica45, 8)
@@ -559,10 +565,6 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         doc .font(helvetica45, (e.size))
             .text(e.content, nomi_options(e));
       })
-
-      // crea un rettangolo per coprire l'overflow
-      doc .rect(10, 0, 550, 29)
-          .fill("black")
 
       // Mostra le guide e i margini se necessario
       if (show_margins === true) {
@@ -767,11 +769,40 @@ function async_trigger() {
 // ----------- CARICA CSV ----------
 // ---------------------------------
 
-var carica_csv = function () {
-  alert("csv!");
+var carica_csv = function() {
+  console.log("start");
+
+  d3.dsv(";", "./import.csv").then(function(data) {
+    crea_pdf(fetch_info_da_csv(data[5]));
+  })
+}
+
+var fetch_info_da_csv = function(data_line){
+  console.log(data_line);
+
+  let info = {
+    St_b1: data_line.STRUTTURA1a,
+    St_b2: data_line.STRUTTURA1b,
+    St_b3: data_line.STRUTTURA1c,
+    St_l1: data_line.STRUTTURA2a,
+    St_l2: data_line.STRUTTURA2b,
+    Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
+    Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
+    Nomi_piccoli: false,
+
+    Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
+    Annotazioni_2: (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
+
+  }
+
+// STRUTTURA1a,STRUTTURA1b,STRUTTURA1c,STRUTTURA2a,STRUTTURA2b,PLESSO,N,FUNZIONE1,FUNZIONE2,FUNZIONE3,TEXT1,TEXT2,TEXT3,TEXT4,TEXT5,TEXT6,TEXT7
+
+   return info;
 }
 
 
+var pdf_da_csv = function() {
+}
 
 
 
