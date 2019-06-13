@@ -8,6 +8,12 @@ pdf.js          required for preview visualization
 pdf.worker.js   comes together with pdf.js
 */
 
+/*
+ --- *** APPUNTI *** ---
+Prima di procedere va risolto il problema per il quale disattivando un funzionamenro provvisorio che si trova nelle ultime due righe smette tutto di funzionare
+*/
+
+
 PDFJS.workerSrc = 'js/pdf.worker.js';
 
 // ---------------------------------
@@ -37,6 +43,9 @@ var font_settings = {
   riduzione_nomi_piccoli: 1.75
 }
 
+var strutture_textbox_width = mmToUnits(85);
+var funzioni_textbox_width = mmToUnits(85);
+var right_textbox_width = mmToUnits(90);
 
 
 // Helper function: converts mm to pdf-units (pt)
@@ -45,8 +54,18 @@ function mmToUnits(mm) {
   return units;
 }
 
-
-
+var strutture_bold_font,
+strutture_bold_corpo,
+strutture_bold_interlinea,
+strutture_bold_options,
+strutture_light_font,
+strutture_light_corpo,
+strutture_light_interlinea,
+strutture_light_options,
+funzioni_font,
+funzioni_corpo,
+funzioni_interlinea,
+funzioni_options;
 
 
 
@@ -405,7 +424,7 @@ var  fetch_info = function() {
 // ---------------------------------
 
 /**
- * Aggiorna il PDF sia nell'anteprima che nel blog che può essere scaricato
+ * Aggiorna il PDF sia nell'anteprima che nel blob che può essere scaricato
  */
 
  var  aggiorna_pdf = function() {
@@ -441,50 +460,11 @@ const crea_pdf = function(info) {
 }
 
 
-  // Impostazioni layout
-  let strutture_textbox_width = mmToUnits(85);
-  let funzioni_textbox_width = mmToUnits(85);
-  let right_textbox_width = mmToUnits(90);
-
-  // Impostazioni font
-  // strutture bold
-  let strutture_bold_font = helvetica95;
-  let strutture_bold_corpo = 25;
-  let strutture_bold_interlinea = 21;
-  let strutture_bold_options = {
-    align: 'left',
-    width: strutture_textbox_width,
-    lineGap: strutture_bold_interlinea-strutture_bold_corpo*1.2,
-    paragraphGap: 0
-  };
-
-  // strutture light
-  let strutture_light_font = helvetica45;
-  let strutture_light_corpo = 16;
-  let strutture_light_interlinea = 14;
-  let strutture_light_options = {
-    align: 'left',
-    width: strutture_textbox_width,
-    lineGap: strutture_light_interlinea-strutture_light_corpo*1.2,
-    paragraphGap: 0
-  };
-
-  // funzioni
-  let funzioni_font = helvetica65;
-  let funzioni_corpo = 20;
-  let funzioni_interlinea = 18;
-  let funzioni_options = {
-    width: funzioni_textbox_width,
-    lineGap: funzioni_interlinea-funzioni_corpo*1.2,
-    paragraphGap: 5
-  };
-
-
   //Setup PDF document
   doc = new PDFDocument({
     autoFirstPage: false
   });
-  stream = doc.pipe(blobStream())
+  let stream = doc.pipe(blobStream())
 
   // Aggiungi pagina
   doc.addPage({
@@ -496,7 +476,6 @@ const crea_pdf = function(info) {
       right: mmToUnits(pdf_mdx)
     }
   });
-
 
 
   // Crea rettangolo di background
@@ -637,9 +616,7 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli) {
       })
     }
   }
-
   return new_nomi;
-
 }
 
 
@@ -684,6 +661,87 @@ var aggiorna_preview = function(url) {
     console.error(reason);
   });
 };
+
+
+
+
+
+
+
+
+
+
+// ---------------------------------
+// ----------- CARICA CSV ----------
+// ---------------------------------
+
+var carica_csv = function() {
+  let csv_counter = document.querySelector("#csv_page_counter");
+  console.log("loading csv data...");
+
+  d3.dsv(";", "./import.csv").then(function(data) {
+    crea_pdf(fetch_info_da_csv(data[csv_counter.value]));
+  })
+}
+
+var fetch_info_da_csv = function(data_line){
+  console.log(data_line);
+
+  let info = {
+    St_b1: data_line.STRUTTURA1a,
+    St_b2: data_line.STRUTTURA1b,
+    St_b3: data_line.STRUTTURA1c,
+    St_l1: data_line.STRUTTURA2a,
+    St_l2: data_line.STRUTTURA2b,
+    Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
+    Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
+    Nomi_piccoli: false,
+
+    Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
+    Annotazioni_2: (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
+
+  }
+
+// STRUTTURA1a,STRUTTURA1b,STRUTTURA1c,STRUTTURA2a,STRUTTURA2b,PLESSO,N,FUNZIONE1,FUNZIONE2,FUNZIONE3,TEXT1,TEXT2,TEXT3,TEXT4,TEXT5,TEXT6,TEXT7
+
+   return info;
+}
+
+var change_csv_page = function(action) {
+  let csv_counter = document.querySelector("#csv_page_counter");
+  console.log("value: " + csv_counter.value);
+
+
+  if (action === "prev") {
+    console.log("prev");
+    if (csv_counter.value > 1) {
+      csv_counter.value--;
+    }
+  } else if (action === "next") {
+    console.log("next");
+    csv_counter.value++;
+  }
+
+  carica_csv();
+}
+
+
+var pdf_da_csv = function() {
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -756,6 +814,42 @@ xhr.onload = function(e) {
 xhr.send();
 
 function async_trigger() {
+
+  // Impostazioni font
+  // strutture bold
+  strutture_bold_font = helvetica95;
+  strutture_bold_corpo = 25;
+  strutture_bold_interlinea = 21;
+  strutture_bold_options = {
+    align: 'left',
+    width: strutture_textbox_width,
+    lineGap: strutture_bold_interlinea-strutture_bold_corpo*1.2,
+    paragraphGap: 0
+  };
+
+  // strutture light
+  strutture_light_font = helvetica45;
+  strutture_light_corpo = 16;
+  strutture_light_interlinea = 14;
+  strutture_light_options = {
+    align: 'left',
+    width: strutture_textbox_width,
+    lineGap: strutture_light_interlinea-strutture_light_corpo*1.2,
+    paragraphGap: 0
+  };
+
+  // funzioni
+  funzioni_font = helvetica65;
+  funzioni_corpo = 20;
+  funzioni_interlinea = 18;
+  funzioni_options = {
+    width: funzioni_textbox_width,
+    lineGap: funzioni_interlinea-funzioni_corpo*1.2,
+    paragraphGap: 5
+  };
+
+  console.log("-- all font loaded --");
+
   aggiorna_pdf();
 };
 
@@ -765,63 +859,6 @@ function async_trigger() {
 
 
 
-// ---------------------------------
-// ----------- CARICA CSV ----------
-// ---------------------------------
-
-var carica_csv = function() {
-  let csv_counter = document.querySelector("#csv_page_counter");
-  console.log("loading csv data...");
-
-  d3.dsv(";", "./import.csv").then(function(data) {
-    crea_pdf(fetch_info_da_csv(data[csv_counter.value]));
-  })
-}
-
-var fetch_info_da_csv = function(data_line){
-  console.log(data_line);
-
-  let info = {
-    St_b1: data_line.STRUTTURA1a,
-    St_b2: data_line.STRUTTURA1b,
-    St_b3: data_line.STRUTTURA1c,
-    St_l1: data_line.STRUTTURA2a,
-    St_l2: data_line.STRUTTURA2b,
-    Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
-    Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
-    Nomi_piccoli: false,
-
-    Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
-    Annotazioni_2: (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
-
-  }
-
-// STRUTTURA1a,STRUTTURA1b,STRUTTURA1c,STRUTTURA2a,STRUTTURA2b,PLESSO,N,FUNZIONE1,FUNZIONE2,FUNZIONE3,TEXT1,TEXT2,TEXT3,TEXT4,TEXT5,TEXT6,TEXT7
-
-   return info;
-}
-
-var change_csv_page = function(action) {
-  let csv_counter = document.querySelector("#csv_page_counter");
-  console.log("value: " + csv_counter.value);
-
-
-  if (action === "prev") {
-    console.log("prev");
-    if (csv_counter.value > 1) {
-      csv_counter.value--;
-    }
-  } else if (action === "next") {
-    console.log("next");
-    csv_counter.value++;
-  }
-
-  carica_csv();
-}
-
-
-var pdf_da_csv = function() {
-}
 
 
 
