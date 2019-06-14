@@ -214,7 +214,6 @@ var create_text_input = function (enabled, etichetta, id, value) {
   return input_line;
 }
 
-
 // crea un select associato ad un campo di testo
 var create_select_and_text = function (etichetta, id, lista) {
   let input_multiline = document.createElement("div");
@@ -271,7 +270,7 @@ var create_select_and_text = function (etichetta, id, lista) {
   return input_multiline;
 }
 
-
+// crea un campo di testo associato ad un checkbox
 var create_text_plus = function(etichetta, id, value, type) {
   let input_line = document.createElement("div");
   input_line.setAttribute("class", "input_line nomi_line");
@@ -345,29 +344,32 @@ var change_csv_page = function(action) {
 // ------------- FETCHES INFO FROM FORM ---------------
 // ----------------------------------------------------
 
-var fetch_one_info = function (selector) {
+var fetch_one_info = function(selector) {
   let value = document.querySelector(selector) ? document.querySelector(selector).value : "";
   return value;
 }
 
-var fetch_nomi = function (parent_selector) {
+var fetch_nomi = function(parent_selector, line_class) {
   let array = [];
-  let lines = document.querySelector(parent_selector).getElementsByClassName("nomi_line");
-  for (var i = 0; i < lines.length; i++) {
-    let inputs = lines[i].getElementsByTagName("input");
-    let content = inputs[0].value;
-    if (inputs[0].value && inputs[1].checked) {
-      content = "*" + content;
-    }
-    array.push(content);
-  }
 
+  if (document.querySelector(parent_selector)) {
+    let lines = document.querySelector(parent_selector).getElementsByClassName("nomi_line");
+    for (var i = 0; i < lines.length; i++) {
+      let inputs = lines[i].getElementsByTagName("input");
+      let content = inputs[0].value;
+      if (inputs[0].value && inputs[1].checked) {
+        content = "*" + content;
+      }
+      array.push(content);
+    }
+  }
   return array;
 }
 
 // Carica informazioni
 var  fetch_info_from_form = function() {
   let infos = {}
+
 
   infos.St_b1 = fetch_one_info("#struttura_b1");
   infos.St_b2 = fetch_one_info("#struttura_b2");
@@ -383,11 +385,13 @@ var  fetch_info_from_form = function() {
 
   infos.Nomi = fetch_nomi("#nomi_box");
 
-  infos.Nomi_piccoli = false;
-  if (document.getElementsByName("petit")[0].checked || force_petit_checkbox) {
-    infos.Nomi_piccoli = true;
+  let nomipiccoli = false;
+  if (document.getElementsByName("petit")[0]) {
+    if (document.getElementsByName("petit")[0].checked) {
+      nomipiccoli = true;
+    }
   }
-
+  infos.Nomi_piccoli = nomipiccoli || force_petit_checkbox;
 
   infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
@@ -560,7 +564,9 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
         lines_total_height += h;
       });
       // qui c'è un bug: l'ultima riga non è l'ultima con un contenuto, ma l'ultima in assoluto
-      lines_total_height -= processedNomi[processedNomi.length - 1].spaziosotto;
+      if (processedNomi.length > 0) {
+        lines_total_height -= processedNomi[processedNomi.length - 1].spaziosotto;
+      }
 
 
       // scrive nomi e specifiche
@@ -861,6 +867,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
   populate_select_input(struttura_selector, lista_strutture);
 
   // comment this for production
-  struttura_selector.selectedIndex = 1;
-  show_inputs(1);
+  // struttura_selector.selectedIndex = 1; show_inputs(1);
 });
