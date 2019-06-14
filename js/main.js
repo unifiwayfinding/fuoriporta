@@ -21,31 +21,49 @@ PDFJS.workerSrc = 'js/pdf.worker.js';
 // ---------------------------------
 
 // impostazioni PDF, in mm
-var pdf_larg = 200;
-var pdf_alt = 110;
+const show_margins = false;
+const force_petit_checkbox = false;
 
-var pdf_msu = 12;
-var pdf_mgiu = 12;
+const impostazioni_PDF = {
+larg : 200,
+alt : 110,
+msu : 12,
+mgiu : 12,
+msx : 10,
+mdx : 10,
 
-var pdf_msx = 10;
-var pdf_mdx = 10;
+    corpo_nomi: 30,
+    interlinea_nomi: 24,
+    spaziosotto_nomi: 8,
+    corpo_specifica: 20,
 
-var show_margins = false;
-var force_petit_checkbox = false;
+    interlinea_specifica: 16,
+    spaziosotto_specifica: 8,
+    riduzione_nomi_piccoli: 1.75,
 
-var font_settings = {
-  corpo_nomi: 30,
-  interlinea_nomi: 24,
-  spaziosotto_nomi: 8,
-  corpo_specifica: 20,
-  interlinea_specifica: 16,
-  spaziosotto_specifica: 8,
-  riduzione_nomi_piccoli: 1.75
+    strutture_bold_font: null,
+    strutture_bold_corpo: 25,
+    strutture_bold_interlinea: 21,
+    strutture_bold_spaziosotto: 0,
+
+    strutture_bold_font: null,
+    strutture_light_corpo: 16,
+    strutture_light_interlinea: 14,
+    strutture_light_spaziosotto: 0,
+
+    funzioni_font: null,
+    funzioni_corpo: 20,
+    funzioni_interlinea: 18,
+    funzioni_spaziosotto: 5,
+
+
+left_textbox_width : mmToUnits(90),
+right_textbox_width : mmToUnits(85),
+
+foreground: "#fff",
+background: "#000"
 }
 
-var strutture_textbox_width = mmToUnits(85);
-var funzioni_textbox_width = mmToUnits(85);
-var right_textbox_width = mmToUnits(90);
 
 
 // Helper function: converts mm to pdf-units (pt)
@@ -54,21 +72,6 @@ function mmToUnits(mm) {
   return units;
 }
 
-var strutture_bold_font,
-strutture_bold_corpo,
-strutture_bold_interlinea,
-strutture_bold_options,
-strutture_light_font,
-strutture_light_corpo,
-strutture_light_interlinea,
-strutture_light_options,
-funzioni_font,
-funzioni_corpo,
-funzioni_interlinea,
-funzioni_options;
-
-
-
 
 
 // ----------------------------------------------------
@@ -76,12 +79,12 @@ funzioni_options;
 // ----------------------------------------------------
 
 // aggiorna il pdf in automatico
-// ATTENZIONE: FUNZIONE IMPURA - chiama "aggiorna_pdf()"
+// ATTENZIONE: FUNZIONE IMPURA - chiama "aggiorna_anteprima_da_form()"
 var timeout = null;
 var update = function (e) {
   clearTimeout(timeout);
   timeout = setTimeout(function () {
-      aggiorna_pdf();
+      aggiorna_anteprima_da_form();
   }, 500);
 }
 
@@ -147,7 +150,7 @@ var show_input_fields = function(container, struttura) {
   petit_checkbox_label.textContent = "usa nomi piccoli";
   petit_checkbox.setAttribute("type", "checkbox");
   petit_checkbox.setAttribute("name", "petit");
-  petit_checkbox.onchange = aggiorna_pdf;
+  petit_checkbox.onchange = aggiorna_anteprima_da_form;
   petit_line.appendChild(petit_checkbox);
   petit_line.appendChild(petit_checkbox_label);
   box.appendChild(petit_line);
@@ -160,7 +163,7 @@ var show_input_fields = function(container, struttura) {
   container.appendChild(box);
 
   // aggiorna il PDF
-  aggiorna_pdf();
+  aggiorna_anteprima_da_form();
 }
 
 // -- DA QUI IN POI HELPER FUNCTIONS:
@@ -264,7 +267,7 @@ var create_select_and_text = function (etichetta, id, lista) {
       box.appendChild(text_field);
     }
 
-    aggiorna_pdf();
+    aggiorna_anteprima_da_form();
   };
 
   return input_multiline;
@@ -301,7 +304,7 @@ var create_text_plus = function(etichetta, id, value, type) {
   checkbox_label.textContent = "specifica";
   checkbox.setAttribute("type", "checkbox");
   checkbox.setAttribute("name", id+"_checkbox");
-  checkbox.onchange = aggiorna_pdf;
+  checkbox.onchange = aggiorna_anteprima_da_form;
   if (type=="spec") {checkbox.setAttribute("checked", "checked");}
   input_line.appendChild(checkbox);
   input_line.appendChild(checkbox_label);
@@ -333,7 +336,7 @@ var change_csv_page = function(action) {
     csv_counter.value++;
   }
 
-  carica_csv();
+  aggiorna_anteprima_da_csv();
 }
 
 
@@ -410,17 +413,7 @@ var  fetch_info_from_form = function() {
 // ------------- FETCHES INFO FROM CSV ----------------
 // ----------------------------------------------------
 
-
-var aggiorna_preview_da_csv = function() {
-  let csv_counter = document.querySelector("#csv_page_counter");
-  console.log("loading csv data...");
-
-  d3.dsv(";", "./import.csv").then(function(data) {
-    crea_pdf(fetch_info_from_csv(data[csv_counter.value]));
-  })
-}
-
-var fetch_info_from_csv = function(data_line){
+var fetch_info_from_csv = function(data_line) {
   console.log(data_line);
 
   let info = {
@@ -430,15 +423,18 @@ var fetch_info_from_csv = function(data_line){
     St_l1: data_line.STRUTTURA2a,
     St_l2: data_line.STRUTTURA2b,
     St_l3: data_line.STRUTTURA2c,
-    Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
-    Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
+    Funzioni: [data_line.FUNZIONE1, data_line.FUNZIONE2, data_line.FUNZIONE3],
+    Nomi: [data_line.TEXT1, data_line.TEXT2, data_line.TEXT3, data_line.TEXT4, data_line.TEXT5, data_line.TEXT6, data_line.TEXT7],
     Nomi_piccoli: false,
 
     Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
-    Annotazioni_2: (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
+    Annotazioni_2: (function() {
+      d = new Date();
+      return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
+    })()
   }
 
-   return info;
+  return info;
 }
 
 
@@ -448,45 +444,95 @@ var fetch_info_from_csv = function(data_line){
 
 
 
-// ---------------------------------
-// ---- CREATE PDF WITH PDFKIT -----
-// ---------------------------------
+// -----------------------------------------------------------
+// ---------------- AGGIORNA L'ANTEPRIMA ---------------------
+// ------------- (CREA IL PDF CON PDFKIT) --------------------
+// -------------- (VISUALIZZA ANTEPRIMA) ---------------------
+// ----------(AGGIORNA LINK DOWNLOAD ANTEPRIMA) --------------
+// -----------------------------------------------------------
 
-/**
- * Aggiorna il PDF sia nell'anteprima che nel blob che può essere scaricato
- */
 
- var  aggiorna_pdf = function() {
-  crea_pdf(fetch_info_from_form());
+
+
+var aggiorna_anteprima_da_csv = function() {
+  let csv_counter = document.querySelector("#csv_page_counter");
+
+  d3.dsv(";", "./import.csv").then(function(data) {
+    compila_pdf(fetch_info_from_csv(data[csv_counter.value]), impostazioni_PDF);
+  })
 }
+
+
+var aggiorna_anteprima_da_form = function() {
+  compila_pdf(fetch_info_from_form(), impostazioni_PDF);
+}
+
 
 /**
  * Crea il PDF a partire dalle informazioni
  * @param {object} info - Le informazioni per il fuoriporta.
- * @param {string} info.St_b1 - Info struttura
- * @param {string} info.St_b2 - Info struttura
- * @param {string} info.St_b3 - Info struttura
- * @param {string} info.St_l1 - Info struttura
- * @param {string} info.St_l2 - Info struttura
- * @param {array} info.Funzioni - Array di stringhe per le funzioni
- * @param {array} info.Nomi - Array di stringhe
- * @param {boolean} info.Nomi_piccoli - boolean
- * @param {string} Annotazioni_1 - Allinato a sinistra
- * @param {string} Annotazioni_2 - Allineato a destra
+   * @param {string} info.St_b1 - Info struttura
+   * @param {string} info.St_b2 - Info struttura
+   * @param {string} info.St_b3 - Info struttura
+   * @param {string} info.St_l1 - Info struttura
+   * @param {string} info.St_l2 - Info struttura
+   * @param {array} info.Funzioni - Array di stringhe per le funzioni
+   * @param {array} info.Nomi - Array di stringhe
+   * @param {boolean} info.Nomi_piccoli - boolean
+   * @param {string} Annotazioni_1 - Allinato a sinistra
+   * @param {string} Annotazioni_2 - Allineato a destra
+   * @return {object} compiled PDF
  */
 
-const crea_pdf = function(info) {
+
+const compila_pdf = function(info, pdf_settings) {
 
   console.log("updating pdf preview...");
   console.log (info);
 
+
+  //////////////////////////////
+  // SISTEMA ALCUNE IMPOSTAZIONI
+
   // Impostazioni colori
-  let pdf_background = "#fff";
-  let pdf_foreground = "#000";
-  if (document.querySelector("#options-color-black").checked == true) {
-    pdf_background = "#000";
-    pdf_foreground = "#fff";
+  if (document.querySelector("#options-color-black").checked == false) {
+    pdf_settings.background = "#fff";
+    pdf_settings.foreground = "#000";
 }
+
+let page_options = {
+  size: [mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt)],
+  margins: {
+    top: mmToUnits(pdf_settings.msu),
+    bottom: 0,
+    left: mmToUnits(pdf_settings.msx),
+    right: mmToUnits(pdf_settings.mdx)
+  }
+}
+
+strutture_bold_options = {
+  width: pdf_settings.left_textbox_width,
+  lineGap: pdf_settings.strutture_bold_interlinea - pdf_settings.strutture_bold_corpo*1.2,
+  paragraphGap: 0
+};
+
+strutture_light_options = {
+  width: pdf_settings.left_textbox_width,
+  lineGap: pdf_settings.strutture_light_interlinea - pdf_settings.strutture_light_corpo*1.2,
+  paragraphGap: 0
+};
+
+funzioni_options = {
+  width: pdf_settings.left_textbox_width,
+  lineGap: pdf_settings.funzioni_interlinea - pdf_settings.funzioni_corpo*1.2,
+  paragraphGap: 5
+};
+
+let data_array = [info];
+console.log(data_array);
+
+//////////////////////////////
+// SISTEMA ALCUNE IMPOSTAZIONI
 
 
   //Setup PDF document
@@ -495,36 +541,31 @@ const crea_pdf = function(info) {
   });
   let stream = doc.pipe(blobStream())
 
+
+
+
   // Aggiungi pagina
-  doc.addPage({
-    size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
-    margins: {
-      top: mmToUnits(pdf_msu),
-      bottom: 0,
-      left: mmToUnits(pdf_msx),
-      right: mmToUnits(pdf_mdx)
-    }
-  });
+  doc.addPage(page_options);
 
 
   // Crea rettangolo di background
-doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
-  .fill(pdf_background)
+doc.rect(0, 0, mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt))
+  .fill(pdf_settings.background)
 
 
   // Scrive le scritte sul pdf
 
       // imposta colore
-  doc .fill(pdf_foreground);
+  doc .fill(pdf_settings.foreground);
 
       // strutture bold
-  doc .font(strutture_bold_font, strutture_bold_corpo)
+  doc .font(pdf_settings.strutture_bold_font, pdf_settings.strutture_bold_corpo)
       .text(info.St_b1, strutture_bold_options)
       .text(info.St_b2, strutture_bold_options)
       .text(info.St_b3, strutture_bold_options)
       // strutture light
 
-      .font(strutture_light_font, strutture_light_corpo)
+      .font(pdf_settings.strutture_light_font, pdf_settings.strutture_light_corpo)
       .text(info.St_l1, strutture_light_options)
       .text(info.St_l2, strutture_light_options)
       .text(info.St_l3, strutture_light_options)
@@ -533,7 +574,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       .font(helvetica65, 8.5).text(" ")
 
       // funzioni
-      .font(funzioni_font, funzioni_corpo)
+      .font(pdf_settings.funzioni_font, pdf_settings.funzioni_corpo)
       info.Funzioni.forEach(function(e) {
         doc.text(e, funzioni_options);
       })
@@ -541,21 +582,21 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
       // annotazioni sulla riga in basso
       doc .font(helvetica45, 8)
-          .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
-          .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
+          .text(info.Annotazioni_1, mmToUnits(pdf_settings.msx), mmToUnits(106), {})
+          .text(info.Annotazioni_2, mmToUnits(pdf_settings.msx), mmToUnits(106), {align: "right"})
 
 
       // nomi e specifiche
 
       // options per la parte nomi
       var nomi_options = function(e) {
-        var options = {align: 'right', width: right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto}
+        var options = {align: 'right', width: pdf_settings.right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto}
         return options
       }
 
       // calcola allineamento verticale
       let lines_total_height = 0;
-      let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli);
+      let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli, pdf_settings);
 
       processedNomi.forEach(function(e) {
         doc.font(helvetica45, e.size); // sets fonts for the right calculations
@@ -571,7 +612,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
       // scrive nomi e specifiche
       doc .font(helvetica45, 1)
-          .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 245 - lines_total_height)
+          .text(" ", mmToUnits(pdf_settings.larg - pdf_settings.mdx) - pdf_settings.right_textbox_width, mmToUnits(pdf_settings.msu) + 245 - lines_total_height)
       processedNomi.forEach(function(e) {
         doc .font(helvetica45, (e.size))
             .text(e.content, nomi_options(e));
@@ -580,21 +621,21 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       // Mostra le guide e i margini se necessario
       if (show_margins === true) {
 
-        doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
+        doc .rect(mmToUnits(pdf_settings.msx), mmToUnits(pdf_settings.msu), mmToUnits(pdf_settings.larg - pdf_settings.msx - pdf_settings.mdx), mmToUnits(pdf_settings.alt - pdf_settings.msu - pdf_settings.mgiu))
             .stroke("red")
 
             .moveTo(mmToUnits(0), mmToUnits(5))
-            .lineTo(mmToUnits(pdf_larg), mmToUnits(5))
+            .lineTo(mmToUnits(pdf_settings.larg), mmToUnits(5))
             .lineWidth(1)
             .stroke("blue")
 
             .moveTo(mmToUnits(0), mmToUnits(105))
-            .lineTo(mmToUnits(pdf_larg), mmToUnits(105))
+            .lineTo(mmToUnits(pdf_settings.larg), mmToUnits(105))
             .lineWidth(1)
             .stroke("blue")
 
-            .moveTo(mmToUnits(pdf_msx), mmToUnits(100))
-            .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(100))
+            .moveTo(mmToUnits(pdf_settings.msx), mmToUnits(100))
+            .lineTo(mmToUnits(pdf_settings.larg - pdf_settings.mdx), mmToUnits(100))
             .lineWidth(.5)
             .stroke("yellow")
       }
@@ -604,15 +645,23 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 
   // aggiorna link "scarica pdf" e l'anteprima
   stream.on('finish', function() {
-    pdf_url = stream.toBlobURL('application/pdf')
+    pdf_url = stream.toBlobURL('application/pdf');
+
+    // aggiorna il link "scarica il pdf"
     scaricaPdf_link = document.querySelector("#scarica_link");
     scaricaPdf_link.href = pdf_url;
-    aggiorna_preview(pdf_url);
+
+    // aggiorna la visualizzazione dell'anteprima
+    visualize_preview(pdf_url);
   });
 }
 
 
-var apply_fonts_to_nomi = function(nomi, nomipiccoli) {
+
+
+
+
+var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
   let new_nomi = [];
 
   // regola i nomi piccoli
@@ -626,7 +675,6 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli) {
 
   for (i = 0; i < nomi.length; i++) {
     let x = nomi[i];
-
     if (nomi[i+1] && nomi[i+1].charAt(0) === "*") {
       spec_dopo_nome = 0.25;
     }
@@ -661,7 +709,10 @@ var pdf_multipagina_da_csv = function() {
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-var aggiorna_preview = function(url) {
+
+
+var visualize_preview = function(url) {
+
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
     console.log('PDF loaded');
@@ -743,21 +794,6 @@ xhr.onload = function(e) {
 };
 xhr.send();
 
-// load font helvetica bold
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Bd.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica75 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
-  };
-};
-xhr.send();
-
 // load font helvetica medium
 xhr_to_load++;
 var xhr = new XMLHttpRequest();
@@ -791,41 +827,13 @@ xhr.send();
 function async_trigger() {
 
   // Impostazioni font
-  // strutture bold
-  strutture_bold_font = helvetica95;
-  strutture_bold_corpo = 25;
-  strutture_bold_interlinea = 21;
-  strutture_bold_options = {
-    align: 'left',
-    width: strutture_textbox_width,
-    lineGap: strutture_bold_interlinea-strutture_bold_corpo*1.2,
-    paragraphGap: 0
-  };
-
-  // strutture light
-  strutture_light_font = helvetica45;
-  strutture_light_corpo = 16;
-  strutture_light_interlinea = 14;
-  strutture_light_options = {
-    align: 'left',
-    width: strutture_textbox_width,
-    lineGap: strutture_light_interlinea-strutture_light_corpo*1.2,
-    paragraphGap: 0
-  };
-
-  // funzioni
-  funzioni_font = helvetica65;
-  funzioni_corpo = 20;
-  funzioni_interlinea = 18;
-  funzioni_options = {
-    width: funzioni_textbox_width,
-    lineGap: funzioni_interlinea-funzioni_corpo*1.2,
-    paragraphGap: 5
-  };
+  impostazioni_PDF.strutture_bold_font = helvetica95;
+  impostazioni_PDF.strutture_light_font = helvetica45;
+  impostazioni_PDF.funzioni_font = helvetica65;
 
   console.log("-- all font loaded --");
 
-  aggiorna_pdf();
+  aggiorna_anteprima_da_form();
 };
 
 
@@ -867,5 +875,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
   populate_select_input(struttura_selector, lista_strutture);
 
   // comment this for production
-  // struttura_selector.selectedIndex = 1; show_inputs(1);
+  struttura_selector.selectedIndex = 1; show_inputs(1);
 });

@@ -63,7 +63,7 @@
 						<input type="radio" name="options-color" d="options-color-white" value="white">
 					</label>
 				</div>
-				<button id="aggiorna_pdf" onclick="aggiorna_pdf()">Aggiorna l'anteprima</button>
+				<button id="aggiorna_pdf" onclick="aggiorna_anteprima_da_form()">Aggiorna l'anteprima</button>
 				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
         <br>
         <br>
@@ -71,7 +71,7 @@
           <input type="text" name="csv_page_counter" id="csv_page_counter" value="1">
           <label class=radio-label>PAGINA</label>
           <button class="csv_controls" id="next_csv" onclick="change_csv_page('next')">></button>
-        <button id="carica_csv" onclick="aggiorna_preview_da_csv()">CARICA CSV</button>
+        <button id="carica_csv" onclick="aggiorna_anteprima_da_csv()">CARICA CSV</button>
         <button id="pdf_da_csv" onclick="pdf_multipagina_da_csv()">CREA PDF DA CSV</button>
 			</div>
 		</main>
