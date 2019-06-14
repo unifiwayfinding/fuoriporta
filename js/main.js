@@ -458,13 +458,13 @@ var aggiorna_anteprima_da_csv = function() {
   let csv_counter = document.querySelector("#csv_page_counter");
 
   d3.dsv(";", "./import.csv").then(function(data) {
-    compila_pdf(fetch_info_from_csv(data[csv_counter.value]), impostazioni_PDF);
+    compila_pdf(fetch_info_from_csv(data[csv_counter.value]), impostazioni_PDF, false);
   })
 }
 
 
 var aggiorna_anteprima_da_form = function() {
-  compila_pdf(fetch_info_from_form(), impostazioni_PDF);
+  compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
 }
 
 
@@ -485,7 +485,7 @@ var aggiorna_anteprima_da_form = function() {
  */
 
 
-const compila_pdf = function(info, pdf_settings) {
+const compila_pdf = function(info, pdf_settings, multipagina) {
 
   console.log("updating pdf preview...");
   console.log (info);
@@ -510,19 +510,19 @@ let page_options = {
   }
 }
 
-strutture_bold_options = {
+let strutture_bold_options = {
   width: pdf_settings.left_textbox_width,
   lineGap: pdf_settings.strutture_bold_interlinea - pdf_settings.strutture_bold_corpo*1.2,
   paragraphGap: 0
 };
 
-strutture_light_options = {
+let strutture_light_options = {
   width: pdf_settings.left_textbox_width,
   lineGap: pdf_settings.strutture_light_interlinea - pdf_settings.strutture_light_corpo*1.2,
   paragraphGap: 0
 };
 
-funzioni_options = {
+let funzioni_options = {
   width: pdf_settings.left_textbox_width,
   lineGap: pdf_settings.funzioni_interlinea - pdf_settings.funzioni_corpo*1.2,
   paragraphGap: 5
