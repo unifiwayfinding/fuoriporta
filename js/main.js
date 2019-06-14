@@ -385,7 +385,7 @@ var fetch_nomi = function (parent_selector) {
 }
 
 // Carica informazioni
-var  fetch_info = function() {
+var  fetch_info_from_form = function() {
   let infos = {}
 
   infos.St_b1 = fetch_one_info("#struttura_b1");
@@ -430,7 +430,7 @@ var  fetch_info = function() {
  */
 
  var  aggiorna_pdf = function() {
-  crea_pdf(fetch_info());
+  crea_pdf(fetch_info_from_form());
 }
 
 /**
@@ -683,11 +683,11 @@ var carica_csv = function() {
   console.log("loading csv data...");
 
   d3.dsv(";", "./import.csv").then(function(data) {
-    crea_pdf(fetch_info_da_csv(data[csv_counter.value]));
+    crea_pdf(fetch_info_from_csv(data[csv_counter.value]));
   })
 }
 
-var fetch_info_da_csv = function(data_line){
+var fetch_info_from_csv = function(data_line){
   console.log(data_line);
 
   let info = {
