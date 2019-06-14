@@ -467,6 +467,12 @@ var aggiorna_anteprima_da_form = function() {
   compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
 }
 
+var pdf_multipagina_da_csv = function() {
+  d3.dsv(";", "./import.csv").then(function(data) {
+    compila_pdf(fetch_info_from_csv(data), impostazioni_PDF, true);
+  })
+}
+
 
 /**
  * Crea il PDF a partire dalle informazioni
@@ -485,11 +491,9 @@ var aggiorna_anteprima_da_form = function() {
  */
 
 
-const compila_pdf = function(info, pdf_settings, multipagina) {
+const compila_pdf = function(data, pdf_settings, multipagina) {
 
-  console.log("updating pdf preview...");
-  console.log (info);
-
+  console.log ("updating pdf preview...");
 
   //////////////////////////////
   // SISTEMA ALCUNE IMPOSTAZIONI
@@ -528,12 +532,13 @@ let funzioni_options = {
   paragraphGap: 5
 };
 
-let data_array = [info];
-console.log(data_array);
+
 
 //////////////////////////////
-// SISTEMA ALCUNE IMPOSTAZIONI
+// CREA IL PDF DAI DATI
 
+let data_array = multipagina ? data : [data];
+let info;
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -542,24 +547,28 @@ console.log(data_array);
   let stream = doc.pipe(blobStream())
 
 
+for (let page = 0; page < data_array.length; page++) {
+  console.log("iteration" + page)
 
+  // Carica i dati giusti per la pagina
+  info = data_array[page];
 
   // Aggiungi pagina
-  doc.addPage(page_options);
+  doc.addPage(page_options)
 
 
-  // Crea rettangolo di background
-doc.rect(0, 0, mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt))
-  .fill(pdf_settings.background)
+      // Crea rettangolo di background
+      .rect(0, 0, mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt))
+      .fill(pdf_settings.background)
 
 
-  // Scrive le scritte sul pdf
+      // Scrive le scritte sul pdf
 
-      // imposta colore
-  doc .fill(pdf_settings.foreground);
+        // imposta colore
+      .fill(pdf_settings.foreground)
 
-      // strutture bold
-  doc .font(pdf_settings.strutture_bold_font, pdf_settings.strutture_bold_corpo)
+        // strutture bold
+      .font(pdf_settings.strutture_bold_font, pdf_settings.strutture_bold_corpo)
       .text(info.St_b1, strutture_bold_options)
       .text(info.St_b2, strutture_bold_options)
       .text(info.St_b3, strutture_bold_options)
@@ -576,12 +585,12 @@ doc.rect(0, 0, mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt))
       // funzioni
       .font(pdf_settings.funzioni_font, pdf_settings.funzioni_corpo)
       info.Funzioni.forEach(function(e) {
-        doc.text(e, funzioni_options);
+        doc.text(e, funzioni_options)
       })
 
 
       // annotazioni sulla riga in basso
-      doc .font(helvetica45, 8)
+      doc.font(helvetica45, 8)
           .text(info.Annotazioni_1, mmToUnits(pdf_settings.msx), mmToUnits(106), {})
           .text(info.Annotazioni_2, mmToUnits(pdf_settings.msx), mmToUnits(106), {align: "right"})
 
@@ -639,6 +648,7 @@ doc.rect(0, 0, mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt))
             .lineWidth(.5)
             .stroke("yellow")
       }
+  }
 
   // chiude il pdf
   doc.end();
@@ -699,10 +709,6 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
   return new_nomi;
 }
 
-
-
-var pdf_multipagina_da_csv = function() {
-}
 
 
 // -------------------------------------
