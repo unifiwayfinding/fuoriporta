@@ -252,6 +252,7 @@ var show_input_fields = function(container, struttura) {
   box.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
   box.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
   box.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
+  box.appendChild( create_text_input(enabled, "Light 3:", "struttura_l3", struttura.struttura_light_3) );
   container.appendChild(box);
 
 
@@ -392,6 +393,7 @@ var  fetch_info = function() {
   infos.St_b3 = fetch_one_info("#struttura_b3");
   infos.St_l1 = fetch_one_info("#struttura_l1");
   infos.St_l2 = fetch_one_info("#struttura_l2");
+  infos.St_l3 = fetch_one_info("#struttura_l3");
 
   infos.Funzioni = [];
   infos.Funzioni.push( fetch_one_info("#funzione_1") );
@@ -498,6 +500,7 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
       .font(strutture_light_font, strutture_light_corpo)
       .text(info.St_l1, strutture_light_options)
       .text(info.St_l2, strutture_light_options)
+      .text(info.St_l3, strutture_light_options)
 
       // questa linea serve come interlinea (brutto ma funziona)
       .font(helvetica65, 8.5).text(" ")
@@ -693,6 +696,7 @@ var fetch_info_da_csv = function(data_line){
     St_b3: data_line.STRUTTURA1c,
     St_l1: data_line.STRUTTURA2a,
     St_l2: data_line.STRUTTURA2b,
+    St_l3: data_line.STRUTTURA2c,
     Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
     Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
     Nomi_piccoli: false,
