@@ -69,15 +69,106 @@ funzioni_options;
 
 
 
+
+
 // ----------------------------------------------------
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
+// aggiorna il pdf in automatico
+// ATTENZIONE: FUNZIONE IMPURA - chiama "aggiorna_pdf()"
+var timeout = null;
+var update = function (e) {
+  clearTimeout(timeout);
+  timeout = setTimeout(function () {
+      aggiorna_pdf();
+  }, 500);
+}
 
 
+
+
+// viene chiamato dall'onchange del selector pincipale
+// ATTENZIONE: FUNZIONE IMPURA - CHIAMA "lista_strutture" che è esterno
+var show_inputs = function(index) {
+  struttura_selezionata = (lista_strutture[index - 1]);
+  show_input_fields(text_input_container, struttura_selezionata,);
+}
+
+// popola i campi di input sulla base della scelta nel selector principale
+var show_input_fields = function(container, struttura) {
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // crea gli input
+  var enabled = (struttura.option_value === "altro") ? true : false;
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
+  box.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
+  box.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
+  box.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
+  box.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
+  box.appendChild( create_text_input(enabled, "Light 3:", "struttura_l3", struttura.struttura_light_3) );
+  container.appendChild(box);
+
+
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
+  box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
+  box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
+  container.appendChild(box);
+
+
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.setAttribute("id", "nomi_box");
+
+  box.appendChild( create_text_plus("1:", "nome_1", "Letteratura inglese", "spec") );
+  box.appendChild( create_text_plus("2:", "nome_2", "Beatrice Tottossi", "nome") );
+  box.appendChild( create_text_plus("3:", "nome_3", "Barbr Rossi", "nome") );
+  box.appendChild( create_text_plus("4:", "nome_4", " ", "nome") );
+  box.appendChild( create_text_plus("5:", "nome_5", "Editoria", "spec") );
+  box.appendChild( create_text_plus("6:", "nome_6", "Beatruce Tottossi", "nome") );
+  box.appendChild( create_text_plus("7:", "nome_7", "Arianna Antonelli", "nome") );
+  box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
+  box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
+  box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
+  box.appendChild( create_text_plus("11:", "nome_11", "", "nome") );
+  box.appendChild( create_text_plus("12:", "nome_12", "", "nome") );
+  box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
+
+  var petit_line = document.createElement("div");
+  petit_line.setAttribute("class", "input_line petit_line");
+  var petit_checkbox = document.createElement("input");
+  var petit_checkbox_label = document.createElement("label");
+  petit_checkbox_label.textContent = "usa nomi piccoli";
+  petit_checkbox.setAttribute("type", "checkbox");
+  petit_checkbox.setAttribute("name", "petit");
+  petit_checkbox.onchange = aggiorna_pdf;
+  petit_line.appendChild(petit_checkbox);
+  petit_line.appendChild(petit_checkbox_label);
+  box.appendChild(petit_line);
+
+  // aggiunge nota in fondo
+  let note = document.createElement("p");
+  note.setAttribute("class", "tiny");
+  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
+  box.appendChild(note);
+  container.appendChild(box);
+
+  // aggiorna il PDF
+  aggiorna_pdf();
+}
+
+// -- DA QUI IN POI HELPER FUNCTIONS:
+
+// generic function
 // popola un dato select a partire da una lista
 // questa viene chiamata durante l'inizializzazione
-var populate_select_input = function (select, lista) {
+  var populate_select_input = function (select, lista) {
   let option = document.createElement("option");
   option.setAttribute("selected", "selected");
   option.setAttribute("disabled", "disabled");
@@ -90,23 +181,6 @@ var populate_select_input = function (select, lista) {
     select.appendChild(option)
   }
 }
-
-// viene chiamato dall'onchange del selector pincipale
-// ATTENZIONE: FUNZIONE IMPURA - CHIAMA "lista_strutture" che è esterno
-var show_inputs = function(index) {
-  struttura_selezionata = (lista_strutture[index - 1]);
-  show_input_fields(text_input_container, struttura_selezionata,);
-}
-
-var timeout = null;
-var update = function (e) {
-  clearTimeout(timeout);
-  timeout = setTimeout(function () {
-      aggiorna_pdf();
-  }, 500);
-}
-
-// -- DA QUI IN POI HELPER FUNCTIONS:
 
 // return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
 var create_text_input = function (enabled, etichetta, id, value) {
@@ -237,136 +311,43 @@ var create_text_plus = function(etichetta, id, value, type) {
 }
 
 
-// popola i campi di input sulla base della scelta nel selector principale
-var show_input_fields = function(container, struttura) {
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
+
+
+
+
+// ----------------------------------------------------
+// ------ CRAZIONE PANNELLO DI CONTROLLO CSV ----------
+// ----------------------------------------------------
+
+var change_csv_page = function(action) {
+  let csv_counter = document.querySelector("#csv_page_counter");
+  console.log("value: " + csv_counter.value);
+
+
+  if (action === "prev") {
+    console.log("prev");
+    if (csv_counter.value > 1) {
+      csv_counter.value--;
+    }
+  } else if (action === "next") {
+    console.log("next");
+    csv_counter.value++;
   }
 
-  // crea gli input
-  var enabled = (struttura.option_value === "altro") ? true : false;
-  var box = document.createElement("div");
-  box.setAttribute("class", "input_box");
-  box.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
-  box.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
-  box.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
-  box.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
-  box.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
-  box.appendChild( create_text_input(enabled, "Light 3:", "struttura_l3", struttura.struttura_light_3) );
-  container.appendChild(box);
-
-
-  var box = document.createElement("div");
-  box.setAttribute("class", "input_box");
-  box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
-  box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
-  box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
-  container.appendChild(box);
-
-
-  var box = document.createElement("div");
-  box.setAttribute("class", "input_box");
-  box.setAttribute("id", "nomi_box");
-
-  box.appendChild( create_text_plus("1:", "nome_1", "Letteratura inglese", "spec") );
-  box.appendChild( create_text_plus("2:", "nome_2", "Beatrice Tottossi", "nome") );
-  box.appendChild( create_text_plus("3:", "nome_3", "Barbr Rossi", "nome") );
-  box.appendChild( create_text_plus("4:", "nome_4", " ", "nome") );
-  box.appendChild( create_text_plus("5:", "nome_5", "Editoria", "spec") );
-  box.appendChild( create_text_plus("6:", "nome_6", "Beatruce Tottossi", "nome") );
-  box.appendChild( create_text_plus("7:", "nome_7", "Arianna Antonelli", "nome") );
-  box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
-  box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
-  box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
-  box.appendChild( create_text_plus("11:", "nome_11", "", "nome") );
-  box.appendChild( create_text_plus("12:", "nome_12", "", "nome") );
-  box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
-
-  var petit_line = document.createElement("div");
-  petit_line.setAttribute("class", "input_line petit_line");
-  var petit_checkbox = document.createElement("input");
-  var petit_checkbox_label = document.createElement("label");
-  petit_checkbox_label.textContent = "usa nomi piccoli";
-  petit_checkbox.setAttribute("type", "checkbox");
-  petit_checkbox.setAttribute("name", "petit");
-  petit_checkbox.onchange = aggiorna_pdf;
-  petit_line.appendChild(petit_checkbox);
-  petit_line.appendChild(petit_checkbox_label);
-  box.appendChild(petit_line);
-
-  // aggiunge nota in fondo
-  let note = document.createElement("p");
-  note.setAttribute("class", "tiny");
-  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
-  box.appendChild(note);
-  container.appendChild(box);
-
-  // aggiorna il PDF
-  aggiorna_pdf();
+  carica_csv();
 }
 
 
 
 
 
-
-
-
-
-
 // ----------------------------------------------------
-// ---- FETCH INFO FROM INPUT FIELDS TO OBJECT --------
+// ------------- FETCHES INFO FROM FORM ---------------
 // ----------------------------------------------------
-
 
 var fetch_one_info = function (selector) {
   let value = document.querySelector(selector) ? document.querySelector(selector).value : "";
   return value;
-}
-
-var fetch_nome = function (selector, checkbox_name, next_name) {
-
-  // moltiplicatore per nomi petit
-  let a = 1;
-  let petit_checkbox = document.getElementsByName("petit");
-  if (petit_checkbox[0].checked || force_petit_checkbox) {
-    a = font_settings.riduzione_nomi_piccoli;
-  }
-
-  // controllo spaziosotto per specifica dopo nome
-  let spec_dopo_nome = 1;
-  let this_checkbox = document.getElementsByName(checkbox_name);
-  let next_checkbox = document.getElementsByName(next_name);
-
-  if (next_checkbox[0]) {
-    if (next_checkbox[0].checked) {
-      spec_dopo_nome = 0.25;
-    }
-  }
-
-
-  let obj = {};
-  obj.content = "";
-  obj.size = 0;
-  obj.interlinea = 0;
-  obj.spaziosotto = 0;
-  let container = document.querySelector(selector);
-  if (container) {
-    obj.content = container.getElementsByTagName("input")[0].value;
-    //NOME
-    obj.size = font_settings.corpo_nomi/a;
-    obj.interlinea = font_settings.interlinea_nomi/a;
-    obj.spaziosotto = font_settings.spaziosotto_nomi/a*spec_dopo_nome;
-
-    //SPECIFICA
-    if (this_checkbox[0].checked) {
-      obj.size = font_settings.corpo_specifica/a;
-      obj.interlinea = font_settings.interlinea_specifica/a;
-      obj.spaziosotto = font_settings.spaziosotto_specifica/a;
-    };
-
-  }
-  return obj;
 }
 
 var fetch_nomi = function (parent_selector) {
@@ -412,6 +393,48 @@ var  fetch_info_from_form = function() {
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
   return infos;
+}
+
+
+
+
+
+
+
+
+// ----------------------------------------------------
+// ------------- FETCHES INFO FROM CSV ----------------
+// ----------------------------------------------------
+
+
+var aggiorna_preview_da_csv = function() {
+  let csv_counter = document.querySelector("#csv_page_counter");
+  console.log("loading csv data...");
+
+  d3.dsv(";", "./import.csv").then(function(data) {
+    crea_pdf(fetch_info_from_csv(data[csv_counter.value]));
+  })
+}
+
+var fetch_info_from_csv = function(data_line){
+  console.log(data_line);
+
+  let info = {
+    St_b1: data_line.STRUTTURA1a,
+    St_b2: data_line.STRUTTURA1b,
+    St_b3: data_line.STRUTTURA1c,
+    St_l1: data_line.STRUTTURA2a,
+    St_l2: data_line.STRUTTURA2b,
+    St_l3: data_line.STRUTTURA2c,
+    Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
+    Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
+    Nomi_piccoli: false,
+
+    Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
+    Annotazioni_2: (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
+  }
+
+   return info;
 }
 
 
@@ -624,6 +647,10 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli) {
 
 
 
+var pdf_multipagina_da_csv = function() {
+}
+
+
 // -------------------------------------
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
@@ -670,68 +697,6 @@ var aggiorna_preview = function(url) {
 
 
 
-
-
-
-
-// ---------------------------------
-// ----------- CARICA CSV ----------
-// ---------------------------------
-
-var carica_csv = function() {
-  let csv_counter = document.querySelector("#csv_page_counter");
-  console.log("loading csv data...");
-
-  d3.dsv(";", "./import.csv").then(function(data) {
-    crea_pdf(fetch_info_from_csv(data[csv_counter.value]));
-  })
-}
-
-var fetch_info_from_csv = function(data_line){
-  console.log(data_line);
-
-  let info = {
-    St_b1: data_line.STRUTTURA1a,
-    St_b2: data_line.STRUTTURA1b,
-    St_b3: data_line.STRUTTURA1c,
-    St_l1: data_line.STRUTTURA2a,
-    St_l2: data_line.STRUTTURA2b,
-    St_l3: data_line.STRUTTURA2c,
-    Funzioni: [data_line.FUNZIONE1,data_line.FUNZIONE2,data_line.FUNZIONE3],
-    Nomi: [data_line.TEXT1,data_line.TEXT2,data_line.TEXT3,data_line.TEXT4,data_line.TEXT5,data_line.TEXT6,data_line.TEXT7],
-    Nomi_piccoli: false,
-
-    Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
-    Annotazioni_2: (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
-
-  }
-
-// STRUTTURA1a,STRUTTURA1b,STRUTTURA1c,STRUTTURA2a,STRUTTURA2b,PLESSO,N,FUNZIONE1,FUNZIONE2,FUNZIONE3,TEXT1,TEXT2,TEXT3,TEXT4,TEXT5,TEXT6,TEXT7
-
-   return info;
-}
-
-var change_csv_page = function(action) {
-  let csv_counter = document.querySelector("#csv_page_counter");
-  console.log("value: " + csv_counter.value);
-
-
-  if (action === "prev") {
-    console.log("prev");
-    if (csv_counter.value > 1) {
-      csv_counter.value--;
-    }
-  } else if (action === "next") {
-    console.log("next");
-    csv_counter.value++;
-  }
-
-  carica_csv();
-}
-
-
-var pdf_da_csv = function() {
-}
 
 
 
