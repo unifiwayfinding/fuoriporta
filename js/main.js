@@ -711,11 +711,15 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
 
 
 
+
+
+
+
+
+
 // -------------------------------------
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
-
-
 
 var visualize_preview = function(url) {
 
@@ -754,15 +758,6 @@ var visualize_preview = function(url) {
     console.error(reason);
   });
 };
-
-
-
-
-
-
-
-
-
 
 
 
@@ -839,47 +834,16 @@ function async_trigger() {
 
   console.log("-- all font loaded --");
 
-  aggiorna_anteprima_da_form();
-};
 
+  // ---------------------------------
+  // ----------- INIZIALIZZA ---------
+  // ---------------------------------
 
+  populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ---------------------------------
-// ----------- INIZIALIZZA ---------
-// ---------------------------------
-
-document.addEventListener("DOMContentLoaded", function(event) {
-  var struttura_selector = document.querySelector("#struttura_selector");
-  var text_input_container = document.querySelector("#text_input_container");
-  populate_select_input(struttura_selector, lista_strutture);
+  // uncomment this for production
+  // aggiorna_anteprima_da_form();
 
   // comment this for production
   struttura_selector.selectedIndex = 1; show_inputs(1);
-});
+};
