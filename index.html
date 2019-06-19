@@ -55,6 +55,18 @@
 			<canvas id="the-canvas"></canvas>
 
 			<div id="control-panel">
+
+				<div class="options-input">
+					<button class="csv_controls" id="prev_csv" onclick="change_page('prev')"><</button>
+	        <input type="text" id="page_counter" value="1">
+					<button class="csv_controls" id="next_csv" onclick="change_page('next')">></button>
+					<button class="csv_controls" id="update" onclick="change_page('update')">REFRESH</button>
+					<span> PAGINA <span id="page_num">...</span></span>
+				</div>
+
+				<br>
+				<br>
+
 				<div class="options-input">
 					<label class=radio-label>Sfondo nero
 						<input type="radio" name="options-color" id="options-color-black" value="black" checked>
@@ -63,18 +75,13 @@
 						<input type="radio" name="options-color" d="options-color-white" value="white">
 					</label>
 				</div>
-				<button id="aggiorna_pdf" onclick="aggiorna_anteprima_da_form()">Aggiorna l'anteprima</button>
-				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
+				<button id="aggiorna_pdf" onclick="aggiorna_anteprima_da_form()">CREA PDF DAL FORM</button>
         <br>
         <input type="file" id="file_loader" name="file_loader" accept="text/csv"><br>
-        <button id="carica_csv" onclick="aggiorna_anteprima_da_file()">CARICA CSV</button>
+        <button id="carica_csv" onclick="aggiorna_anteprima_da_file()">CREA PDF DA CSV</button>
 
-        <button class="csv_controls" id="prev_csv" onclick="change_csv_page('prev')"><</button>
-        <input type="text" name="csv_page_counter" id="csv_page_counter" value="1">
-        <label class="radio-label">PAGINA</label>
-        <button class="csv_controls" id="next_csv" onclick="change_csv_page('next')">></button>
+				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
 
-        <button id="pdf_da_csv" onclick="pdf_multipagina_da_csv()">CREA PDF MULTIPAGINA</button>
 			</div>
 		</main>
 	</section>

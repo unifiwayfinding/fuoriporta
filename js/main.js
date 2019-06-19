@@ -16,6 +16,9 @@ Prima di procedere va risolto il problema per il quale disattivando un funzionam
 
 PDFJS.workerSrc = 'js/pdf.worker.js';
 
+var anteprima_pdf_url;
+var anteprima_pdf_numpages;
+
 // ---------------------------------
 // ----------- SETTINGS ------------
 // ---------------------------------
@@ -316,31 +319,6 @@ var create_text_plus = function(etichetta, id, value, type) {
 
 
 
-// ----------------------------------------------------
-// ------ CRAZIONE PANNELLO DI CONTROLLO CSV ----------
-// ----------------------------------------------------
-
-var change_csv_page = function(action) {
-  let csv_counter = document.querySelector("#csv_page_counter");
-  console.log("value: " + csv_counter.value);
-
-
-  if (action === "prev") {
-    console.log("prev");
-    if (csv_counter.value > 1) {
-      csv_counter.value--;
-    }
-  } else if (action === "next") {
-    console.log("next");
-    csv_counter.value++;
-  }
-
-  aggiorna_anteprima_da_file();
-}
-
-
-
-
 
 // ----------------------------------------------------
 // ------------- FETCHES INFO FROM FORM ---------------
@@ -455,12 +433,16 @@ var fetch_info_from_csv = function(data_line) {
 
 
 var aggiorna_anteprima_da_form = function() {
+  document.querySelector("#page_counter").value = 1;
+
   compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
 }
 
 var reader = new FileReader();
 
 var aggiorna_anteprima_da_file = function() {
+  document.querySelector("#page_counter").value = 1;
+
 
   var file = document.querySelector("#file_loader").files[0];
 
@@ -475,8 +457,8 @@ var parseFile = function() {
   var parser = d3.dsvFormat(";");
   var data = parser.parse(reader.result);
 
-  let csv_counter = document.querySelector("#csv_page_counter");
-  data = [ data[csv_counter.value - 1] ];
+  // let csv_counter = document.querySelector("#csv_page_counter");
+  // data = [ data[csv_counter.value - 1] ];
 
   console.log("DATA: ");
   console.log(data);
@@ -485,32 +467,6 @@ var parseFile = function() {
 
 }
 
-
-
-
-var aggiorna_anteprima_da_csv = function() {
-
-  var csv_url = "./import.csv";
-
-  d3.dsv(";", csv_url).then(function(data) {
-    // riduce il csv ad un'unica pagina
-    let csv_counter = document.querySelector("#csv_page_counter");
-    data = [ data[csv_counter.value - 1] ];
-    console.log("DATA: ");
-    console.log(data);
-    // chiama compila_pdf
-    compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, false);
-  })
-}
-
-
-
-var pdf_multipagina_da_csv = function() {
-  d3.dsv(";", "./import.csv").then(function(data) {
-
-    compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, true);
-  })
-}
 
 
 ////////////////////////
@@ -545,34 +501,38 @@ const compila_pdf = function(data, pdf_settings, multipagina) {
   if (document.querySelector("#options-color-black").checked == false) {
     pdf_settings.background = "#fff";
     pdf_settings.foreground = "#000";
-}
-
-let page_options = {
-  size: [mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt)],
-  margins: {
-    top: mmToUnits(pdf_settings.msu),
-    bottom: 0,
-    left: mmToUnits(pdf_settings.msx),
-    right: mmToUnits(pdf_settings.mdx)
   }
-}
+  if (document.querySelector("#options-color-black").checked == true) {
+    pdf_settings.background = "#000";
+    pdf_settings.foreground = "#fff";
+  }
 
-let strutture_bold_options = {
-  width: pdf_settings.left_textbox_width,
-  lineGap: pdf_settings.strutture_bold_interlinea - pdf_settings.strutture_bold_corpo*1.2,
-  paragraphGap: 0
-};
+  let page_options = {
+    size: [mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt)],
+    margins: {
+      top: mmToUnits(pdf_settings.msu),
+      bottom: 0,
+      left: mmToUnits(pdf_settings.msx),
+      right: mmToUnits(pdf_settings.mdx)
+    }
+  }
 
-let strutture_light_options = {
-  width: pdf_settings.left_textbox_width,
-  lineGap: pdf_settings.strutture_light_interlinea - pdf_settings.strutture_light_corpo*1.2,
-  paragraphGap: 0
-};
+  let strutture_bold_options = {
+    width: pdf_settings.left_textbox_width,
+    lineGap: pdf_settings.strutture_bold_interlinea - pdf_settings.strutture_bold_corpo*1.2,
+    paragraphGap: 0
+  };
 
-let funzioni_options = {
-  width: pdf_settings.left_textbox_width,
-  lineGap: pdf_settings.funzioni_interlinea - pdf_settings.funzioni_corpo*1.2,
-  paragraphGap: 5
+  let strutture_light_options = {
+    width: pdf_settings.left_textbox_width,
+    lineGap: pdf_settings.strutture_light_interlinea - pdf_settings.strutture_light_corpo*1.2,
+    paragraphGap: 0
+  };
+
+  let funzioni_options = {
+    width: pdf_settings.left_textbox_width,
+    lineGap: pdf_settings.funzioni_interlinea - pdf_settings.funzioni_corpo*1.2,
+    paragraphGap: 5
 };
 
 
@@ -719,7 +679,8 @@ for (let page = 0; page < data.length; page++) {
     scaricaPdf_link.href = pdf_url;
 
     // aggiorna la visualizzazione dell'anteprima
-    visualize_preview(pdf_url);
+    anteprima_pdf_url = pdf_url
+    visualize_preview();
   });
 }
 
@@ -791,9 +752,11 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-var visualize_preview = function(url, page) {
+var visualize_preview = function() {
 
-  let pageNumber = page ? page : 1;
+  var url = anteprima_pdf_url;
+
+  var pageNumber = parseInt(document.querySelector("#page_counter").value);
 
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
@@ -824,6 +787,8 @@ var visualize_preview = function(url, page) {
       var renderTask = page.render(renderContext);
       renderTask.then(function() {
         console.log('ANTEPRIMA - Page rendered');
+        anteprima_pdf_numpages = pdf.numPages;
+        document.getElementById("page_num").textContent = pageNumber + " / "+ anteprima_pdf_numpages;
       });
     });
   }, function(reason) {
@@ -833,6 +798,31 @@ var visualize_preview = function(url, page) {
 };
 
 
+
+var change_page = function(action) {
+  let page_num = document.querySelector("#page_counter");
+  console.log("value: " + page_num.value);
+  console.log(anteprima_pdf_numpages);
+
+
+  if (action === "prev") {
+    console.log("prev");
+      page_num.value--;
+  } else if (action === "next") {
+    console.log("next");
+      page_num.value++;
+  } else if (action === "update") {
+    console.log("update");
+  }
+
+  if (page_num.value > anteprima_pdf_numpages) {
+    page_num.value = anteprima_pdf_numpages;
+  } if (page_num.value < 1) {
+    page_num.value = 1;
+  }
+
+  visualize_preview();
+}
 
 
 
@@ -914,6 +904,12 @@ function async_trigger() {
 
   populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
 
+  document.querySelector("#page_counter").addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      change_page(update);
+    }
+  });
 
 
 

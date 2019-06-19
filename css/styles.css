@@ -93,7 +93,7 @@ input:disabled {
 }
 #control-panel {
   position: absolute;
-  top: 620px;
+  top: 540px;
   margin-bottom: 40px;
 }
 label.radio-label {
@@ -107,11 +107,11 @@ button {
   line-height: 0;
 }
 button.csv_controls {
-  width: 2px;
+  width: auto;
   height: 20px;
   display: inline;
 }
-#csv_page_counter {
+#page_counter {
   width: 70px;
   margin-bottom: 10px;
   margin-left: 0;
