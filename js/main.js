@@ -396,10 +396,10 @@ var  fetch_info_from_form = function() {
   }
   infos.Nomi_piccoli = nomipiccoli || force_petit_checkbox;
 
-  infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
+  infos.Annotazioni_1 = "fuoriporta generato con un file csv dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
-  return infos;
+  return [infos];
 }
 
 
@@ -414,7 +414,6 @@ var  fetch_info_from_form = function() {
 // ----------------------------------------------------
 
 var fetch_info_from_csv = function(data_line) {
-  console.log(data_line);
 
   let info = {
     St_b1: data_line.STRUTTURA1a,
@@ -442,8 +441,6 @@ var fetch_info_from_csv = function(data_line) {
 
 
 
-
-
 // -----------------------------------------------------------
 // ---------------- AGGIORNA L'ANTEPRIMA ---------------------
 // ------------- (CREA IL PDF CON PDFKIT) --------------------
@@ -452,31 +449,39 @@ var fetch_info_from_csv = function(data_line) {
 // -----------------------------------------------------------
 
 
-
-
-var aggiorna_anteprima_da_csv = function() {
-  let csv_counter = document.querySelector("#csv_page_counter");
-
-  d3.dsv(";", "./import.csv").then(function(data) {
-    compila_pdf(fetch_info_from_csv(data[csv_counter.value]), impostazioni_PDF, false);
-  })
-}
-
-
 var aggiorna_anteprima_da_form = function() {
   compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
 }
 
-var pdf_multipagina_da_csv = function() {
+
+var aggiorna_anteprima_da_csv = function() {
+
   d3.dsv(";", "./import.csv").then(function(data) {
-    compila_pdf(fetch_info_from_csv(data), impostazioni_PDF, true);
+    // riduce il csv ad un'unica pagina
+    let csv_counter = document.querySelector("#csv_page_counter");
+    data = [ data[csv_counter.value - 1] ];
+    console.log("DATA: ");
+    console.log(data);
+    // chiama compila_pdf
+    compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, false);
   })
 }
 
 
+var pdf_multipagina_da_csv = function() {
+  d3.dsv(";", "./import.csv").then(function(data) {
+
+    compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, true);
+  })
+}
+
+
+////////////////////////
+/// complila il PDF
+
 /**
  * Crea il PDF a partire dalle informazioni
- * @param {object} info - Le informazioni per il fuoriporta.
+   * @param {object} info - Le informazioni per il fuoriporta.
    * @param {string} info.St_b1 - Info struttura
    * @param {string} info.St_b2 - Info struttura
    * @param {string} info.St_b3 - Info struttura
@@ -493,7 +498,8 @@ var pdf_multipagina_da_csv = function() {
 
 const compila_pdf = function(data, pdf_settings, multipagina) {
 
-  console.log ("updating pdf preview...");
+  console.log ("updating pdf preview with data:");
+  console.log (data);
 
   //////////////////////////////
   // SISTEMA ALCUNE IMPOSTAZIONI
@@ -537,8 +543,6 @@ let funzioni_options = {
 //////////////////////////////
 // CREA IL PDF DAI DATI
 
-let data_array = multipagina ? data : [data];
-let info;
 
   //Setup PDF document
   doc = new PDFDocument({
@@ -547,11 +551,13 @@ let info;
   let stream = doc.pipe(blobStream())
 
 
-for (let page = 0; page < data_array.length; page++) {
-  console.log("iteration" + page)
+let info;
+
+for (let page = 0; page < data.length; page++) {
+  console.log("Compiling page " + page)
 
   // Carica i dati giusti per la pagina
-  info = data_array[page];
+  info = data[page];
 
   // Aggiungi pagina
   doc.addPage(page_options)
@@ -572,8 +578,8 @@ for (let page = 0; page < data_array.length; page++) {
       .text(info.St_b1, strutture_bold_options)
       .text(info.St_b2, strutture_bold_options)
       .text(info.St_b3, strutture_bold_options)
-      // strutture light
 
+      // strutture light
       .font(pdf_settings.strutture_light_font, pdf_settings.strutture_light_corpo)
       .text(info.St_l1, strutture_light_options)
       .text(info.St_l2, strutture_light_options)
@@ -588,7 +594,6 @@ for (let page = 0; page < data_array.length; page++) {
         doc.text(e, funzioni_options)
       })
 
-
       // annotazioni sulla riga in basso
       doc.font(helvetica45, 8)
           .text(info.Annotazioni_1, mmToUnits(pdf_settings.msx), mmToUnits(106), {})
@@ -597,15 +602,17 @@ for (let page = 0; page < data_array.length; page++) {
 
       // nomi e specifiche
 
+      // applica i font ai nomi
+      let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli, pdf_settings);
+
       // options per la parte nomi
-      var nomi_options = function(e) {
-        var options = {align: 'right', width: pdf_settings.right_textbox_width, lineGap: e.interlinea-e.size*1.2, paragraphGap: e.spaziosotto}
+      var nomi_options = function(nome) {
+        var options = {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto}
         return options
       }
 
       // calcola allineamento verticale
       let lines_total_height = 0;
-      let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli, pdf_settings);
 
       processedNomi.forEach(function(e) {
         doc.font(helvetica45, e.size); // sets fonts for the right calculations
@@ -622,9 +629,9 @@ for (let page = 0; page < data_array.length; page++) {
       // scrive nomi e specifiche
       doc .font(helvetica45, 1)
           .text(" ", mmToUnits(pdf_settings.larg - pdf_settings.mdx) - pdf_settings.right_textbox_width, mmToUnits(pdf_settings.msu) + 245 - lines_total_height)
-      processedNomi.forEach(function(e) {
-        doc .font(helvetica45, (e.size))
-            .text(e.content, nomi_options(e));
+      processedNomi.forEach(function(nome) {
+        doc .font(helvetica45, (nome.size))
+            .text(nome.content, nomi_options(nome));
       })
 
       // Mostra le guide e i margini se necessario
@@ -721,16 +728,17 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-var visualize_preview = function(url) {
+var visualize_preview = function(url, page) {
+
+  let pageNumber = page ? page : 1;
 
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
-    console.log('PDF loaded');
+    console.log('ANTEPRIMA: PDF loaded');
 
     // Fetch the first page
-    var pageNumber = 1;
     pdf.getPage(pageNumber).then(function(page) {
-      console.log('Page loaded');
+      console.log('ANTEPRIMA: Page loaded');
 
       var scale = 5;
       var viewport = page.getViewport(scale);
@@ -750,7 +758,7 @@ var visualize_preview = function(url) {
       };
       var renderTask = page.render(renderContext);
       renderTask.then(function() {
-        console.log('Page rendered');
+        console.log('ANTEPRIMA: Page rendered');
       });
     });
   }, function(reason) {
