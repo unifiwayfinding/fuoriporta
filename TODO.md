@@ -20,7 +20,8 @@
       https://github.com/papnkukn/qrcode-svg (sembra il più semplice)
       https://github.com/davidshimjs/qrcodejs
 - [ ] Cambiare flag nome/specifica facendo sì che sotto ogni nome possa essere inserito e rimosso un campo "specifica" - questo risolve sia il problema delle specifiche una sotto l'altra che il problema dell'interlinea sbagliata se sotto un nome c'è una riga flaggata specifica ma vuota
-- [ ] Ridolvere overflow dei nomi in alto
+- [ ] Risolvere overflow dei nomi in alto
+- [ ] Cambiare funzionamento di nextpage e prevpage lavorando sulla visualizzazione e non sulla compilazione
 
 
 
