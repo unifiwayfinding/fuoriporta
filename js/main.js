@@ -130,12 +130,12 @@ var show_input_fields = function(container, struttura) {
   box.setAttribute("id", "nomi_box");
 
   box.appendChild( create_text_plus("1:", "nome_1", "Letteratura inglese", "spec") );
-  box.appendChild( create_text_plus("2:", "nome_2", "Beatrice Tottossi", "nome") );
-  box.appendChild( create_text_plus("3:", "nome_3", "Barbr Rossi", "nome") );
-  box.appendChild( create_text_plus("4:", "nome_4", " ", "nome") );
-  box.appendChild( create_text_plus("5:", "nome_5", "Editoria", "spec") );
-  box.appendChild( create_text_plus("6:", "nome_6", "Beatruce Tottossi", "nome") );
-  box.appendChild( create_text_plus("7:", "nome_7", "Arianna Antonelli", "nome") );
+  box.appendChild( create_text_plus("2:", "nome_2", "", "nome") );
+  box.appendChild( create_text_plus("3:", "nome_3", "", "nome") );
+  box.appendChild( create_text_plus("4:", "nome_4", "", "nome") );
+  box.appendChild( create_text_plus("5:", "nome_5", "", "nome") );
+  box.appendChild( create_text_plus("6:", "nome_6", "", "nome") );
+  box.appendChild( create_text_plus("7:", "nome_7", "", "nome") );
   box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
   box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
   box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
@@ -600,23 +600,24 @@ for (let page = 0; page < data.length; page++) {
           .text(info.Annotazioni_2, mmToUnits(pdf_settings.msx), mmToUnits(106), {align: "right"})
 
 
+
+
+
+
+
+
+
       // nomi e specifiche
 
       // applica i font ai nomi
       let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli, pdf_settings);
 
-      // options per la parte nomi
-      var nomi_options = function(nome) {
-        var options = {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto}
-        return options
-      }
-
       // calcola allineamento verticale
       let lines_total_height = 0;
 
-      processedNomi.forEach(function(e) {
-        doc.font(helvetica45, e.size); // sets fonts for the right calculations
-        let h = doc.heightOfString(e.content, nomi_options(e));
+      processedNomi.forEach(function(nome) {
+        doc.font(helvetica45, nome.size); // sets fonts for the right calculations
+        let h = doc.heightOfString(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
         // console.log (w,h);
         lines_total_height += h;
       });
@@ -628,11 +629,23 @@ for (let page = 0; page < data.length; page++) {
 
       // scrive nomi e specifiche
       doc .font(helvetica45, 1)
-          .text(" ", mmToUnits(pdf_settings.larg - pdf_settings.mdx) - pdf_settings.right_textbox_width, mmToUnits(pdf_settings.msu) + 245 - lines_total_height)
-      processedNomi.forEach(function(nome) {
+          .text("", mmToUnits(pdf_settings.larg - pdf_settings.mdx) - pdf_settings.right_textbox_width, mmToUnits(pdf_settings.msu) + 245 - lines_total_height)
+
+      console.log("Numero nomi/specifiche: " + processedNomi.length);
+      for (i=0; i < processedNomi.length; i++) {
+        let nome = processedNomi[i];
         doc .font(helvetica45, (nome.size))
-            .text(nome.content, nomi_options(nome));
-      })
+            .text(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
+      }
+
+
+
+
+
+
+
+
+
 
       // Mostra le guide e i margini se necessario
       if (show_margins === true) {
@@ -678,8 +691,17 @@ for (let page = 0; page < data.length; page++) {
 
 
 
+
+
 var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
-  let new_nomi = [];
+
+  // elimina le righe vuote in fondo
+  for (i=nomi.length-1; i>=0; i--) {
+    if (nomi[i] == "") {
+      nomi.pop();
+    }
+    else break
+  }
 
   // regola i nomi piccoli
   let a = 1;
@@ -690,6 +712,10 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
   // regola lo spazio tra nome e specifica
   let spec_dopo_nome = 1;
 
+  // crea nuovo array
+  let new_nomi = [];
+
+  // effettua la conversione
   for (i = 0; i < nomi.length; i++) {
     let x = nomi[i];
     if (nomi[i+1] && nomi[i+1].charAt(0) === "*") {
@@ -734,11 +760,13 @@ var visualize_preview = function(url, page) {
 
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
-    console.log('ANTEPRIMA: PDF loaded');
+    console.log('ANTEPRIMA - PDF loaded');
+
+    console.log("ANTEPRIMA - Total pages: " + pdf.numPages);
 
     // Fetch the first page
     pdf.getPage(pageNumber).then(function(page) {
-      console.log('ANTEPRIMA: Page loaded');
+      console.log('ANTEPRIMA - Page loaded: ' + pageNumber);
 
       var scale = 5;
       var viewport = page.getViewport(scale);
@@ -758,7 +786,7 @@ var visualize_preview = function(url, page) {
       };
       var renderTask = page.render(renderContext);
       renderTask.then(function() {
-        console.log('ANTEPRIMA: Page rendered');
+        console.log('ANTEPRIMA - Page rendered');
       });
     });
   }, function(reason) {
