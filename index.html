@@ -66,12 +66,14 @@
 				<button id="aggiorna_pdf" onclick="aggiorna_anteprima_da_form()">Aggiorna l'anteprima</button>
 				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
         <br>
-        <br>
+        <input type="file" id="file_loader" name="file_loader" accept="text/csv"><br>
+        <button id="carica_csv" onclick="aggiorna_anteprima_da_file()">CARICA CSV</button>
+
         <button class="csv_controls" id="prev_csv" onclick="change_csv_page('prev')"><</button>
-          <input type="text" name="csv_page_counter" id="csv_page_counter" value="1">
-          <label class=radio-label>PAGINA</label>
-          <button class="csv_controls" id="next_csv" onclick="change_csv_page('next')">></button>
-        <button id="carica_csv" onclick="aggiorna_anteprima_da_csv()">CARICA CSV</button>
+        <input type="text" name="csv_page_counter" id="csv_page_counter" value="1">
+        <label class="radio-label">PAGINA</label>
+        <button class="csv_controls" id="next_csv" onclick="change_csv_page('next')">></button>
+
         <button id="pdf_da_csv" onclick="pdf_multipagina_da_csv()">CREA PDF MULTIPAGINA</button>
 			</div>
 		</main>

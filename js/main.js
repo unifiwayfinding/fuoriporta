@@ -79,7 +79,6 @@ function mmToUnits(mm) {
 // ----------------------------------------------------
 
 // aggiorna il pdf in automatico
-// ATTENZIONE: FUNZIONE IMPURA - chiama "aggiorna_anteprima_da_form()"
 var timeout = null;
 var update = function (e) {
   clearTimeout(timeout);
@@ -336,7 +335,7 @@ var change_csv_page = function(action) {
     csv_counter.value++;
   }
 
-  aggiorna_anteprima_da_csv();
+  aggiorna_anteprima_da_file();
 }
 
 
@@ -453,10 +452,41 @@ var aggiorna_anteprima_da_form = function() {
   compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
 }
 
+var reader = new FileReader();
+
+var aggiorna_anteprima_da_file = function() {
+
+  var file = document.querySelector("#file_loader").files[0];
+
+  reader.addEventListener("load", parseFile, false);
+  if (file) {
+    reader.readAsText(file);
+  }
+}
+
+var parseFile = function() {
+
+  var parser = d3.dsvFormat(";");
+  var data = parser.parse(reader.result);
+
+  let csv_counter = document.querySelector("#csv_page_counter");
+  data = [ data[csv_counter.value - 1] ];
+
+  console.log("DATA: ");
+  console.log(data);
+  // chiama compila_pdf
+  compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, false);
+
+}
+
+
+
 
 var aggiorna_anteprima_da_csv = function() {
 
-  d3.dsv(";", "./import.csv").then(function(data) {
+  var csv_url = "./import.csv";
+
+  d3.dsv(";", csv_url).then(function(data) {
     // riduce il csv ad un'unica pagina
     let csv_counter = document.querySelector("#csv_page_counter");
     data = [ data[csv_counter.value - 1] ];
@@ -466,6 +496,7 @@ var aggiorna_anteprima_da_csv = function() {
     compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, false);
   })
 }
+
 
 
 var pdf_multipagina_da_csv = function() {
@@ -876,6 +907,9 @@ function async_trigger() {
   // ---------------------------------
 
   populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
+
+
+
 
   // uncomment this for production
   // aggiorna_anteprima_da_form();

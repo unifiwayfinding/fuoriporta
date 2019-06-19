@@ -1,51 +1,125 @@
-STRUTTURA1a;STRUTTURA1b;STRUTTURA1c;STRUTTURA2a;STRUTTURA2b;PLESSO;N;FUNZIONE1;FUNZIONE2;FUNZIONE3;TEXT1;TEXT2;TEXT3;TEXT4;TEXT5;TEXT6;TEXT7
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—009—;cassette postali;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—010—;tutor;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—011—;visiting professors;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—012—;studio docenti;;;;; ;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—104—;studio docenti;;;*Filologia Ugrofinnica;*Lingue e Letterature Ugrofinniche;Beatrice Töttössy;*;*Editoria; Beatrice Töttössy; Arianna Antonielli
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—105—;studio docenti;;;;;*Lettorato Lingua Ungherese;Kinga Kapàcsy;*;*Lettorato Lingua Finlandese; Lena Dal Pozzo
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—106—;studio docenti;;;;;;;;;Scandinavistica
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—107—;studio docenti;;;;;*Lettorato Lingua Norvegese; Siri Nergård; ;*Lettorato Lingua Svedese; Yrja Cecilia Haglund
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—108—;;;;;;;;;;dottorandi
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—109—;studio docenti;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—110—;studio docenti;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—111—;studio docenti;;;;;; Nancy Delay; Josiane Jeanne Tourres; Patrice Lestournelle;Marc Jean Rives
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—112—;studio docenti;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—113—;;;;;;;;;*unità di ricerca;Lessico dei beni culturali
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—114—;studio docenti;;;;;;; Francesco Luis Ascensao Cortez Pinto; Carla Marisa da Silva Valente; Regina Célia da Silva
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—115—;;;;;;;;;;magazzino di dipartimento
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—201—;studio docenti;;;;;*Lingua e Letteratura Russa; Valentina Rossi;*;*Lettorato Lingua Russa; Irina Dvizova
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—202—;studio docenti;;;;;;;;*Letteratura Inglese; Ferdinando Cioni
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—203—;studio docenti;;;;;;;;*Filologia Germanica; Letizia Vezzosi
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—204—;studio docenti;;;;;*Filologia Slava; Marcello Garzaniti;;*Lingua Russa;Giovanna Siedina
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—205—;studio docenti;;;;*Lingua e Letteratura Turca; Ayse Saracgil; Fulvio Bertuccelli;;*Lettorato Lingua Turca; Pinar Karatas
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—206—;studio docenti;;;;;;;*Letteratura Inglese; Lorenzo Fantaccini; Samuele Grassi
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—207—;studio docenti;;;;;;*Lettorato Lingua Inglese; John Witmer Gilbert; Elizabeth Jane Sainsbury; Elizabeth Rose Sherman
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—208—;;;;;;;;;;archivio attrezzature
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—209—;;;;;;;;;;sala riunioni
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—210—;studio docenti;;;;;;*Lettorato Lingua Inglese; Deidra Anne Dvorak; Christine Diane Richardson; Louise Jayne Williams
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—211—;studio docenti;;;;;;*Lettorato Lingua Inglese; Philomena Lazzaro; Karen Fiona McLachlan; Scott Charles Staton
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—212—;segreteria amministrativa (RAD);;;;;;;;; Agostina Ricotti
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—213—;segreteria amministrativa ;;;;;;;;Stella Castrati;Laura Formichini
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—214—;segreteria amministrativa ;;;;;;;;Teresa Martelli;Sonia Mozzi
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—215—;studio docenti;;;;;;*Letteratura Inglese; Ilaria Natali; Valerie Linda Wainwright; John Denton
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—216—;rappresentanza;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—217—;studio docenti;;;;;;;*Letteratura Inglese; Donatella Pallotti o Ballotti; Luca Baratta
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—218—;studio docenti;;;;*Lingua e Letteratura Cinese; Valentina Pedone; Miriam Castorina;*;*Lettorato Lingua Cinese; Yuanping Guo
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—219—;studio docenti (direzione);;;;;;;;; Nicholas Brownlees
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—220—;seminario;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—221—;studio docenti;;;;;*Letterature Comparate; Mario Domenichelli;*;*Letteratura Tedesca; Rita Svandrlik
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—222—;segreteria amministrativa ;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—223—;segreteria amministrativa ;;;;;;;;Michela Zacchi;Giampiero Rezoagli
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—224—;segreteria amministrativa ;;;;;;;;;Enrico Maestrini
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—301—;studio docenti;;;;;;;;*Linguistica Italiana; Massimo Fanfani
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—302—;studio docenti;;;;;*Letteratura Tedesca; Lucia Bruschi Borghese;*;*Lingua Tedesca; Sabrina Ballestracci
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—303—;studio docenti;;;;;;;;*Letteratura Tedesca; Vivetta Vivarelli
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—304—;studio docenti;;;;;;;*Letteratura Tedesca; Patrizio Collini; Marco Meli
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—305—;laboratorio editoriale ;"""open access""";;;;;Beatrice  Töttössy;*Direttrice;Arianna Antonielli;*Caporedattore
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—306—;studio docenti;;;;;*Lettorato Lingua Tedesca; Christiane Buechel; Beatrix Simone Aurugu - Eberhart; Angelica Maria Kruse; Paul Alfred Rentrop
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—307—;studio docenti;;;;;;*Letteratura Ispanoamericana ; Martha Luana Canfield;Assegnista LBC; Riccardo Billero
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—308—;studio docenti;;;;;;;;;
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—309—;studio docenti;;;;;*Lingua Spagnola; Maria Carlota Nicolàs Martinez;*;*Letteratura Spagnola; Arianna Fiore
-FORLILPSI;;;Dipartimento di Formazione, Lingue, ;Interculture, Letterature e Psicologia;;—310—;Lettorato Lingua Spagnola;;;;;*Clara Cancho Sopena;*Coral Gàrcia Rodriguez;*Agapita Jurado Santos;*Pau Montserrat Martinez;* Francisca Angela Torrente Sanchez Guisande
+STRUTTURA1a;STRUTTURA1b;STRUTTURA1c;STRUTTURA2a;STRUTTURA2b;STRUTTURA2c;PLESSO;N;FUNZIONE1;FUNZIONE2;FUNZIONE3;TEXT1;TEXT2;TEXT3;TEXT4;TEXT5;TEXT6;TEXT7;TEXT8;TEXT9;TEXT10;TEXT11;TEXT12;TEXT13;TEXT14;TEXT15
+Orientamento;e Job Placement;;;;;;3;;;;Sala riunioni;;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;;Direzione generale;;;;;;;;;;;;;;;;;
+Orientamento;e Job Placement;;;;;;4;Orientamento e Job Placement;;;Elena Nisti;"Daniela Ardizzone
+";"Elisa Dolara
+";"Francesca Giannini
+";Marisa Santioli;;;;;;;;;;
+Valorizzazione;del Patrimonio Culturale;;;;;;9;Archivio;;;"Stefano Righi
+";"Antonio Mirulla
+";"Stefano Ghelli
+";Franca Branca;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;7;Mobilità internazionale;;;Federica Pirrò;Paola Frosali;Stefania Lorenzini;Caterina Salici;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;8;Nucleo di valutazione;;;"Valentina Papa
+";"Chiara Brusco
+";"Claudia Conti
+";"Silvia Roffi
+";Francesca Salvi ;;;;;;;;;;
+Funzioni Direzionali;;;;;;;4;Programmazione, organizzazione e controllo;;;*Donatella D'alberto ;*Gianni Aristelli ;*Lorenzo Bardotti;*Cristiana Braccini ;*Andrea Brunetti;*Giacomo Bulgarelli;*Andrea Del Mastio;*Giuliano Gagliano;*Laura Laciani;*Paolo Marcotti;*Maria-Hélène Piette;*Rosangela Riva;*Gianfranco Rutigliano;;
+Comunicazione;e Public Engagement;;;;;;155;Servizi di comunicazione;;;"Antonella Maraviglia
+";"Luca Pausilli
+";Laura Michelacci;;;;;;;;;;;;
+Affari Generali; e Logistica;;;;;;154;Servizi generali ;Cassa economale;;Mariella Manni;;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;153;Ragioneria e contabilità;;;Francesco Oriolo;;;;;;;;;;;;;;
+Comunicazione e Public Engagement;;Valorizzazione del Patrimonio Culturale;;;;;152;Dirigente;;;Maria Giulia Maraviglia;;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;150;Adempimenti fiscali;;;Paolo Corradini;;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;151;Ragioneria e contabilità;;;Rossella Mannelli;Simona Nermanni;;;;;;;;;;;;;
+Servizi economali, ;Patrimoniali e Logistici  ;;;;;;148;Servizi generali;;;"Anna Farnetani
+";Marco Sorelli;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;149;Ragioneria e contabilità;;;Simona Brandini;Daniela Gensini;Sabrina Pasqualetti;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;146;Coordinamento contabile strutture;;;"Paolo Bini
+";"Ilaria Noferini
+";Sonya Tronci;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;147;Ragioneria e contabilità;;;Simonetta Cosi;Susanna Crocetti;Stefano Polichetti;Laura Visintainer;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;144;Adempimenti fiscali;;;Alessandro Zuccotti;;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;145;;;;*Ragioneria e Contabilità / Economato;Massimo Masi;Francesca Bellezzi; ;*Servizi Generali;Stella Breschi;Maria Russo;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;142;Dirigente;;;Simone Migliarini;;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;143;Bilancio;;;"Ilaria Gallotta
+";Laura Bartolini;Patrizia Betti Carboncini;Sandra Moschini ;Valeria Colonnelli;;;;;;;;;;
+Servizi economali, ;Patrimoniali e Logistici  ;;;;;;140;Servizi Generali;;;Vittoria Centamore;Marco Tripodi;;;;;;;;;;;;;
+Servizi economali, ;Patrimoniali e Logistici;;;;;;143a;Servizi Generali;;;Carlo Barni;;;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;139;Dottorato;;;"Susanna Fagotti
+";"Maria Cristina Farolfi
+";Cristina Giannelli;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;138;Dottorato;;;"Sabrina Pazzagli
+";Patrizia Bonifazi ;Chiara Cianferoni ;Elisa Geli;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;137;Dottorato;;;"Marta Checchi
+";Maria Lari Simoncini;;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;136;Servizi per gli Studenti;;;"Claudio Melis
+";Valentino Bailo;Ernesto Cauteruccio;Carlo Scansetti;;;;;;;;;;;
+Servizi alla Ricerca;al Trasferimento Tecnologico;;;;;;135;Banche Dati e Risorse;;;"Anna Lucia Palma
+";Silvia Borselli;Francesca Del Re;Daniela Nardini;Daniela Selisca;;;;;;;;;;
+Servizi alla Didattica;;;;;;;134;Numero programmato;;;"Elisabetta Sonnati
+";"Giulia Bebi
+";Annarita Spagnuolo;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;133;;;;*Numero programmato;Giulia Biagi; ;*Staff al Dirigente;Maria Maradei;;;;;;;;;;
+Servizi alla Didattica;;;;;;;131;Staff al Dirigente;;;"Simonetta Biancalani
+";"Silvia Canocchi
+";Valeria Zannella;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;130;;;;;;;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;129;Dirigente;;;Maria Orfeo;;;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;128;"Programmazione
+didattica";;;"Antonella Petrillo
+";Simonetta Biancalani;Barbara Marsiliani;Graziano Banfi;Andrea Toccafondi;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;127;;;;Sala Prorettori e Delegati del Rettore;;;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;125;Offerta formativa post laurea;;;Mauretta Lizzadro;Daniela Morgenni;Michele Pastorino;Minuccia Serra;;;;;;;;;;;
+;;;;;;;123;;;;*Garante dei Diritti;Sergio Materia; ;*Ufficio di Supporto;Stefania Maresca;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;122;;;;*Prorettore al Trasferimento tecnologico;Andrea Arnone; ;*Prorettore alla Ricerca;Marco Bindi;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;121;;;;*Prorettore alle Relazioni internazionali;Giorgia Giovannetti; ;*Prorettore alla Comunicazione e al public engagement;Laura Solito;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;120;;;;*Delegato alle Relazioni sindacali e al Contenzioso;Maria Luisa Vallauri;;*Delegato alla Valorizzazione del patrimonio immobiliare;Andrea Cardone;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;119;;;;*Delegato alla Programmazione personale docente e risorse;Paola Bruni;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;118;Supporto agli Organi Collegiali;;;"Erika Console
+";Antonella Messeri;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;117;Supporto agli Organi Collegiali;;;Patrizia Olmi;;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;116;Supporto agli Organi Collegiali;;;Cristiano Burgio;Annalisa Cecchini;;;;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;101;Segreteria del Rettore e Cerimoniale;;;;;;;;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;106;;;;*Rettore;Luigi Dei;;;;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;102;;;;Giulia Bartaloni;Anna Botto;Francesca Polezzi;Nicoletta Russo;Elisa Sciarrillo;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;103;;;;*Prorettore Vicario;Vittoria Perrone Compagni;;;;;;;;;;;;;
+Segreteria del Rettore e Cerimoniale;;;;;;;104;;;;*Delegato al Bilancio;Giacomo Manetti; ;*Delegato al Dottorato di Ricerca;Michela Landi;;;;;;;;;;
+Comunicazione;e Public Engagement;;;;;;108;Ufficio stampa;;;Silvia D'Addario;;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;115;;;;Direzione Generale;;;;;;;;;;;;;;
+Comunicazione;e Public Engagement;;;;;;109;Ufficio stampa;;;Duccio Di Bari;Romeo Perrotta;;;;;;;;;;;;;
+Comunicazione;e Public Engagement;;;;;;110;Redazione web;;;Ilaria Bertini;Maria Cecilia Picchi;Benedetta Ciagli;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;114;Segreteria del Direttore Generale;;;Lucia Suffia ;Sandra Gallori;Eleonora Bolletta;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;113;;;;Stanza Riunioni;;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;111;;;;Stanza Riunioni;;;;;;;;;;;;;;
+Funzioni Direzionali;;;;;;;112;Segreteria del Direttore Generale;;;Donatella D'Alberto;;;;;;;;;;;;;;
+Comunicazione;e Public Engagement;;;;;;201;Comunicazione interna;;;Paola Zampi;;;;;;;;;;;;;;
+Risorse Umane;;;;;;;203;;;;Sala riunioni;;;;;;;;;;;;;;
+Risorse Umane;;;;;;;202;Amministrazione personale TA e CEL;;;Maria Antonia Noce;Maria Pilotto;;;;;;;;;;;;;
+;;;;;;;204;Formazione;;;Francesca Bigi;Gessica Piccardi;Elisabetta Picchiani;;;;;;;;;;;;
+Coordinamento;Relazioni Internazionali;;;;;;205;Relazioni internazionali;;;Camilla Cosi;Cristina Mazzi;Marilena Saletti;;;;;;;;;;;;
+Risorse Umane;;;;;;;206;Amministrazione personale TA e CEL;;;Ilaria Cheli;Silvia Santanna;Elena Caria;;;;;;;;;;;;
+Coordinamento;Relazioni Internazionali;;;;;;207;Relazioni internazionali;;;Lorella Palla;Claudia Pierattini;Silvia Villa;;;;;;;;;;;;
+Risorse Umane;;;;;;;208; Amministrazione personale TA e CEL;Reclutamento Personale TA e CEL;;Giulia Ferrone;Paola Puccioni;Daniela Di Vita;;;;;;;;;;;;
+Funzione Trasversale;;;;;;;209;;;;*Prevenzione della corruzione e trasparenza;Silvia Ferrini;Maria Mercorillo;; ;*Supporto al Responsabile protezione dati;Giuliano Gagliano;;;;;;;;
+Risorse Umane;;;;;;;210;Amministrazione personale TA e CEL;Servizio Civile;;Rosina Zammuto;Valentina Scovazzo;;;;;;;;;;;;;
+Risorse Umane;;;;;;;211;Amministrazione personale TA e CEL;Protocollo;;Annamaria Ferrara;Rosaria Imbergamo Gibiino;Matilde Pezzullo;;;;;;;;;;;;
+Risorse Umane;;;;;;;212;Amministrazione personale TA e CEL;;;Barbara Dini;Lilia Digiesi;;;;;;;;;;;;;
+Risorse Umane;;;;;;;213;Amministrazione personale TA e CEL;;;Maria Rita Di Pietro;Elisabetta Galassi;Carmela Guillot;;;;;;;;;;;;
+Risorse Umane;;;;;;;214;Amministrazione personale TA e CEL;;;Maria Carrabs;Maria Lisa Masseti;Tina Sechi;Annalisa Cauteruccio ;;;;;;;;;;;
+Risorse Umane;;;;;;;216;Amministrazione personale TA e CEL;;;Patrizia Ranaldi;;;;;;;;;;;;;;
+Risorse Umane;;;;;;;218;Dirigente;;;Vincenzo De Marco;;;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;217;Interventi a favore degli studenti;;;Eugenia Ghiosso;Tamara Caponi;Daniela Bottaru;Alessia Raddi Delle Ruote;Silvia Giovannelli;;;;;;;;;;
+Servizi alla Didattica;;;;;;;220;Interventi a favore degli studenti;;;Alessandro Greti;Alessandro Leomanni;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;219;Stipendi;( Personale TA);;Marco Bianchini;Lucia De Bernardis;Paolo Grisieti;Alessandra Poggiali;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;222;Adempimenti Fiscali;;;Silvia Puccetti;Lucia Verdiani;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;221;Stipendi;(ersonale a tempo determinato e CEL);;Antonella Appolloni;Lucia Verdiani;Anna Morandini;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;224;Stipendi;(Assegni di Ricerca e Dottorato di Ricerca);;Rossella Giorgetti;Giacomo Massiach;;;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;223;Stipendi;(Personale Docente);;Anna Bozzetto;Rosalia Gildone;Sabrina Romualdi;Paolo Vada;;;;;;;;;;;
+Servizi economici;e Finanziari   ;;;;;;226;Stipendi;;;Claudia Caponi;;;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;225;SIAF - Coordinamento Applicativi ;;;Valdo Pasqui;Marzia Chisci;Luisa Liberati;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;227;SIAF - Gestione amministrativa e contabile;;;Rosa Iorio;;;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;228;SIAF - Gestione amministrativa e contabile;;;Paolo Casagli;Marius Spino;;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;229;SIAF;;;Luigi Coverini;Fabio Castelli;;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;230;SIAF;;;Roberto Placido;;;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;231;SIAF - Coordinamento  Sistemi e Reti;;;Stefano Ciofini;;;;;;;;;;;;;;
+Servizi Informatici ;;;;;;;232;;;;Giovanni Paradiso;Enrico Piccini;Alberto Giovannini;;;;;;;;;;;;
+Servizi alla Didattica;;;;;;;236;;;;*Controllo tasse e contributi;Antonio Greco; ;*Verbalizzazione esami e firma digitale;Valentina Ballo;*Supporto Processi Qualità;Matteo Cianferoni; ;*Staff al Dirigente;Francesca Cavigli;;;;;
+Risorse Umane;;;;;;;239;Amministrazione del Personale Docente e Ricercatore;;;Eva Furini ;;;;;;;;;;;;;;
+Risorse Umane;;;;;;;238;Programmazione del Personale Docente e Ricercatore;;;Silvia Benci;Antonella Crini;Valentina Conticelli;;;;;;;;;;;;
+Risorse Umane;;;;;;;237;"Amministrazione del Personale Docente e Ricercatore ""Carriere""";;;Daniela Barbieri;Orietta Landi;Daniela Maggi;Simona Renai;Adele Torchia;Valentina Baffi;Sara Sasso;;;;;;;;
+Risorse Umane;;;;;;;240;"Amministrazione del Personale Docente ""Sezione reclutamento""";;;Monica Piccini;Barbara Biagini;Lucia Malinconi;Chiara Rizzo;Patrizia Tassini;;;;;;;;;;
+Risorse Umane;;;;;;;241;Gestione trattamento previdenziale;;;Maria Eugenia Renzi;;;;;;;;;;;;;;
+Risorse Umane;;;;;;;241;Amministrazione del Personale Docente;;;Giovanni D'Arrigo;;;;;;;;;;;;;;
