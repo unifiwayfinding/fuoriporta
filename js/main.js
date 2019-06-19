@@ -28,43 +28,48 @@ const show_margins = false;
 const force_petit_checkbox = false;
 
 const impostazioni_PDF = {
-larg : 200,
-alt : 110,
-msu : 12,
-mgiu : 12,
-msx : 10,
-mdx : 10,
 
-    corpo_nomi: 30,
-    interlinea_nomi: 24,
-    spaziosotto_nomi: 8,
-    corpo_specifica: 20,
+nomi_corpo: 30,
+nomi_interlinea: 24,
+nomi_spaziosotto: 8,
 
-    interlinea_specifica: 16,
-    spaziosotto_specifica: 8,
-    riduzione_nomi_piccoli: 1.75,
+specifica_corpo: 20,
+specifica_interlinea: 16,
+specifica_spaziosotto: 8,
+riduzione_nomi_piccoli: 1.75,
 
-    strutture_bold_font: null,
-    strutture_bold_corpo: 25,
-    strutture_bold_interlinea: 21,
-    strutture_bold_spaziosotto: 0,
+strutture_bold_corpo: 25,
+strutture_bold_interlinea: 21,
+strutture_bold_spaziosotto: 0,
 
-    strutture_bold_font: null,
-    strutture_light_corpo: 16,
-    strutture_light_interlinea: 14,
-    strutture_light_spaziosotto: 0,
+strutture_light_corpo: 16,
+strutture_light_interlinea: 14,
+strutture_light_spaziosotto: 0,
 
-    funzioni_font: null,
-    funzioni_corpo: 20,
-    funzioni_interlinea: 18,
-    funzioni_spaziosotto: 5,
+funzioni_corpo: 20,
+funzioni_interlinea: 18,
+funzioni_spaziosotto: 5,
 
+strutture_bold_font: null,
+strutture_bold_font: null,
+funzioni_font: null,
+nomi_font: null,
+annotazioni_font  : null,
 
-left_textbox_width : mmToUnits(90),
+page_width          : mmToUnits(200),
+page_height         : mmToUnits(110),
+margin_up           : mmToUnits(12),
+margin_down         : mmToUnits(12),
+margin_sx           : mmToUnits(10),
+margin_dx           : mmToUnits(10),
+
+left_textbox_width  : mmToUnits(90),
 right_textbox_width : mmToUnits(85),
+altezza_annotazioni : mmToUnits(106),
 
-foreground: "#fff",
-background: "#000"
+
+foreground: null,
+background: null
 }
 
 
@@ -131,8 +136,8 @@ var show_input_fields = function(container, struttura) {
   box.setAttribute("class", "input_box");
   box.setAttribute("id", "nomi_box");
 
-  box.appendChild( create_text_plus("1:", "nome_1", "Letteratura inglese", "spec") );
-  box.appendChild( create_text_plus("2:", "nome_2", "", "nome") );
+  box.appendChild( create_text_plus("1:", "nome_1", "Nome Cognome", "nome") );
+  box.appendChild( create_text_plus("2:", "nome_2", "DIMAI", "spec") );
   box.appendChild( create_text_plus("3:", "nome_3", "", "nome") );
   box.appendChild( create_text_plus("4:", "nome_4", "", "nome") );
   box.appendChild( create_text_plus("5:", "nome_5", "", "nome") );
@@ -373,7 +378,7 @@ var  fetch_info_from_form = function() {
   }
   infos.Nomi_piccoli = nomipiccoli || force_petit_checkbox;
 
-  infos.Annotazioni_1 = "fuoriporta generato con un file csv dal sito wayfinding.unifi.it"
+  infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
   return [infos];
@@ -404,7 +409,7 @@ var fetch_info_from_csv = function(data_line) {
 
     Nomi_piccoli: false,
 
-    Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
+    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it",
     Annotazioni_2: (function() {
       d = new Date();
       return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
@@ -474,18 +479,17 @@ var parseFile = function() {
 
 /**
  * Crea il PDF a partire dalle informazioni
-   * @param {object} info - Le informazioni per il fuoriporta.
-   * @param {string} info.St_b1 - Info struttura
-   * @param {string} info.St_b2 - Info struttura
-   * @param {string} info.St_b3 - Info struttura
-   * @param {string} info.St_l1 - Info struttura
-   * @param {string} info.St_l2 - Info struttura
-   * @param {array} info.Funzioni - Array di stringhe per le funzioni
-   * @param {array} info.Nomi - Array di stringhe
+   * @param {object}  info - Le informazioni per il fuoriporta.
+   * @param {string}  info.St_b1 - Info struttura
+   * @param {string}  info.St_b2 - Info struttura
+   * @param {string}  info.St_b3 - Info struttura
+   * @param {string}  info.St_l1 - Info struttura
+   * @param {string}  info.St_l2 - Info struttura
+   * @param {array}   info.Funzioni - Array di stringhe per le funzioni
+   * @param {array}   info.Nomi - Array di stringhe
    * @param {boolean} info.Nomi_piccoli - boolean
-   * @param {string} Annotazioni_1 - Allinato a sinistra
-   * @param {string} Annotazioni_2 - Allineato a destra
-   * @return {object} compiled PDF
+   * @param {string}  Annotazioni_1 - Allinato a sinistra
+   * @param {string}  Annotazioni_2 - Allineato a destra
  */
 
 
@@ -508,12 +512,12 @@ const compila_pdf = function(data, pdf_settings, multipagina) {
   }
 
   let page_options = {
-    size: [mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt)],
+    size: [pdf_settings.page_width, pdf_settings.page_height],
     margins: {
-      top: mmToUnits(pdf_settings.msu),
+      top: pdf_settings.margin_up,
       bottom: 0,
-      left: mmToUnits(pdf_settings.msx),
-      right: mmToUnits(pdf_settings.mdx)
+      left: pdf_settings.margin_sx,
+      right: pdf_settings.margin_dx
     }
   }
 
@@ -561,7 +565,7 @@ for (let page = 0; page < data.length; page++) {
 
 
       // Crea rettangolo di background
-      .rect(0, 0, mmToUnits(pdf_settings.larg), mmToUnits(pdf_settings.alt))
+      .rect(0, 0, pdf_settings.page_width, pdf_settings.page_height)
       .fill(pdf_settings.background)
 
 
@@ -592,9 +596,9 @@ for (let page = 0; page < data.length; page++) {
       })
 
       // annotazioni sulla riga in basso
-      doc.font(helvetica45, 8)
-          .text(info.Annotazioni_1, mmToUnits(pdf_settings.msx), mmToUnits(106), {})
-          .text(info.Annotazioni_2, mmToUnits(pdf_settings.msx), mmToUnits(106), {align: "right"})
+      doc.font(pdf_settings.annotazioni_font, 8)
+          .text(info.Annotazioni_1, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {})
+          .text(info.Annotazioni_2, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {align: "right"})
 
 
 
@@ -613,7 +617,7 @@ for (let page = 0; page < data.length; page++) {
       let lines_total_height = 0;
 
       processedNomi.forEach(function(nome) {
-        doc.font(helvetica45, nome.size); // sets fonts for the right calculations
+        doc.font(pdf_settings.nomi_font, nome.size); // sets fonts for the right calculations
         let h = doc.heightOfString(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
         // console.log (w,h);
         lines_total_height += h;
@@ -625,43 +629,36 @@ for (let page = 0; page < data.length; page++) {
 
 
       // scrive nomi e specifiche
-      doc .font(helvetica45, 1)
-          .text("", mmToUnits(pdf_settings.larg - pdf_settings.mdx) - pdf_settings.right_textbox_width, mmToUnits(pdf_settings.msu) + 245 - lines_total_height)
+      doc .font(pdf_settings.nomi_font, 1)
+          .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.margin_up + 245 - lines_total_height)
 
       console.log("Numero nomi/specifiche: " + processedNomi.length);
       for (i=0; i < processedNomi.length; i++) {
         let nome = processedNomi[i];
-        doc .font(helvetica45, (nome.size))
+        doc .font(pdf_settings.nomi_font, (nome.size))
             .text(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
       }
-
-
-
-
-
-
-
 
 
 
       // Mostra le guide e i margini se necessario
       if (show_margins === true) {
 
-        doc .rect(mmToUnits(pdf_settings.msx), mmToUnits(pdf_settings.msu), mmToUnits(pdf_settings.larg - pdf_settings.msx - pdf_settings.mdx), mmToUnits(pdf_settings.alt - pdf_settings.msu - pdf_settings.mgiu))
+        doc .rect(pdf_settings.margin_sx, pdf_settings.margin_up, (pdf_settings.page_width - pdf_settings.margin_sx - pdf_settings.margin_dx), (pdf_settings.page_height - pdf_settings.margin_up - pdf_settings.margin_down))
             .stroke("red")
 
             .moveTo(mmToUnits(0), mmToUnits(5))
-            .lineTo(mmToUnits(pdf_settings.larg), mmToUnits(5))
+            .lineTo(pdf_settings.page_width, mmToUnits(5))
             .lineWidth(1)
             .stroke("blue")
 
             .moveTo(mmToUnits(0), mmToUnits(105))
-            .lineTo(mmToUnits(pdf_settings.larg), mmToUnits(105))
+            .lineTo(pdf_settings.page_width, mmToUnits(105))
             .lineWidth(1)
             .stroke("blue")
 
-            .moveTo(mmToUnits(pdf_settings.msx), mmToUnits(100))
-            .lineTo(mmToUnits(pdf_settings.larg - pdf_settings.mdx), mmToUnits(100))
+            .moveTo(pdf_settings.margin_dx, mmToUnits(100))
+            .lineTo((pdf_settings.page_width - pdf_settings.margin_dx), mmToUnits(100))
             .lineWidth(.5)
             .stroke("yellow")
       }
@@ -724,16 +721,16 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
       x = x.substr(1);
       new_nomi.push({
         content: x,
-        size: font_settings.corpo_specifica / a,
-        interlinea: font_settings.interlinea_specifica / a,
-        spaziosotto: font_settings.spaziosotto_specifica / a
+        size: font_settings.specifica_corpo / a,
+        interlinea: font_settings.specifica_interlinea / a,
+        spaziosotto: font_settings.specifica_spaziosotto / a
       })
     } else {
       new_nomi.push({
         content: x,
-        size: font_settings.corpo_nomi / a,
-        interlinea: font_settings.interlinea_nomi / a,
-        spaziosotto: font_settings.spaziosotto_nomi / a * spec_dopo_nome
+        size: font_settings.nomi_corpo / a,
+        interlinea: font_settings.nomi_interlinea / a,
+        spaziosotto: font_settings.nomi_spaziosotto / a * spec_dopo_nome
       })
     }
   }
@@ -894,6 +891,8 @@ function async_trigger() {
   impostazioni_PDF.strutture_bold_font = helvetica95;
   impostazioni_PDF.strutture_light_font = helvetica45;
   impostazioni_PDF.funzioni_font = helvetica65;
+  impostazioni_PDF.nomi_font = helvetica45;
+  impostazioni_PDF.annotazioni_font = helvetica45;
 
   console.log("-- all font loaded --");
 

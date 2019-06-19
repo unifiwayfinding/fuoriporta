@@ -12,16 +12,19 @@
 - [x] Bugfix: in "compilazione libera" i text field delle strutture non devono essere bloccati
 - [x] Separare html da js
 - [x] Nei campi liberi di "funzione" dovrebbe essere imposto lowercase
-- [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
 - [x] Funzioni con menu a discesa, con possibilità di inserimento manuale
-- [ ] Inserire opzione per nome oppure specifica sui campi nome
+- [x] Inserire opzione per nome oppure specifica sui campi nome
+- [x] Cambiare funzionamento di nextpage e prevpage lavorando sulla visualizzazione e non sulla compilazione
+- [ ] Cambiare flag nome/specifica facendo sì che sotto ogni nome possa essere inserito e rimosso un campo "specifica" - questo risolve sia il problema delle specifiche una sotto l'altra che il problema dell'interlinea sbagliata se sotto un nome c'è una riga flaggata specifica ma vuota
+- [ ] Risolvere overflow dei nomi in alto
 - [ ] Aggiungere qr code per giombetti
       https://github.com/soldair/node-qrcode
       https://github.com/papnkukn/qrcode-svg (sembra il più semplice)
       https://github.com/davidshimjs/qrcodejs
-- [ ] Cambiare flag nome/specifica facendo sì che sotto ogni nome possa essere inserito e rimosso un campo "specifica" - questo risolve sia il problema delle specifiche una sotto l'altra che il problema dell'interlinea sbagliata se sotto un nome c'è una riga flaggata specifica ma vuota
-- [ ] Risolvere overflow dei nomi in alto
-- [ ] Cambiare funzionamento di nextpage e prevpage lavorando sulla visualizzazione e non sulla compilazione
+
+- [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
+- [ ] Correggere NEUROFARBA
+
 
 
 
@@ -44,5 +47,5 @@
 - [ ] Implementare auto update come qui: http://pdfkit.org/demo/browser.html
 - [ ] Il pdf deve essere impaginato in un A4?
 - [ ] La preview deve essere inclusa in un fuoriporta intero?
-- [ ] Aggiorna fuoriporta con INVIO
+- [x] Aggiorna fuoriporta con INVIO
 - [ ] Inserire nei campi testo invece di testo vero dei suggerimenti che poi spariscono (svincolare primo render del pdf dai contenuti dei campi)
