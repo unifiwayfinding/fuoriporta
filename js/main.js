@@ -423,6 +423,7 @@ var fetch_info_from_csv = function(data_line) {
     St_l3: data_line.STRUTTURA2c,
     Funzioni: [data_line.FUNZIONE1, data_line.FUNZIONE2, data_line.FUNZIONE3],
     Nomi: [data_line.TEXT1, data_line.TEXT2, data_line.TEXT3, data_line.TEXT4, data_line.TEXT5, data_line.TEXT6, data_line.TEXT7, data_line.TEXT8, data_line.TEXT9, data_line.TEXT10, data_line.TEXT11, data_line.TEXT12, data_line.TEXT13, data_line.TEXT14, data_line.TEXT15],
+
     Nomi_piccoli: false,
 
     Annotazioni_1: "fuoriporta generato dal sito wayfinding.unifi.it",
@@ -430,6 +431,11 @@ var fetch_info_from_csv = function(data_line) {
       d = new Date();
       return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
     })()
+
+  }
+
+  if (data_line.NOMIPICCOLI) {
+    info.Nomi_piccoli = true;
   }
 
   return info;
