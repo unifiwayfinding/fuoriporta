@@ -29,14 +29,14 @@ const force_petit_checkbox = false;
 
 const impostazioni_PDF = {
 
-nomi_corpo: 30,
+nomi_corpo: 28,
 nomi_interlinea: 24,
 nomi_spaziosotto: 8,
 
 specifica_corpo: 20,
 specifica_interlinea: 16,
 specifica_spaziosotto: 8,
-riduzione_nomi_piccoli: 1.75,
+riduzione_nomi_piccoli: 1.65,
 
 strutture_bold_corpo: 25,
 strutture_bold_interlinea: 21,
@@ -136,9 +136,9 @@ var show_input_fields = function(container, struttura) {
   box.setAttribute("class", "input_box");
   box.setAttribute("id", "nomi_box");
 
-  box.appendChild( create_text_plus("1:", "nome_1", "Nome Cognome", "nome") );
+  box.appendChild( create_text_plus("1:", "nome_1", "Nome Nome_Nome", "nome") );
   box.appendChild( create_text_plus("2:", "nome_2", "DIMAI", "spec") );
-  box.appendChild( create_text_plus("3:", "nome_3", "", "nome") );
+  box.appendChild( create_text_plus("3:", "nome_3", "Nome", "nome") );
   box.appendChild( create_text_plus("4:", "nome_4", "", "nome") );
   box.appendChild( create_text_plus("5:", "nome_5", "", "nome") );
   box.appendChild( create_text_plus("6:", "nome_6", "", "nome") );
@@ -165,7 +165,7 @@ var show_input_fields = function(container, struttura) {
   // aggiunge nota in fondo
   let note = document.createElement("p");
   note.setAttribute("class", "tiny");
-  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
+  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio. <br> Per tenere insieme due parole usare il trattino basso.";
   box.appendChild(note);
   container.appendChild(box);
 
@@ -697,6 +697,11 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
     }
     else break
   }
+
+  // sostituisce gli underscore con non breaking space
+  nomi = nomi.map(function (nome){
+    return nome.replace("_", "\xa0");
+  });
 
   // regola i nomi piccoli
   let a = 1;
