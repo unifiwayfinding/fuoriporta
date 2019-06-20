@@ -90,22 +90,10 @@ function mmToUnits(mm) {
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
-// aggiorna il pdf in automatico
-var timeout = null;
-var update = function (e) {
-  clearTimeout(timeout);
-  timeout = setTimeout(function () {
-      aggiorna_anteprima_da_form();
-  }, 500);
-}
-
-var show_inputs = function(index) {
-  struttura_selezionata = (lista_strutture[index - 1]);
-  show_input_fields(text_input_container, struttura_selezionata,);
-}
-
-// popola i campi di input sulla base della scelta nel selector principale
-var show_input_fields = function(container, struttura) {
+// crea tutti i campi di input
+var show_form = function() {
+  var container = document.querySelector("#text_input_container");
+  console.log(container);
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
@@ -167,11 +155,19 @@ var show_input_fields = function(container, struttura) {
   box.appendChild(note);
   container.appendChild(box);
 
-  // aggiorna il PDF
-  aggiorna_anteprima_da_form();
 }
 
+
 // -- DA QUI IN POI HELPER FUNCTIONS:
+
+// helper function per aggiornare il pdf in automatico
+var timeout = null;
+var update = function (e) {
+  clearTimeout(timeout);
+  timeout = setTimeout(function () {
+      aggiorna_anteprima_da_form();
+  }, 500);
+}
 
 // generic function
 // popola un dato select a partire da una lista
@@ -639,7 +635,6 @@ for (let page = 0; page < data.length; page++) {
       processedNomi.forEach(function(nome) {
         doc.font(pdf_settings.nomi_font, nome.size); // sets fonts for the right calculations
         let h = doc.heightOfString(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
-        // console.log (w,h);
         lines_total_height += h;
       });
       // qui c'è un bug: l'ultima riga non è l'ultima con un contenuto, ma l'ultima in assoluto
@@ -863,54 +858,58 @@ var change_page = function(action) {
 // ------ LOAD FONTS WITH XHR ------
 // ---------------------------------
 
-var xhr_to_load = 0;
+var inizializza = function() {
+  var xhr_to_load = 0;
 
-// load font helvetica black
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica95 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
+  // load font helvetica black
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica95 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
   };
-};
-xhr.send();
+  xhr.send();
 
-// load font helvetica medium
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Md.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica65 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
+  // load font helvetica medium
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Md.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica65 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
   };
-};
-xhr.send();
+  xhr.send();
 
-// load font helvetica light
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica45 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
+  // load font helvetica light
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica45 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
   };
-};
-xhr.send();
+  xhr.send();
+}
 
 function async_trigger() {
+
+  // ----------- INIZIALIZZA ---------
 
   // Impostazioni font
   impostazioni_PDF.strutture_bold_font = helvetica95;
@@ -921,13 +920,7 @@ function async_trigger() {
 
   console.log("-- all font loaded --");
 
-
-  // ---------------------------------
-  // ----------- INIZIALIZZA ---------
-  // ---------------------------------
-
-  populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
-
+  // Key bindings
   document.querySelector("#page_counter").addEventListener("keyup", function(event) {
     // Number 13 is the "Enter" key on the keyboard
     if (event.keyCode === 13) {
@@ -936,10 +929,14 @@ function async_trigger() {
   });
 
 
+  // popola il select delle strutture
+  populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
+  // visualizza il form
+  show_form(1);
 
-  // uncomment this for production
-  // aggiorna_anteprima_da_form();
+  aggiorna_anteprima_da_form();
+}
 
-  // comment this for production
-  show_inputs(1);
-};
+document.addEventListener('DOMContentLoaded', (event) => {
+  inizializza();
+})
