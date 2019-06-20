@@ -82,6 +82,10 @@ function mmToUnits(mm) {
 
 
 
+
+
+
+
 // ----------------------------------------------------
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
@@ -95,11 +99,6 @@ var update = function (e) {
   }, 500);
 }
 
-
-
-
-// viene chiamato dall'onchange del selector pincipale
-// ATTENZIONE: FUNZIONE IMPURA - CHIAMA "lista_strutture" che è esterno
 var show_inputs = function(index) {
   struttura_selezionata = (lista_strutture[index - 1]);
   show_input_fields(text_input_container, struttura_selezionata,);
@@ -112,15 +111,14 @@ var show_input_fields = function(container, struttura) {
   }
 
   // crea gli input
-  var enabled = (struttura.option_value === "altro") ? true : false;
   var box = document.createElement("div");
   box.setAttribute("class", "input_box");
-  box.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
-  box.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
-  box.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
-  box.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
-  box.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
-  box.appendChild( create_text_input(enabled, "Light 3:", "struttura_l3", struttura.struttura_light_3) );
+  box.appendChild( create_text_input("Grassetto 1:", "struttura_b1" ) );
+  box.appendChild( create_text_input("Grassetto 2:", "struttura_b2" ) );
+  box.appendChild( create_text_input("Grassetto 3:", "struttura_b3") );
+  box.appendChild( create_text_input("Light 1:", "struttura_l1" ) );
+  box.appendChild( create_text_input("Light 2:", "struttura_l2" ) );
+  box.appendChild( create_text_input("Light 3:", "struttura_l3" ) );
   container.appendChild(box);
 
 
@@ -193,7 +191,7 @@ var show_input_fields = function(container, struttura) {
 }
 
 // return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
-var create_text_input = function (enabled, etichetta, id, value) {
+var create_text_input = function (etichetta, id) {
   let input_line = document.createElement("div");
   input_line.setAttribute("class", "input_line");
 
@@ -210,12 +208,7 @@ var create_text_input = function (enabled, etichetta, id, value) {
   input.setAttribute("class", "input_field");
   input.setAttribute("id", id);
   input.onkeyup = update;
-  if (!enabled) {
-    input.setAttribute("disabled", "disabled");
-  };
-  if (value) {
-    input.setAttribute("value", value);
-  };
+
   input.setAttribute("autocomplete", "nope");
   // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
   input.setAttribute("name", Math.random().toString(36).substring(2, 15));
@@ -318,6 +311,30 @@ var create_text_plus = function(etichetta, id, value, type) {
 
   return input_line;
 }
+
+
+
+// viene chiamato dall'onchange del selector delle strutture
+// ATTENZIONE: FUNZIONE IMPURA - USA VARIABILE "lista_strutture"
+var update_struttura = function(index) {
+  var struttura = (lista_strutture[index - 1]);
+  document.querySelector("#struttura_b1").value = struttura.struttura_bold_1 ?  struttura.struttura_bold_1 : "";
+  document.querySelector("#struttura_b2").value = struttura.struttura_bold_2 ?  struttura.struttura_bold_2 : "";
+  document.querySelector("#struttura_b3").value = struttura.struttura_bold_3 ?  struttura.struttura_bold_3 : "";
+  document.querySelector("#struttura_l1").value = struttura.struttura_light_1 ? struttura.struttura_light_1 : "";
+  document.querySelector("#struttura_l2").value = struttura.struttura_light_2 ? struttura.struttura_light_2 : "";
+  document.querySelector("#struttura_l3").value = struttura.struttura_light_3 ? struttura.struttura_light_3 : "";
+
+  var disabled = (struttura.option_value==="altro") ? false : true;
+  document.querySelector("#struttura_b1").disabled = disabled;
+  document.querySelector("#struttura_b2").disabled = disabled;
+  document.querySelector("#struttura_b3").disabled = disabled;
+  document.querySelector("#struttura_l1").disabled = disabled;
+  document.querySelector("#struttura_l2").disabled = disabled;
+  document.querySelector("#struttura_l3").disabled = disabled;
+  aggiorna_anteprima_da_form();
+}
+
 
 
 
@@ -921,5 +938,5 @@ function async_trigger() {
   // aggiorna_anteprima_da_form();
 
   // comment this for production
-  struttura_selector.selectedIndex = 1; show_inputs(1);
+  show_inputs(1);
 };

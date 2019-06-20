@@ -225,7 +225,8 @@ var lista_strutture = [
   "struttura_bold_2": "",
   "struttura_bold_3": "",
   "struttura_light_1": "",
-  "struttura_light_2": ""
+  "struttura_light_2": "",
+  "struttura_light_3": ""
 }
 ];
 
