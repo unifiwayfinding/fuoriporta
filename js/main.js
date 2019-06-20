@@ -24,7 +24,7 @@ var anteprima_pdf_numpages;
 // ---------------------------------
 
 // impostazioni PDF, in mm
-const show_margins = false;
+const show_margins = true;
 const force_petit_checkbox = false;
 
 const impostazioni_PDF = {
@@ -125,16 +125,16 @@ var show_form = function() {
   box.appendChild( create_text_plus("1:", "nome_1", "Nome Nome_Nome", "nome") );
   box.appendChild( create_text_plus("2:", "nome_2", "DIMAI", "spec") );
   box.appendChild( create_text_plus("3:", "nome_3", "Nome", "nome") );
-  box.appendChild( create_text_plus("4:", "nome_4", "", "nome") );
-  box.appendChild( create_text_plus("5:", "nome_5", "", "nome") );
-  box.appendChild( create_text_plus("6:", "nome_6", "", "nome") );
-  box.appendChild( create_text_plus("7:", "nome_7", "", "nome") );
-  box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
-  box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
-  box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
-  box.appendChild( create_text_plus("11:", "nome_11", "", "nome") );
-  box.appendChild( create_text_plus("12:", "nome_12", "", "nome") );
-  box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
+  box.appendChild( create_text_plus("4:", "nome_4", "Nome", "nome") );
+  box.appendChild( create_text_plus("5:", "nome_5", "Nome", "nome") );
+  box.appendChild( create_text_plus("6:", "nome_6", "Nome", "nome") );
+  box.appendChild( create_text_plus("7:", "nome_7", "Nome", "nome") );
+  box.appendChild( create_text_plus("8:", "nome_8", "Nome", "nome") );
+  box.appendChild( create_text_plus("9:", "nome_9", "Nome", "nome") );
+  box.appendChild( create_text_plus("10:", "nome_10", "Nome", "nome") );
+  box.appendChild( create_text_plus("11:", "nome_11", "Nome", "nome") );
+  box.appendChild( create_text_plus("12:", "nome_12", "Nome", "nome") );
+  box.appendChild( create_text_plus("13:", "nome_13", "Nome", "nome") );
 
   var petit_line = document.createElement("div");
   petit_line.setAttribute("class", "input_line petit_line");
@@ -634,22 +634,33 @@ for (let page = 0; page < data.length; page++) {
       let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli, pdf_settings);
 
       // calcola allineamento verticale
-      let lines_total_height = 0;
+      var calcola_total_height = function() {
 
-      processedNomi.forEach(function(nome) {
-        doc.font(pdf_settings.nomi_font, nome.size); // sets fonts for the right calculations
-        let h = doc.heightOfString(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
-        lines_total_height += h;
-      });
-      // qui c'è un bug: l'ultima riga non è l'ultima con un contenuto, ma l'ultima in assoluto
-      if (processedNomi.length > 0) {
-        lines_total_height -= processedNomi[processedNomi.length - 1].spaziosotto;
+        // corregge la posizione dei nomi - non si capisce perché ma sono leggermente sbagliati
+        let height = -3;
+
+        processedNomi.forEach(function(nome, index, array) {
+          doc.font(pdf_settings.nomi_font, nome.size); // sets fonts for the right calculations
+          let h = doc.heightOfString(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
+          height += h;
+          if (index === array.length - 1) {
+            height -= nome.spaziosotto;
+          }
+        });
+        return height;
       }
+
+      var lines_total_height = calcola_total_height();
+      while (lines_total_height > (pdf_settings.page_height-pdf_settings.margin_up-pdf_settings.margin_down + 3)) {
+        processedNomi.pop();
+        lines_total_height = calcola_total_height();
+      }
+
 
 
       // scrive nomi e specifiche
       doc .font(pdf_settings.nomi_font, 1)
-          .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.margin_up + 245 - lines_total_height)
+          .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.page_height - pdf_settings.margin_down - lines_total_height)
 
       console.log("Numero nomi/specifiche: " + processedNomi.length);
       for (i=0; i < processedNomi.length; i++) {
@@ -676,8 +687,8 @@ for (let page = 0; page < data.length; page++) {
             .lineWidth(1)
             .stroke("blue")
 
-            .moveTo(pdf_settings.margin_dx, mmToUnits(100))
-            .lineTo((pdf_settings.page_width - pdf_settings.margin_dx), mmToUnits(100))
+            .moveTo(pdf_settings.margin_dx, pdf_settings.page_height - pdf_settings.margin_down)
+            .lineTo((pdf_settings.page_width - pdf_settings.margin_dx), pdf_settings.page_height - pdf_settings.margin_down)
             .lineWidth(.5)
             .stroke("yellow")
       }
