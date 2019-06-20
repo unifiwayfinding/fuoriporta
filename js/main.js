@@ -314,24 +314,27 @@ var create_text_plus = function(etichetta, id, value, type) {
 
 
 
+
+
+var abbinamento_strutture = [
+  {"id" : "#struttura_b1", "ref": "struttura_bold_1"},
+  {"id" : "#struttura_b2", "ref": "struttura_bold_2"},
+  {"id" : "#struttura_b3", "ref": "struttura_bold_3"},
+  {"id" : "#struttura_l1", "ref": "struttura_light_1"},
+  {"id" : "#struttura_l2", "ref": "struttura_light_2"},
+  {"id" : "#struttura_l3", "ref": "struttura_light_3"}
+]
+
 // viene chiamato dall'onchange del selector delle strutture
 // ATTENZIONE: FUNZIONE IMPURA - USA VARIABILE "lista_strutture"
 var update_struttura = function(index) {
   var struttura = (lista_strutture[index - 1]);
-  document.querySelector("#struttura_b1").value = struttura.struttura_bold_1 ?  struttura.struttura_bold_1 : "";
-  document.querySelector("#struttura_b2").value = struttura.struttura_bold_2 ?  struttura.struttura_bold_2 : "";
-  document.querySelector("#struttura_b3").value = struttura.struttura_bold_3 ?  struttura.struttura_bold_3 : "";
-  document.querySelector("#struttura_l1").value = struttura.struttura_light_1 ? struttura.struttura_light_1 : "";
-  document.querySelector("#struttura_l2").value = struttura.struttura_light_2 ? struttura.struttura_light_2 : "";
-  document.querySelector("#struttura_l3").value = struttura.struttura_light_3 ? struttura.struttura_light_3 : "";
-
   var disabled = (struttura.option_value==="altro") ? false : true;
-  document.querySelector("#struttura_b1").disabled = disabled;
-  document.querySelector("#struttura_b2").disabled = disabled;
-  document.querySelector("#struttura_b3").disabled = disabled;
-  document.querySelector("#struttura_l1").disabled = disabled;
-  document.querySelector("#struttura_l2").disabled = disabled;
-  document.querySelector("#struttura_l3").disabled = disabled;
+  abbinamento_strutture.forEach(function(c) {
+    let campo = document.querySelector(c.id);
+    campo.value = struttura[c.ref] ? struttura[c.ref] : "";
+    campo.disabled = disabled;
+  })
   aggiorna_anteprima_da_form();
 }
 
