@@ -259,7 +259,7 @@ var create_select_and_text = function (etichetta, id, lista) {
 
     if (this.value === "altro") {
       select.setAttribute("id", "");
-      var text_field = create_text_input(true, "Inserire:", id, "");
+      var text_field = create_text_input("Inserire:", id, "");
       box.appendChild(text_field);
     }
 
@@ -380,9 +380,9 @@ var  fetch_info_from_form = function() {
   infos.St_l3 = fetch_one_info("#struttura_l3");
 
   infos.Funzioni = [];
-  infos.Funzioni.push( fetch_one_info("#funzione_1") );
-  infos.Funzioni.push( fetch_one_info("#funzione_2") );
-  infos.Funzioni.push( fetch_one_info("#funzione_3") );
+  infos.Funzioni.push( document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value.replace("_", "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value.replace("_", "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value.replace("_", "\xa0") : "");
 
   infos.Nomi = fetch_nomi("#nomi_box");
 
@@ -420,7 +420,11 @@ var fetch_info_from_csv = function(data_line) {
     St_l1: data_line.STRUTTURA2a,
     St_l2: data_line.STRUTTURA2b,
     St_l3: data_line.STRUTTURA2c,
-    Funzioni: [data_line.FUNZIONE1, data_line.FUNZIONE2, data_line.FUNZIONE3],
+    Funzioni: [
+      data_line.FUNZIONE1.replace("_", "\xa0"),
+      data_line.FUNZIONE2.replace("_", "\xa0"),
+      data_line.FUNZIONE3.replace("_", "\xa0")
+    ],
     Nomi: [data_line.TEXT1, data_line.TEXT2, data_line.TEXT3, data_line.TEXT4, data_line.TEXT5, data_line.TEXT6, data_line.TEXT7, data_line.TEXT8, data_line.TEXT9, data_line.TEXT10, data_line.TEXT11, data_line.TEXT12, data_line.TEXT13, data_line.TEXT14, data_line.TEXT15],
 
     Nomi_piccoli: false,
@@ -925,6 +929,15 @@ function async_trigger() {
     // Number 13 is the "Enter" key on the keyboard
     if (event.keyCode === 13) {
       change_page(update);
+    }
+  });
+
+  document.body.addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 37) {
+      change_page("prev");
+    } else if (event.keyCode === 39) {
+      change_page("next");
     }
   });
 
