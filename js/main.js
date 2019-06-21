@@ -798,20 +798,19 @@ var visualize_preview = function() {
       console.log('ANTEPRIMA - Page loaded: ' + pageNumber);
 
       var scale = 5;
-      var viewport = page.getViewport(scale);
+      var pageViewport = page.getViewport(scale);
 
       // Prepare canvas using PDF page dimensions
       var canvas = document.querySelector("#the-canvas");
       var context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
+      canvas.width = pageViewport.width;
+      canvas.height = pageViewport.height;
+
 
       // Render PDF page into canvas context
       var renderContext = {
         canvasContext: context,
-        viewport: viewport
+        viewport: pageViewport
       };
       var renderTask = page.render(renderContext);
       renderTask.then(function() {
