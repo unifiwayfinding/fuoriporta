@@ -24,7 +24,7 @@ var anteprima_pdf_numpages;
 // ---------------------------------
 
 // impostazioni PDF, in mm
-const show_margins = true;
+const show_margins = false;
 const force_petit_checkbox = false;
 
 const impostazioni_PDF = {
@@ -122,19 +122,19 @@ var show_form = function() {
   box.setAttribute("class", "input_box");
   box.setAttribute("id", "nomi_box");
 
-  box.appendChild( create_text_plus("1:", "nome_1", "Nome Nome_Nome", "nome") );
-  box.appendChild( create_text_plus("2:", "nome_2", "DIMAI", "spec") );
-  box.appendChild( create_text_plus("3:", "nome_3", "Nome", "nome") );
-  box.appendChild( create_text_plus("4:", "nome_4", "Nome", "nome") );
-  box.appendChild( create_text_plus("5:", "nome_5", "Nome", "nome") );
-  box.appendChild( create_text_plus("6:", "nome_6", "Nome", "nome") );
-  box.appendChild( create_text_plus("7:", "nome_7", "Nome", "nome") );
-  box.appendChild( create_text_plus("8:", "nome_8", "Nome", "nome") );
-  box.appendChild( create_text_plus("9:", "nome_9", "Nome", "nome") );
-  box.appendChild( create_text_plus("10:", "nome_10", "Nome", "nome") );
-  box.appendChild( create_text_plus("11:", "nome_11", "Nome", "nome") );
-  box.appendChild( create_text_plus("12:", "nome_12", "Nome", "nome") );
-  box.appendChild( create_text_plus("13:", "nome_13", "Nome", "nome") );
+  box.appendChild( create_text_plus("1:", "nome_1", "Nome Cognome", "nome") );
+  box.appendChild( create_text_plus("2:", "nome_2", "Descrizione", "spec") );
+  box.appendChild( create_text_plus("3:", "nome_3", "", "nome") );
+  box.appendChild( create_text_plus("4:", "nome_4", "", "nome") );
+  box.appendChild( create_text_plus("5:", "nome_5", "", "nome") );
+  box.appendChild( create_text_plus("6:", "nome_6", "", "nome") );
+  box.appendChild( create_text_plus("7:", "nome_7", "", "nome") );
+  box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
+  box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
+  box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
+  box.appendChild( create_text_plus("11:", "nome_11", "", "nome") );
+  box.appendChild( create_text_plus("12:", "nome_12", "", "nome") );
+  box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
 
   var petit_line = document.createElement("div");
   petit_line.setAttribute("class", "input_line petit_line");
