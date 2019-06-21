@@ -20,9 +20,9 @@
       2. Si inizializza eventualmente una struttura, o anche no.
       3. Quando si cambia il selettore delle strutture non viene ricaricato tutto.
 - [x] Implementare underscore => NBS per nomi
-- [ ] Implementare underscore => NBS per strutture
+- [x] Implementare underscore => NBS per strutture
 - [ ] Modificare layout spostando i due bottoni "CREA PDF" sopra l'anteprima
-- [ ] Implementare next/prev con frecce
+- [x] Implementare next/prev con frecce
 - [ ] Correggere NEUROFARBA in liste
 - [ ] Risolvere overflow dei nomi in alto (dopo aver calcolato l'altezza della parte destra eliminare via via le righe superiori finché non risulta sotto un certo valore)
 - [ ] Cambiare flag nome/specifica facendo sì che sotto ogni nome possa essere inserito e rimosso un campo "specifica" - questo risolve sia il problema delle specifiche una sotto l'altra che il problema dell'interlinea sbagliata se sotto un nome c'è una riga flaggata specifica ma vuota
