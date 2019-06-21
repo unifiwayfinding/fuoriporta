@@ -34,7 +34,7 @@ nomi_interlinea: 24,
 nomi_spaziosotto: 8,
 
 specifica_corpo: 20,
-specifica_interlinea: 16,
+specifica_interlinea: 18,
 specifica_spaziosotto: 8,
 riduzione_nomi_piccoli: 1.65,
 
