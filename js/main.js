@@ -739,15 +739,13 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
     a = font_settings.riduzione_nomi_piccoli;
   }
 
-  // regola lo spazio tra nome e specifica
-  let spec_dopo_nome = 1;
-
   // crea nuovo array
   let new_nomi = [];
 
   // effettua la conversione
   for (i = 0; i < nomi.length; i++) {
     let x = nomi[i];
+    let spec_dopo_nome = 1;
     if (nomi[i+1] && nomi[i+1].charAt(0) === "*") {
       spec_dopo_nome = 0.25;
     }
