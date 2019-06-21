@@ -371,18 +371,17 @@ var fetch_nomi = function(parent_selector, line_class) {
 var  fetch_info_from_form = function() {
   let infos = {}
 
-
-  infos.St_b1 = fetch_one_info("#struttura_b1");
-  infos.St_b2 = fetch_one_info("#struttura_b2");
-  infos.St_b3 = fetch_one_info("#struttura_b3");
-  infos.St_l1 = fetch_one_info("#struttura_l1");
-  infos.St_l2 = fetch_one_info("#struttura_l2");
-  infos.St_l3 = fetch_one_info("#struttura_l3");
+  infos.St_b1 = ( document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value.replace(/_/g, "\xa0") : "");
+  infos.St_b2 = ( document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value.replace(/_/g, "\xa0") : "");
+  infos.St_b3 = ( document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value.replace(/_/g, "\xa0") : "");
+  infos.St_l1 = ( document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value.replace(/_/g, "\xa0") : "");
+  infos.St_l2 = ( document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value.replace(/_/g, "\xa0") : "");
+  infos.St_l3 = ( document.querySelector("#struttura_l3") ? document.querySelector("#struttura_l3").value.replace(/_/g, "\xa0") : "");
 
   infos.Funzioni = [];
-  infos.Funzioni.push( document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value.replace("_", "\xa0") : "");
-  infos.Funzioni.push( document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value.replace("_", "\xa0") : "");
-  infos.Funzioni.push( document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value.replace("_", "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value.replace(/_/g, "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value.replace(/_/g, "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value.replace(/_/g, "\xa0") : "");
 
   infos.Nomi = fetch_nomi("#nomi_box");
 
@@ -414,16 +413,16 @@ var  fetch_info_from_form = function() {
 var fetch_info_from_csv = function(data_line) {
 
   let info = {
-    St_b1: data_line.STRUTTURA1a,
-    St_b2: data_line.STRUTTURA1b,
-    St_b3: data_line.STRUTTURA1c,
-    St_l1: data_line.STRUTTURA2a,
-    St_l2: data_line.STRUTTURA2b,
-    St_l3: data_line.STRUTTURA2c,
+    St_b1: data_line.STRUTTURA1a.replace(/_/g, "\xa0"),
+    St_b2: data_line.STRUTTURA1b.replace(/_/g, "\xa0"),
+    St_b3: data_line.STRUTTURA1c.replace(/_/g, "\xa0"),
+    St_l1: data_line.STRUTTURA2a.replace(/_/g, "\xa0"),
+    St_l2: data_line.STRUTTURA2b.replace(/_/g, "\xa0"),
+    St_l3: data_line.STRUTTURA2c.replace(/_/g, "\xa0"),
     Funzioni: [
-      data_line.FUNZIONE1.replace("_", "\xa0"),
-      data_line.FUNZIONE2.replace("_", "\xa0"),
-      data_line.FUNZIONE3.replace("_", "\xa0")
+      data_line.FUNZIONE1.replace(/_/g, "\xa0"),
+      data_line.FUNZIONE2.replace(/_/g, "\xa0"),
+      data_line.FUNZIONE3.replace(/_/g, "\xa0")
     ],
     Nomi: [data_line.TEXT1, data_line.TEXT2, data_line.TEXT3, data_line.TEXT4, data_line.TEXT5, data_line.TEXT6, data_line.TEXT7, data_line.TEXT8, data_line.TEXT9, data_line.TEXT10, data_line.TEXT11, data_line.TEXT12, data_line.TEXT13, data_line.TEXT14, data_line.TEXT15],
 
@@ -730,7 +729,7 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
 
   // sostituisce gli underscore con non breaking space
   nomi = nomi.map(function (nome){
-    return nome.replace("_", "\xa0");
+    return nome.replace(/_/g, "\xa0");
   });
 
   // regola i nomi piccoli
