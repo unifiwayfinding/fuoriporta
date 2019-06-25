@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="generator" content="">
-  <title>Università di Firenze - Generatore Fuoriporta</title>
+  <title>Generatore Fuoriporta</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -33,6 +33,11 @@
       border: 1px solid black;
     }
 
+    .JA_didacom_link, .JA_didacom_link:hover, .JA_didacom_link:visited {
+      font-weight: 600;
+      color: #666;
+    }
+
 
   </style>
   <!-- Custom styles for this template -->
@@ -40,19 +45,16 @@
 
 <body class="bg-light">
   <div class="container">
-    <div class="py-5 text-center">
-      <h2>Generatore Fuoriporta</h2>
-      <p class="lead">Usare questa pagina web per generare i fuoriporta.</p>
-    </div>
 
     <div class="row">
 
-      <div class="col-md-3 order-md-1">
+      <div class="col-md-3">
+        <!-- Coilonna a sinistra -->
 
 
 
         <div class="row mb-5">
-          <div class="col-12 btn-group" role="group" aria-label="Basic example">
+          <div class="mt-3 col-12 btn-group" role="group" aria-label="Basic example">
             <button type="button" class="btn btn-outline-secondary active" checked>Singolo</button>
             <button type="button" class="btn btn-outline-secondary disabled">Multiplo</button>
           </div>
@@ -167,11 +169,11 @@
         <hr>
         <div class="d-block my-3">
           <div class="custom-control custom-radio custom-control-inline">
-            <input id="black" name="paymentMethod" type="radio" class="custom-control-input" checked>
+            <input id="black" name="selezionaSfondo" type="radio" class="custom-control-input" checked>
             <label class="custom-control-label" for="black">Sfondo nero</label>
           </div>
           <div class="custom-control custom-radio custom-control-inline">
-            <input id="white" name="paymentMethod" type="radio" class="custom-control-input">
+            <input id="white" name="selezionaSfondo" type="radio" class="custom-control-input">
             <label class="custom-control-label" for="white">Sfondo bianco</label>
           </div>
         </div>
@@ -185,7 +187,14 @@
 
 
 
-      <div class="col-12">
+      <div class="col-md-8">
+
+
+        <div class="mt-2 text-center">
+          <h2>Generatore Fuoriporta</h2>
+          <p>Università degli Studi di Firenze</p>
+        </div>
+
         <div style="background-color: black; height: 100px"></div>
         <canvas id="the-canvas"></canvas>
         <div style="background-color: black; height: 40px; margin-top: -10px"></div>
@@ -197,10 +206,11 @@
 
 
 
+
     </div>
 
     <footer class="my-5 pt-5 text-muted text-center text-small">
-      <p class="mb-1">&copy; 2019 <strong>didacommunicationlab</strong></p>
+      <p class="mb-1">&copy; 2019 <a href="http:\\www.didacommunicationlab.it" class="JA_didacom_link">didacommunicationlab</a></p>
       <ul class="list-inline">
         <li class="list-inline-item"><a href="#">Leggi la guida</a></li>
         <li class="list-inline-item"><a href="#">Segnala un problema</a></li>
