@@ -801,7 +801,7 @@ var visualize_preview = function() {
       var pageViewport = page.getViewport(scale);
 
       // Prepare canvas using PDF page dimensions
-      var canvas = document.querySelector("#the-canvas");
+      var canvas = document.querySelector("#the_canvas");
       var context = canvas.getContext('2d');
       canvas.width = pageViewport.width;
       canvas.height = pageViewport.height;
@@ -816,7 +816,7 @@ var visualize_preview = function() {
       renderTask.then(function() {
         console.log('ANTEPRIMA - Page rendered');
         anteprima_pdf_numpages = pdf.numPages;
-        document.getElementById("page_num").textContent = pageNumber + " / "+ anteprima_pdf_numpages;
+        document.querySelector("#page_num").textContent = "PAGINA: " + pageNumber + " / "+ anteprima_pdf_numpages;
       });
     });
   }, function(reason) {
@@ -948,13 +948,42 @@ function async_trigger() {
     }
   });
 
+  /*
+  document.querySelector("#singolo-multiplo").addEventListener("onchange", function(event) {
+    alert("change")
+  });
+  */
+  document.querySelector("#multiplo_control").style.display = "none";
+
+  document.getElementsByName("singolo_multiplo").forEach(function(radio) {
+    radio.onclick = function() {
+      // SWITCH CONTROL FEATURES
+      console.log("click: ", this)
+      if (this.value === "singolo") {
+        console.log("singolo")
+        document.querySelector("#multiplo_control").style.display = "none";
+        document.querySelector("#singolo_control").style.display = "block";
+      } else if (this.value === "multiplo") {
+        console.log("multiplo")
+        document.querySelector("#multiplo_control").style.display = "block";
+        document.querySelector("#singolo_control").style.display = "none";
+      }
+      // RESET CANVAS + PAGE COUNTER PREVIEW
+      var canvas_container = document.querySelector("#canvas_container")
+      canvas_container.innerHTML = '';
+      var nuovo_canvas = document.createElement("canvas");
+      nuovo_canvas.setAttribute("id", "the_canvas");
+      canvas_container.appendChild(nuovo_canvas);
+      document.querySelector("#page_num").textContent = "";
+    }
+  })
 
   // popola il select delle strutture
   populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
   // visualizza il form
   show_form(1);
 
-  aggiorna_anteprima_da_form();
+  // aggiorna_anteprima_da_form();
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {

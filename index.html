@@ -12,7 +12,7 @@
 	<script src="js/pdf.js"></script>
 	<script src="js/liste.js"></script>
 	<script src="js/main.js"></script>
-  <script src="js/d3.min.js"></script>
+	<script src="js/d3.min.js"></script>
 
 	<link rel="stylesheet" href="css/skeleton.min.css">
 	<link rel="stylesheet" href="css/fonts.css">
@@ -26,58 +26,84 @@
 		<header>
 			<!-- <img src="images/banner_dida.svg" alt="" id="photo" width="260px" height="auto"> -->
 			<h1>Generatore Fuoriporta (beta)</h5>
-			<p class="version">versione 0.4</h6>
+				<p class="version">versione 0.4</h6>
 		</header>
+
+		<nav>
+			<label class=radio-label>Singolo
+				<input type="radio" name="singolo_multiplo" id="singolo-multiplo" value="singolo" checked>
+			</label>
+			<label class=radio-label>Multiplo
+				<input type="radio" name="singolo_multiplo" id="singolo-multiplo" value="multiplo">
+			</label>
+		</nav>
+
 
 
 		<main class="main_input-container">
 
-			<div id="select_container" class="input_line">
-				<div class="label_box">
-				<label>Struttura:</label>
-			  </div>
-				<select onchange="update_struttura(this.selectedIndex)" id="struttura_selector">
-				</select>
+			<div id="singolo_control">
+
+				<div id="select_container" class="input_line">
+					<div class="label_box">
+						<label>Struttura:</label>
+					</div>
+					<select onchange="update_struttura(this.selectedIndex)" id="struttura_selector">
+					</select>
+				</div>
+
+				<form id="text_input_container" autocomplete="off">
+				</form>
+
+				<button id="aggiorna_pdf" onclick="aggiorna_anteprima_da_form()">AGGIORNA ANTEPRIMA</button>
+
 			</div>
 
-			<form id="text_input_container" autocomplete="off">
-			</form>
+			<div id="multiplo_control">
+				<input type="file" id="file_loader" name="file_loader" accept="text/csv"><br>
+				<button id="carica_csv" onclick="aggiorna_anteprima_da_file()">CREA PDF DA CSV</button>
+			</div>
 
 		</main>
+
+
 	</section>
+
+
+
+
 
 	<section id="preview">
 		<header>
 			<h1>Anteprima PDF</h1>
 		</header>
 		<main>
-			<canvas id="the-canvas"></canvas>
+
+			<div class="options-input">
+				<label class=radio-label>Sfondo nero
+					<input type="radio" name="options-color" id="options-color-black" value="black" checked>
+				</label>
+				<label class=radio-label>Sfondo bianco
+					<input type="radio" name="options-color" id="options-color-white" value="white">
+				</label>
+			</div>
+
+			<div id="canvas_container">
+			<canvas id="the_canvas"></canvas>
+			</div>
 
 			<div id="control-panel">
 
 				<div class="options-input">
-					<button class="csv_controls" id="prev_csv" onclick="change_page('prev')"><</button>
-	        <input type="text" id="page_counter" value="1">
-					<button class="csv_controls" id="next_csv" onclick="change_page('next')">></button>
-					<button class="csv_controls" id="update" onclick="change_page('update')">REFRESH</button>
-					<span> PAGINA <span id="page_num">...</span></span>
+					<button class="csv_controls" id="prev_csv" onclick="change_page('prev')">
+						<</button> <input type="text" id="page_counter" value="1">
+							<button class="csv_controls" id="next_csv" onclick="change_page('next')">></button>
+							<button class="csv_controls" id="update" onclick="change_page('update')">REFRESH</button>
+							<span id="page_num"></span>
 				</div>
 
 				<br>
-				<br>
 
-				<div class="options-input">
-					<label class=radio-label>Sfondo nero
-						<input type="radio" name="options-color" id="options-color-black" value="black" checked>
-					</label>
-					<label class=radio-label>Sfondo bianco
-						<input type="radio" name="options-color" d="options-color-white" value="white">
-					</label>
-				</div>
-				<button id="aggiorna_pdf" onclick="aggiorna_anteprima_da_form()">CREA PDF DAL FORM</button>
-        <br>
-        <input type="file" id="file_loader" name="file_loader" accept="text/csv"><br>
-        <button id="carica_csv" onclick="aggiorna_anteprima_da_file()">CREA PDF DA CSV</button>
 
 				<a href="" id="scarica_link" download="Fuoriporta Novoli.pdf">Scarica il pdf</a>
 

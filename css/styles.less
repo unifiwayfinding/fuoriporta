@@ -55,8 +55,10 @@ p {
 }
 
 canvas {
-	width: 100%;
+	width: 700px;
+	height: 385px;
 	border: 1px solid grey;
+	background-color: black;
 }
 
 
@@ -75,9 +77,15 @@ canvas {
 	margin-top: 30px;
 }
 
-#control h1,
-#control p {
-	margin-left: @allineamento;
+#control {
+	h1,
+	p,
+	nav,
+	button,
+	input[type=file]
+	{
+		margin-left: @allineamento;
+	}
 }
 
 div.input_box {
@@ -145,8 +153,6 @@ input:disabled {
 
 // PARTE IN FONDO DELLA SCHEDA PANNELLO DI CONTROLLO
 #control-panel {
-	position: absolute;
-	top: 540px;
 	margin-bottom: 40px;
 }
 

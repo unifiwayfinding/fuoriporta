@@ -30,8 +30,10 @@ p {
   margin-top: 100px;
 }
 canvas {
-  width: 100%;
+  width: 700px;
+  height: 385px;
   border: 1px solid grey;
+  background-color: black;
 }
 #control {
   float: left;
@@ -43,7 +45,10 @@ canvas {
   margin-top: 30px;
 }
 #control h1,
-#control p {
+#control p,
+#control nav,
+#control button,
+#control input[type=file] {
   margin-left: 90px;
 }
 div.input_box {
@@ -93,8 +98,6 @@ input:disabled {
   background-color: #fafafa;
 }
 #control-panel {
-  position: absolute;
-  top: 540px;
   margin-bottom: 40px;
 }
 label.radio-label {
