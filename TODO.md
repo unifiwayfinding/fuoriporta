@@ -12,13 +12,31 @@
 - [x] Bugfix: in "compilazione libera" i text field delle strutture non devono essere bloccati
 - [x] Separare html da js
 - [x] Nei campi liberi di "funzione" dovrebbe essere imposto lowercase
-- [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
 - [x] Funzioni con menu a discesa, con possibilità di inserimento manuale
-- [ ] Inserire opzione per nome oppure specifica sui campi nome
+- [x] Inserire opzione per nome oppure specifica sui campi nome
+- [x] Cambiare funzionamento di nextpage e prevpage lavorando sulla visualizzazione e non sulla compilazione
+- [x] Riscrivere inizializzazione in questo modo:
+      1. Si inizializza tutto il form, vuoto
+      2. Si inizializza eventualmente una struttura, o anche no.
+      3. Quando si cambia il selettore delle strutture non viene ricaricato tutto.
+- [x] Implementare underscore => NBS per nomi
+- [x] Implementare underscore => NBS per strutture
+- [ ] Modificare layout spostando i due bottoni "CREA PDF" sopra l'anteprima
+- [x] Implementare next/prev con frecce
+- [ ] Correggere NEUROFARBA in liste
+- [ ] Risolvere overflow dei nomi in alto (dopo aver calcolato l'altezza della parte destra eliminare via via le righe superiori finché non risulta sotto un certo valore)
+- [ ] Cambiare flag nome/specifica facendo sì che sotto ogni nome possa essere inserito e rimosso un campo "specifica" - questo risolve sia il problema delle specifiche una sotto l'altra che il problema dell'interlinea sbagliata se sotto un nome c'è una riga flaggata specifica ma vuota
 - [ ] Aggiungere qr code per giombetti
       https://github.com/soldair/node-qrcode
       https://github.com/papnkukn/qrcode-svg (sembra il più semplice)
       https://github.com/davidshimjs/qrcodejs
+- [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
+
+
+
+
+
+
 
 
 **LAYOUT FUORIPORTA**
@@ -40,5 +58,5 @@
 - [ ] Implementare auto update come qui: http://pdfkit.org/demo/browser.html
 - [ ] Il pdf deve essere impaginato in un A4?
 - [ ] La preview deve essere inclusa in un fuoriporta intero?
-- [ ] Aggiorna fuoriporta con INVIO
+- [x] Aggiorna fuoriporta con INVIO
 - [ ] Inserire nei campi testo invece di testo vero dei suggerimenti che poi spariscono (svincolare primo render del pdf dai contenuti dei campi)

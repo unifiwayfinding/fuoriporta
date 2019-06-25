@@ -8,21 +8,71 @@ pdf.js          required for preview visualization
 pdf.worker.js   comes together with pdf.js
 */
 
+/*
+ --- *** APPUNTI *** ---
+Prima di procedere va risolto il problema per il quale disattivando un funzionamenro provvisorio che si trova nelle ultime due righe smette tutto di funzionare
+*/
+
+
 PDFJS.workerSrc = 'js/pdf.worker.js';
+
+var anteprima_pdf_url;
+var anteprima_pdf_numpages;
 
 // ---------------------------------
 // ----------- SETTINGS ------------
 // ---------------------------------
 
 // impostazioni PDF, in mm
-var pdf_larg = 200;
-var pdf_alt = 110;
+const show_margins = false;
+const force_petit_checkbox = false;
 
-var pdf_msu = 12;
-var pdf_mgiu = 10;
+const impostazioni_PDF = {
 
-var pdf_msx = 10;
-var pdf_mdx = 10;
+nomi_corpo: 28,
+nomi_interlinea: 24,
+nomi_spaziosotto: 8,
+
+specifica_corpo: 20,
+specifica_interlinea: 18,
+specifica_spaziosotto: 8,
+riduzione_nomi_piccoli: 1.65,
+
+strutture_bold_corpo: 25,
+strutture_bold_interlinea: 21,
+strutture_bold_spaziosotto: 0,
+
+strutture_light_corpo: 16,
+strutture_light_interlinea: 14,
+strutture_light_spaziosotto: 0,
+
+funzioni_corpo: 20,
+funzioni_interlinea: 18,
+funzioni_spaziosotto: 5,
+
+strutture_bold_font: null,
+strutture_bold_font: null,
+funzioni_font: null,
+nomi_font: null,
+annotazioni_font  : null,
+
+page_width          : mmToUnits(200),
+page_height         : mmToUnits(110),
+margin_up           : mmToUnits(12),
+margin_down         : mmToUnits(12),
+margin_sx           : mmToUnits(10),
+margin_dx           : mmToUnits(10),
+
+left_textbox_width  : mmToUnits(90),
+right_textbox_width : mmToUnits(85),
+altezza_annotazioni : mmToUnits(106),
+
+
+foreground: null,
+background: null
+}
+
+
 
 // Helper function: converts mm to pdf-units (pt)
 function mmToUnits(mm) {
@@ -32,15 +82,97 @@ function mmToUnits(mm) {
 
 
 
+
+
+
+
 // ----------------------------------------------------
 // ---- FUNCTIONS THAT GENERATES INPUT FIELDS ---------
 // ----------------------------------------------------
 
+// crea tutti i campi di input
+var show_form = function() {
+  var container = document.querySelector("#text_input_container");
+  console.log(container);
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // crea gli input
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.appendChild( create_text_input("Grassetto 1:", "struttura_b1" ) );
+  box.appendChild( create_text_input("Grassetto 2:", "struttura_b2" ) );
+  box.appendChild( create_text_input("Grassetto 3:", "struttura_b3") );
+  box.appendChild( create_text_input("Light 1:", "struttura_l1" ) );
+  box.appendChild( create_text_input("Light 2:", "struttura_l2" ) );
+  box.appendChild( create_text_input("Light 3:", "struttura_l3" ) );
+  container.appendChild(box);
 
 
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
+  box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
+  box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
+  container.appendChild(box);
+
+
+  var box = document.createElement("div");
+  box.setAttribute("class", "input_box");
+  box.setAttribute("id", "nomi_box");
+
+  box.appendChild( create_text_plus("1:", "nome_1", "Nome Cognome", "nome") );
+  box.appendChild( create_text_plus("2:", "nome_2", "Descrizione", "spec") );
+  box.appendChild( create_text_plus("3:", "nome_3", "", "nome") );
+  box.appendChild( create_text_plus("4:", "nome_4", "", "nome") );
+  box.appendChild( create_text_plus("5:", "nome_5", "", "nome") );
+  box.appendChild( create_text_plus("6:", "nome_6", "", "nome") );
+  box.appendChild( create_text_plus("7:", "nome_7", "", "nome") );
+  box.appendChild( create_text_plus("8:", "nome_8", "", "nome") );
+  box.appendChild( create_text_plus("9:", "nome_9", "", "nome") );
+  box.appendChild( create_text_plus("10:", "nome_10", "", "nome") );
+  box.appendChild( create_text_plus("11:", "nome_11", "", "nome") );
+  box.appendChild( create_text_plus("12:", "nome_12", "", "nome") );
+  box.appendChild( create_text_plus("13:", "nome_13", "", "nome") );
+
+  var petit_line = document.createElement("div");
+  petit_line.setAttribute("class", "input_line petit_line");
+  var petit_checkbox = document.createElement("input");
+  var petit_checkbox_label = document.createElement("label");
+  petit_checkbox_label.textContent = "usa nomi piccoli";
+  petit_checkbox.setAttribute("type", "checkbox");
+  petit_checkbox.setAttribute("name", "petit");
+  petit_checkbox.onchange = aggiorna_anteprima_da_form;
+  petit_line.appendChild(petit_checkbox);
+  petit_line.appendChild(petit_checkbox_label);
+  box.appendChild(petit_line);
+
+  // aggiunge nota in fondo
+  let note = document.createElement("p");
+  note.setAttribute("class", "tiny");
+  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio. <br> Per tenere insieme due parole usare il trattino basso.";
+  box.appendChild(note);
+  container.appendChild(box);
+
+}
+
+
+// -- DA QUI IN POI HELPER FUNCTIONS:
+
+// helper function per aggiornare il pdf in automatico
+var timeout = null;
+var update = function (e) {
+  clearTimeout(timeout);
+  timeout = setTimeout(function () {
+      aggiorna_anteprima_da_form();
+  }, 500);
+}
+
+// generic function
 // popola un dato select a partire da una lista
 // questa viene chiamata durante l'inizializzazione
-var populate_select_input = function (select, lista) {
+  var populate_select_input = function (select, lista) {
   let option = document.createElement("option");
   option.setAttribute("selected", "selected");
   option.setAttribute("disabled", "disabled");
@@ -54,56 +186,48 @@ var populate_select_input = function (select, lista) {
   }
 }
 
-// viene chiamato dall'onchange del selector pincipale
-// ATTENZIONE: FUNZIONE IMPURA - CHIAMA "lista_strutture" che è esterno
-var show_inputs = function(index) {
-  struttura_selezionata = (lista_strutture[index - 1]);
-  show_input_fields(text_input_container, struttura_selezionata,);
-}
-
-
-
-var timeout = null;
-var update = function (e) {
-  clearTimeout(timeout);
-  timeout = setTimeout(function () {
-      aggiorna_pdf();
-  }, 500);
-}
-
-
-// -- DA QUI IN POI HELPER FUNCTIONS:
-
 // return un campo di testo a partire da enabled si/no, etichetta, id, value di precompilazione
-var create_text_input = function (enabled, etichetta, id, value) {
-  var label = document.createElement("label");
+var create_text_input = function (etichetta, id) {
+  let input_line = document.createElement("div");
+  input_line.setAttribute("class", "input_line");
+
+  let label_box = document.createElement("div");
+  label_box.setAttribute("class", "label_box");
+  let label = document.createElement("label");
   label.textContent = etichetta;
-  var input = document.createElement("input");
+  label_box.appendChild(label);
+  input_line.appendChild(label_box);
+
+
+  let input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("class", "input_field");
   input.setAttribute("id", id);
   input.onkeyup = update;
-  if (!enabled) {
-    input.setAttribute("disabled", "disabled");
-  };
-  if (value) {
-    input.setAttribute("value", value);
-  };
+
   input.setAttribute("autocomplete", "nope");
   // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
   input.setAttribute("name", Math.random().toString(36).substring(2, 15));
-  label.appendChild(input);
-  return label;
-}
 
+  input_line.appendChild(input);
+  return input_line;
+}
 
 // crea un select associato ad un campo di testo
 var create_select_and_text = function (etichetta, id, lista) {
-  let section = document.createElement("div");
+  let input_multiline = document.createElement("div");
 
-  var select_label = document.createElement("label");
-  select_label.textContent = etichetta;
-  var select = document.createElement("select");
+  let input_line = document.createElement("div");
+  input_line.setAttribute("class", "input_line");
+
+  let label_box = document.createElement("div");
+  label_box.setAttribute("class", "label_box");
+  let label = document.createElement("label");
+  label.textContent = etichetta;
+  label_box.appendChild(label);
+  input_line.appendChild(label_box);
+
+  let select = document.createElement("select");
   select.setAttribute("id", id);
 
   option = document.createElement("option");
@@ -121,11 +245,11 @@ var create_select_and_text = function (etichetta, id, lista) {
   option.value = "altro";
   select.appendChild(option);
 
-  select_label.appendChild(select);
-  section.appendChild(select_label);
+  input_line.appendChild(select);
+  input_multiline.appendChild(input_line);
 
   let box = document.createElement("div");
-  section.appendChild(box);
+  input_multiline.appendChild(box);
 
   select.onchange = function(){
     select.setAttribute("id", id);
@@ -135,23 +259,29 @@ var create_select_and_text = function (etichetta, id, lista) {
 
     if (this.value === "altro") {
       select.setAttribute("id", "");
-      var text_field = create_text_input(true, "Inserire funzione:", id, "");
+      var text_field = create_text_input("Inserire:", id, "");
       box.appendChild(text_field);
     }
 
-    aggiorna_pdf();
+    aggiorna_anteprima_da_form();
   };
 
-  return section;
+  return input_multiline;
 }
 
+// crea un campo di testo associato ad un checkbox
+var create_text_plus = function(etichetta, id, value, type) {
+  let input_line = document.createElement("div");
+  input_line.setAttribute("class", "input_line nomi_line");
+  input_line.setAttribute("id", id);
 
-var create_text_plus = function(etichetta, etichetta2, id, value) {
-  let section = document.createElement("div");
-  section.setAttribute("id", id);
-
-  var label = document.createElement("label");
+  let label_box = document.createElement("div");
+  label_box.setAttribute("class", "label_box");
+  let label = document.createElement("label");
   label.textContent = etichetta;
+  label_box.appendChild(label);
+  input_line.appendChild(label_box);
+
   var input = document.createElement("input");
   input.setAttribute("type", "text");
   input.setAttribute("id", id);
@@ -162,54 +292,46 @@ var create_text_plus = function(etichetta, etichetta2, id, value) {
   input.setAttribute("autocomplete", "nope");
   // aggiunge una stringa random sull'attributo "name" dei campi di testo per disattivare l'autocomplete
   input.setAttribute("name", Math.random().toString(36).substring(2, 15));
-  label.appendChild(input);
-  section.appendChild(label);
+  input_line.appendChild(input);
 
-  var label = document.createElement("label");
-  label.textContent = etichetta2;
-  label.setAttribute("class", "nomi-checkbox-label");
-  var input = document.createElement("input");
-  input.setAttribute("type", "checkbox");
-  label.appendChild(input);
-  section.appendChild(label);
 
-  return section;
+  var checkbox = document.createElement("input");
+  var checkbox_label = document.createElement("label");
+  checkbox_label.textContent = "specifica";
+  checkbox.setAttribute("type", "checkbox");
+  checkbox.setAttribute("name", id+"_checkbox");
+  checkbox.onchange = aggiorna_anteprima_da_form;
+  if (type=="spec") {checkbox.setAttribute("checked", "checked");}
+  input_line.appendChild(checkbox);
+  input_line.appendChild(checkbox_label);
+
+  return input_line;
 }
 
 
-// popola i campi di input sulla base della scelta nel selector principale
-var show_input_fields = function(container, struttura) {
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
-
-  // crea gli input
-  var enabled = (struttura.option_value === "altro") ? true : false;
-  container.appendChild( create_text_input(enabled, "Grassetto 1:", "struttura_b1", struttura.struttura_bold_1) );
-  container.appendChild( create_text_input(enabled, "Grassetto 2:", "struttura_b2", struttura.struttura_bold_2) );
-  container.appendChild( create_text_input(enabled, "Grassetto 3:", "struttura_b3", struttura.struttura_bold_3) );
-  container.appendChild( create_text_input(enabled, "Light 1:", "struttura_l1", struttura.struttura_light_1) );
-  container.appendChild( create_text_input(enabled, "Light 2:", "struttura_l2", struttura.struttura_light_2) );
-
-  let box = document.createElement("div");
-  box.setAttribute("class", "input_box");
-  box.appendChild( create_select_and_text("Funzione 1:", "funzione_1", lista_funzioni) );
-  box.appendChild( create_select_and_text("Funzione 2:", "funzione_2", lista_funzioni) );
-  box.appendChild( create_select_and_text("Funzione 3:", "funzione_3", lista_funzioni) );
-  container.appendChild(box);
-
-  container.appendChild( create_text_plus("Nome 1:", "Specifica", "nome_1", "Nome Cognome") );
-  container.appendChild( create_text_plus("Nome 2:", "Specifica", "nome_2", "") );
-  container.appendChild( create_text_plus("Nome 3:", "Specifica", "nome_3", "") );
-  container.appendChild( create_text_plus("Nome 4:", "Specifica", "nome_4", "") );
 
 
-  // aggiunge nota in fondo
-  let note = document.createElement("h6");
-  note.innerHTML = "Per lasciare vuota una riga inserire uno spazio.";
-  container.appendChild(note);
-  // aggiorna il PDF
-  aggiorna_pdf();
+
+var abbinamento_strutture = [
+  {"id" : "#struttura_b1", "ref": "struttura_bold_1"},
+  {"id" : "#struttura_b2", "ref": "struttura_bold_2"},
+  {"id" : "#struttura_b3", "ref": "struttura_bold_3"},
+  {"id" : "#struttura_l1", "ref": "struttura_light_1"},
+  {"id" : "#struttura_l2", "ref": "struttura_light_2"},
+  {"id" : "#struttura_l3", "ref": "struttura_light_3"}
+]
+
+// viene chiamato dall'onchange del selector delle strutture
+// ATTENZIONE: FUNZIONE IMPURA - USA VARIABILE "lista_strutture"
+var update_struttura = function(index) {
+  var struttura = (lista_strutture[index - 1]);
+  var disabled = (struttura.option_value==="altro") ? false : true;
+  abbinamento_strutture.forEach(function(c) {
+    let campo = document.querySelector(c.id);
+    campo.value = struttura[c.ref] ? struttura[c.ref] : "";
+    campo.disabled = disabled;
+  })
+  aggiorna_anteprima_da_form();
 }
 
 
@@ -217,268 +339,440 @@ var show_input_fields = function(container, struttura) {
 
 
 
-// ----------------------------------------------------
-// ---- FETCH INFO FROM INPUT FIELDS TO OBJECT --------
-// ----------------------------------------------------
 
 
-var fetch_one_info = function (selector) {
+// ----------------------------------------------------
+// ------------- FETCHES INFO FROM FORM ---------------
+// ----------------------------------------------------
+
+var fetch_one_info = function(selector) {
   let value = document.querySelector(selector) ? document.querySelector(selector).value : "";
   return value;
 }
 
-var fetch_nome = function (selector) {
-  let obj = {};
-  obj.content = "";
-  obj.size = 0;
-  obj.spaziosotto = 0;
-  let container = document.querySelector(selector);
-  if (container) {
-    obj.content = container.getElementsByTagName("label")[0].getElementsByTagName("input")[0].value;
-    obj.size = 30;
-    obj.spaziosotto = 10;
-    if (container.getElementsByTagName("label")[1].getElementsByTagName("input")[0].checked) {
-      obj.size = 20;
-      obj.spaziosotto = 20;
+var fetch_nomi = function(parent_selector, line_class) {
+  let array = [];
+
+  if (document.querySelector(parent_selector)) {
+    let lines = document.querySelector(parent_selector).getElementsByClassName("nomi_line");
+    for (var i = 0; i < lines.length; i++) {
+      let inputs = lines[i].getElementsByTagName("input");
+      let content = inputs[0].value;
+      if (inputs[0].value && inputs[1].checked) {
+        content = "*" + content;
+      }
+      array.push(content);
     }
   }
-  return obj;
+  return array;
 }
-
 
 // Carica informazioni
-var  fetch_info = function() {
+var  fetch_info_from_form = function() {
   let infos = {}
 
-  infos.St_b1 = fetch_one_info("#struttura_b1");
-  infos.St_b2 = fetch_one_info("#struttura_b2");
-  infos.St_b3 = fetch_one_info("#struttura_b3");
-  infos.St_l1 = fetch_one_info("#struttura_l1");
-  infos.St_l2 = fetch_one_info("#struttura_l2");
+  infos.St_b1 = ( document.querySelector("#struttura_b1") ? document.querySelector("#struttura_b1").value.replace(/_/g, "\xa0") : "");
+  infos.St_b2 = ( document.querySelector("#struttura_b2") ? document.querySelector("#struttura_b2").value.replace(/_/g, "\xa0") : "");
+  infos.St_b3 = ( document.querySelector("#struttura_b3") ? document.querySelector("#struttura_b3").value.replace(/_/g, "\xa0") : "");
+  infos.St_l1 = ( document.querySelector("#struttura_l1") ? document.querySelector("#struttura_l1").value.replace(/_/g, "\xa0") : "");
+  infos.St_l2 = ( document.querySelector("#struttura_l2") ? document.querySelector("#struttura_l2").value.replace(/_/g, "\xa0") : "");
+  infos.St_l3 = ( document.querySelector("#struttura_l3") ? document.querySelector("#struttura_l3").value.replace(/_/g, "\xa0") : "");
 
   infos.Funzioni = [];
-  infos.Funzioni.push( fetch_one_info("#funzione_1").toLowerCase() );
-  infos.Funzioni.push( fetch_one_info("#funzione_2").toLowerCase() );
-  infos.Funzioni.push( fetch_one_info("#funzione_3").toLowerCase() );
+  infos.Funzioni.push( document.querySelector("#funzione_1") ? document.querySelector("#funzione_1").value.replace(/_/g, "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_2") ? document.querySelector("#funzione_2").value.replace(/_/g, "\xa0") : "");
+  infos.Funzioni.push( document.querySelector("#funzione_3") ? document.querySelector("#funzione_3").value.replace(/_/g, "\xa0") : "");
 
-  infos.Nomi = [];
-  // infos.Nomi.push( {"content": "Antonella Pasquadibisceglie", "size": 30, "spaziosotto": 10} );
+  infos.Nomi = fetch_nomi("#nomi_box");
 
-  infos.Nomi.push(fetch_nome("#nome_1"));
-  infos.Nomi.push(fetch_nome("#nome_2"));
-  infos.Nomi.push(fetch_nome("#nome_3"));
-  infos.Nomi.push(fetch_nome("#nome_4"));
+  let nomipiccoli = false;
+  if (document.getElementsByName("petit")[0]) {
+    if (document.getElementsByName("petit")[0].checked) {
+      nomipiccoli = true;
+    }
+  }
+  infos.Nomi_piccoli = nomipiccoli || force_petit_checkbox;
 
-  infos.Annotazioni_1 = "fuoriporta generato automaticamente dal sito:         wayfinding.unifi.it"
+  infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
-  return infos;
+  return [infos];
 }
 
 
 
 
-// ---------------------------------
-// ---- CREATE PDF WITH PDFKIT -----
-// ---------------------------------
 
-/**
- * Aggiorna il PDF sia nell'anteprima che nel blog che può essere scaricato
- */
 
- var  aggiorna_pdf = function() {
-  crea_pdf(fetch_info());
+
+
+// ----------------------------------------------------
+// ------------- FETCHES INFO FROM CSV ----------------
+// ----------------------------------------------------
+
+var fetch_info_from_csv = function(data_line) {
+
+  let info = {
+    St_b1: data_line.STRUTTURA1a.replace(/_/g, "\xa0"),
+    St_b2: data_line.STRUTTURA1b.replace(/_/g, "\xa0"),
+    St_b3: data_line.STRUTTURA1c.replace(/_/g, "\xa0"),
+    St_l1: data_line.STRUTTURA2a.replace(/_/g, "\xa0"),
+    St_l2: data_line.STRUTTURA2b.replace(/_/g, "\xa0"),
+    St_l3: data_line.STRUTTURA2c.replace(/_/g, "\xa0"),
+    Funzioni: [
+      data_line.FUNZIONE1.replace(/_/g, "\xa0"),
+      data_line.FUNZIONE2.replace(/_/g, "\xa0"),
+      data_line.FUNZIONE3.replace(/_/g, "\xa0")
+    ],
+    Nomi: [data_line.TEXT1, data_line.TEXT2, data_line.TEXT3, data_line.TEXT4, data_line.TEXT5, data_line.TEXT6, data_line.TEXT7, data_line.TEXT8, data_line.TEXT9, data_line.TEXT10, data_line.TEXT11, data_line.TEXT12, data_line.TEXT13, data_line.TEXT14, data_line.TEXT15],
+
+    Nomi_piccoli: false,
+
+    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it",
+    Annotazioni_2: (function() {
+      d = new Date();
+      return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
+    })()
+
+  }
+
+  if (data_line.NOMIPICCOLI) {
+    info.Nomi_piccoli = true;
+  }
+
+  return info;
 }
 
 
 
+
+
+
+// -----------------------------------------------------------
+// ---------------- AGGIORNA L'ANTEPRIMA ---------------------
+// ------------- (CREA IL PDF CON PDFKIT) --------------------
+// -------------- (VISUALIZZA ANTEPRIMA) ---------------------
+// ----------(AGGIORNA LINK DOWNLOAD ANTEPRIMA) --------------
+// -----------------------------------------------------------
+
+
+var aggiorna_anteprima_da_form = function() {
+  document.querySelector("#page_counter").value = 1;
+
+  compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
+}
+
+var reader = new FileReader();
+
+var aggiorna_anteprima_da_file = function() {
+  document.querySelector("#page_counter").value = 1;
+
+
+  var file = document.querySelector("#file_loader").files[0];
+
+  reader.addEventListener("load", parseFile, false);
+  if (file) {
+    reader.readAsText(file);
+  }
+}
+
+var parseFile = function() {
+
+  var parser = d3.dsvFormat(";");
+  var data = parser.parse(reader.result);
+
+  // let csv_counter = document.querySelector("#csv_page_counter");
+  // data = [ data[csv_counter.value - 1] ];
+
+  console.log("DATA: ");
+  console.log(data);
+  // chiama compila_pdf
+  compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, false);
+
+}
+
+
+
+////////////////////////
+/// complila il PDF
 
 /**
  * Crea il PDF a partire dalle informazioni
- * @param {object} info - Le informazioni per il fuoriporta.
- * @param {string} info.St_b1 - Info struttura
- * @param {string} info.St_b2 - Info struttura
- * @param {string} info.St_b3 - Info struttura
- * @param {string} info.St_l1 - Info struttura
- * @param {string} info.St_l2 - Info struttura
- * @param {array} info.Funzioni - Array di stringhe per le funzioni
- * @param {array} info.Nomi - Array di oggetti
- * @param {string} info.Nomi[i].content - Nome o specifica
- * @param {number} info.Nomi[i].size - Corpo font in pt
- * @param {number} info.Nomi[i].spaziosotto - Spazio sotto paragrafo in pt
+   * @param {object}  info - Le informazioni per il fuoriporta.
+   * @param {string}  info.St_b1 - Info struttura
+   * @param {string}  info.St_b2 - Info struttura
+   * @param {string}  info.St_b3 - Info struttura
+   * @param {string}  info.St_l1 - Info struttura
+   * @param {string}  info.St_l2 - Info struttura
+   * @param {array}   info.Funzioni - Array di stringhe per le funzioni
+   * @param {array}   info.Nomi - Array di stringhe
+   * @param {boolean} info.Nomi_piccoli - boolean
+   * @param {string}  Annotazioni_1 - Allinato a sinistra
+   * @param {string}  Annotazioni_2 - Allineato a destra
  */
 
 
-const crea_pdf = function(info) {
+const compila_pdf = function(data, pdf_settings, multipagina) {
+
+  console.log ("updating pdf preview with data:");
+  console.log (data);
+
+  //////////////////////////////
+  // SISTEMA ALCUNE IMPOSTAZIONI
 
   // Impostazioni colori
-  let pdf_background = "#fff";
-  let pdf_foreground = "#000";
+  if (document.querySelector("#options-color-black").checked == false) {
+    pdf_settings.background = "#fff";
+    pdf_settings.foreground = "#000";
+  }
   if (document.querySelector("#options-color-black").checked == true) {
-    pdf_background = "#000";
-    pdf_foreground = "#fff";
-}
+    pdf_settings.background = "#000";
+    pdf_settings.foreground = "#fff";
+  }
 
+  let page_options = {
+    size: [pdf_settings.page_width, pdf_settings.page_height],
+    margins: {
+      top: pdf_settings.margin_up,
+      bottom: 0,
+      left: pdf_settings.margin_sx,
+      right: pdf_settings.margin_dx
+    }
+  }
 
-  // Impostazioni layout
-  let strutture_textbox_width = mmToUnits(80);
-  let funzioni_textbox_width = mmToUnits(80);
-  let right_textbox_width = mmToUnits(95);
-
-  // Impostazioni font
-  // strutture bold
-  let strutture_bold_font = helvetica95;
-  let strutture_bold_corpo = 25;
   let strutture_bold_options = {
-    align: 'left',
-    width: strutture_textbox_width,
-    lineGap: -9,
+    width: pdf_settings.left_textbox_width,
+    lineGap: pdf_settings.strutture_bold_interlinea - pdf_settings.strutture_bold_corpo*1.2,
     paragraphGap: 0
   };
 
-  // strutture light
-  let strutture_light_font = helvetica45;
-  let strutture_light_corpo = 16;
   let strutture_light_options = {
-    align: 'left',
-    width: strutture_textbox_width,
-    lineGap: -5.2,
+    width: pdf_settings.left_textbox_width,
+    lineGap: pdf_settings.strutture_light_interlinea - pdf_settings.strutture_light_corpo*1.2,
     paragraphGap: 0
   };
 
-  // funzioni
-  let funzioni_font = helvetica65;
-  let funzioni_corpo = 20;
   let funzioni_options = {
-    width: funzioni_textbox_width,
-    lineGap: -9,
+    width: pdf_settings.left_textbox_width,
+    lineGap: pdf_settings.funzioni_interlinea - pdf_settings.funzioni_corpo*1.2,
     paragraphGap: 5
-  };
+};
 
-  // nomi
-  let nomilinegap = -12;
+
+
+//////////////////////////////
+// CREA IL PDF DAI DATI
 
 
   //Setup PDF document
   doc = new PDFDocument({
     autoFirstPage: false
   });
-  stream = doc.pipe(blobStream())
+  let stream = doc.pipe(blobStream())
+
+
+let info;
+
+for (let page = 0; page < data.length; page++) {
+  console.log("Compiling page " + page)
+
+  // Carica i dati giusti per la pagina
+  info = data[page];
 
   // Aggiungi pagina
-  doc.addPage({
-    size: [mmToUnits(pdf_larg), mmToUnits(pdf_alt)],
-    margins: {
-      top: mmToUnits(pdf_msu),
-      bottom: 0,
-      left: mmToUnits(pdf_msx),
-      right: mmToUnits(pdf_mdx)
-    }
-  });
-
-  // Crea rettangolo di background
-doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
-  .fill(pdf_background)
+  doc.addPage(page_options)
 
 
-  // Mostra le guide se necessario
-  // document.querySelector("#options-margins").checked = true;              // uncomment this to force margin visualization
-  if (document.querySelector("#options-margins").checked === true) {
-
-    doc .rect(mmToUnits(pdf_msx), mmToUnits(pdf_msu), mmToUnits(pdf_larg - pdf_msx - pdf_mdx), mmToUnits(pdf_alt - pdf_msu - pdf_mgiu))
-        .stroke("red")
-
-        .moveTo(mmToUnits(0), mmToUnits(5))
-        .lineTo(mmToUnits(pdf_larg), mmToUnits(5))
-        .lineWidth(1)
-        .stroke("blue")
-
-        .moveTo(mmToUnits(0), mmToUnits(105))
-        .lineTo(mmToUnits(pdf_larg), mmToUnits(105))
-        .lineWidth(1)
-        .stroke("blue")
-
-        .moveTo(mmToUnits(pdf_msx), mmToUnits(38))
-        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(38))
-        .lineWidth(.5)
-        .stroke("green")
-
-        .moveTo(mmToUnits(pdf_msx), mmToUnits(40.7))
-        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(40.7))
-        .lineWidth(.5)
-        .stroke("green")
-
-        .moveTo(mmToUnits(pdf_msx), mmToUnits(95))
-        .lineTo(mmToUnits(pdf_larg - pdf_mdx), mmToUnits(95))
-        .lineWidth(.5)
-        .stroke("green")
-  }
+      // Crea rettangolo di background
+      .rect(0, 0, pdf_settings.page_width, pdf_settings.page_height)
+      .fill(pdf_settings.background)
 
 
+      // Scrive le scritte sul pdf
 
+        // imposta colore
+      .fill(pdf_settings.foreground)
 
-
-  // Scrive le scritte sul pdf
-
-      // imposta colore
-  doc .fill(pdf_foreground);
-
-      // strutture bold
-  doc .font(strutture_bold_font, strutture_bold_corpo)
+        // strutture bold
+      .font(pdf_settings.strutture_bold_font, pdf_settings.strutture_bold_corpo)
       .text(info.St_b1, strutture_bold_options)
       .text(info.St_b2, strutture_bold_options)
       .text(info.St_b3, strutture_bold_options)
-      // strutture light
 
-      .font(strutture_light_font, strutture_light_corpo)
+      // strutture light
+      .font(pdf_settings.strutture_light_font, pdf_settings.strutture_light_corpo)
       .text(info.St_l1, strutture_light_options)
       .text(info.St_l2, strutture_light_options)
+      .text(info.St_l3, strutture_light_options)
 
       // questa linea serve come interlinea (brutto ma funziona)
       .font(helvetica65, 8.5).text(" ")
 
       // funzioni
-      .font(funzioni_font, funzioni_corpo)
+      .font(pdf_settings.funzioni_font, pdf_settings.funzioni_corpo)
       info.Funzioni.forEach(function(e) {
-        doc.text(e, funzioni_options);
-      })
-
-
-      // Calcola allineamento parte destra
-      let lines_total_height = 0;
-      info.Nomi.forEach(function(e) {
-        doc.font(helvetica45, e.size); // sets fonts for the right calculations
-        let h = doc.heightOfString(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
-        // console.log (w,h);
-        lines_total_height += h;
-      });
-      lines_total_height -= info.Nomi[info.Nomi.length - 1].spaziosotto;
-
-      // nomi e specifiche
-      doc .font(helvetica45, 1)
-          .text(" ", mmToUnits(pdf_larg - pdf_mdx) - right_textbox_width, mmToUnits(pdf_msu) + 241 - lines_total_height)
-      info.Nomi.forEach(function(e) {
-        doc .font(helvetica45, (e.size))
-            .text(e.content, {align: 'right', width: right_textbox_width, lineGap: nomilinegap, paragraphGap: e.spaziosotto});
+        doc.text(e, funzioni_options)
       })
 
       // annotazioni sulla riga in basso
-  doc .font(helvetica45, 8)
-      .text(info.Annotazioni_1, mmToUnits(pdf_msx), mmToUnits(106), {})
-      .text(info.Annotazioni_2, mmToUnits(pdf_msx), mmToUnits(106), {align: "right"})
+      doc.font(pdf_settings.annotazioni_font, 8)
+          .text(info.Annotazioni_1, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {})
+          .text(info.Annotazioni_2, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {align: "right"})
 
+
+
+
+
+
+
+
+
+      // nomi e specifiche
+
+      // applica i font ai nomi
+      let processedNomi = apply_fonts_to_nomi(info.Nomi, info.Nomi_piccoli, pdf_settings);
+
+      // calcola allineamento verticale
+      var calcola_total_height = function() {
+
+        // corregge la posizione dei nomi - non si capisce perché ma sono leggermente sbagliati
+        let height = -3;
+
+        processedNomi.forEach(function(nome, index, array) {
+          doc.font(pdf_settings.nomi_font, nome.size); // sets fonts for the right calculations
+          let h = doc.heightOfString(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
+          height += h;
+          if (index === array.length - 1) {
+            height -= nome.spaziosotto;
+          }
+        });
+        return height;
+      }
+
+      var lines_total_height = calcola_total_height();
+      while (lines_total_height > (pdf_settings.page_height-pdf_settings.margin_up-pdf_settings.margin_down + 3)) {
+        processedNomi.pop();
+        lines_total_height = calcola_total_height();
+      }
+
+
+
+      // scrive nomi e specifiche
+      doc .font(pdf_settings.nomi_font, 1)
+          .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.page_height - pdf_settings.margin_down - lines_total_height)
+
+      console.log("Numero nomi/specifiche: " + processedNomi.length);
+      for (i=0; i < processedNomi.length; i++) {
+        let nome = processedNomi[i];
+        doc .font(pdf_settings.nomi_font, (nome.size))
+            .text(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
+      }
+
+
+
+      // Mostra le guide e i margini se necessario
+      if (show_margins === true) {
+
+        doc .rect(pdf_settings.margin_sx, pdf_settings.margin_up, (pdf_settings.page_width - pdf_settings.margin_sx - pdf_settings.margin_dx), (pdf_settings.page_height - pdf_settings.margin_up - pdf_settings.margin_down))
+            .stroke("red")
+
+            .moveTo(mmToUnits(0), mmToUnits(5))
+            .lineTo(pdf_settings.page_width, mmToUnits(5))
+            .lineWidth(1)
+            .stroke("blue")
+
+            .moveTo(mmToUnits(0), mmToUnits(105))
+            .lineTo(pdf_settings.page_width, mmToUnits(105))
+            .lineWidth(1)
+            .stroke("blue")
+
+            .moveTo(pdf_settings.margin_dx, pdf_settings.page_height - pdf_settings.margin_down)
+            .lineTo((pdf_settings.page_width - pdf_settings.margin_dx), pdf_settings.page_height - pdf_settings.margin_down)
+            .lineWidth(.5)
+            .stroke("yellow")
+      }
+  }
 
   // chiude il pdf
   doc.end();
 
   // aggiorna link "scarica pdf" e l'anteprima
   stream.on('finish', function() {
-    pdf_url = stream.toBlobURL('application/pdf')
+    pdf_url = stream.toBlobURL('application/pdf');
+
+    // aggiorna il link "scarica il pdf"
     scaricaPdf_link = document.querySelector("#scarica_link");
     scaricaPdf_link.href = pdf_url;
-    aggiorna_preview(pdf_url);
+
+    // aggiorna la visualizzazione dell'anteprima
+    anteprima_pdf_url = pdf_url
+    visualize_preview();
   });
 }
+
+
+
+
+
+
+
+
+var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
+
+  // elimina le righe vuote in fondo
+  for (i=nomi.length-1; i>=0; i--) {
+    if (nomi[i] == "") {
+      nomi.pop();
+    }
+    else break
+  }
+
+  // sostituisce gli underscore con non breaking space
+  nomi = nomi.map(function (nome){
+    return nome.replace(/_/g, "\xa0");
+  });
+
+  // regola i nomi piccoli
+  let a = 1;
+  if (nomipiccoli || force_petit_checkbox) {
+    a = font_settings.riduzione_nomi_piccoli;
+  }
+
+  // crea nuovo array
+  let new_nomi = [];
+
+  // effettua la conversione
+  for (i = 0; i < nomi.length; i++) {
+    let x = nomi[i];
+    let spec_dopo_nome = 1;
+    if (nomi[i+1] && nomi[i+1].charAt(0) === "*") {
+      spec_dopo_nome = 0.25;
+    }
+
+    if (x.charAt(0) === "*") {
+      x = x.substr(1);
+      new_nomi.push({
+        content: x,
+        size: font_settings.specifica_corpo / a,
+        interlinea: font_settings.specifica_interlinea / a,
+        spaziosotto: font_settings.specifica_spaziosotto / a
+      })
+    } else {
+      new_nomi.push({
+        content: x,
+        size: font_settings.nomi_corpo / a,
+        interlinea: font_settings.nomi_interlinea / a,
+        spaziosotto: font_settings.nomi_spaziosotto / a * spec_dopo_nome
+      })
+    }
+  }
+  return new_nomi;
+}
+
+
+
+
+
 
 
 
@@ -487,35 +781,42 @@ doc.rect(0, 0, mmToUnits(pdf_larg), mmToUnits(pdf_alt))
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-var aggiorna_preview = function(url) {
+var visualize_preview = function() {
+
+  var url = anteprima_pdf_url;
+
+  var pageNumber = parseInt(document.querySelector("#page_counter").value);
+
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {
-    console.log('PDF loaded');
+    console.log('ANTEPRIMA - PDF loaded');
+
+    console.log("ANTEPRIMA - Total pages: " + pdf.numPages);
 
     // Fetch the first page
-    var pageNumber = 1;
     pdf.getPage(pageNumber).then(function(page) {
-      console.log('Page loaded');
+      console.log('ANTEPRIMA - Page loaded: ' + pageNumber);
 
       var scale = 5;
-      var viewport = page.getViewport(scale);
+      var pageViewport = page.getViewport(scale);
 
       // Prepare canvas using PDF page dimensions
-      var canvas = document.querySelector("#the-canvas");
+      var canvas = document.querySelector("#the_canvas");
       var context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
+      canvas.width = pageViewport.width;
+      canvas.height = pageViewport.height;
+
 
       // Render PDF page into canvas context
       var renderContext = {
         canvasContext: context,
-        viewport: viewport
+        viewport: pageViewport
       };
       var renderTask = page.render(renderContext);
       renderTask.then(function() {
-        console.log('Page rendered');
+        console.log('ANTEPRIMA - Page rendered');
+        anteprima_pdf_numpages = pdf.numPages;
+        document.querySelector("#page_num").textContent = "PAGINA: " + pageNumber + " / "+ anteprima_pdf_numpages;
       });
     });
   }, function(reason) {
@@ -526,92 +827,165 @@ var aggiorna_preview = function(url) {
 
 
 
+var change_page = function(action) {
+  let page_num = document.querySelector("#page_counter");
+  console.log("value: " + page_num.value);
+  console.log(anteprima_pdf_numpages);
+
+
+  if (action === "prev") {
+    console.log("prev");
+      page_num.value--;
+  } else if (action === "next") {
+    console.log("next");
+      page_num.value++;
+  } else if (action === "update") {
+    console.log("update");
+  }
+
+  if (page_num.value > anteprima_pdf_numpages) {
+    page_num.value = anteprima_pdf_numpages;
+  } if (page_num.value < 1) {
+    page_num.value = 1;
+  }
+
+  visualize_preview();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // ---------------------------------
 // ------ LOAD FONTS WITH XHR ------
 // ---------------------------------
 
-var xhr_to_load = 0;
+var inizializza = function() {
+  var xhr_to_load = 0;
 
-// load font helvetica black
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica95 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
+  // load font helvetica black
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica95 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
   };
-};
-xhr.send();
+  xhr.send();
 
-// load font helvetica bold
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Bd.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica75 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
+  // load font helvetica medium
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Md.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica65 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
   };
-};
-xhr.send();
+  xhr.send();
 
-// load font helvetica medium
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Md.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica65 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
+  // load font helvetica light
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica45 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
   };
-};
-xhr.send();
-
-// load font helvetica light
-xhr_to_load++;
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true);
-xhr.responseType = "arraybuffer";
-xhr.onload = function(e) {
-  helvetica45 = this.response;
-  console.log("font loaded");
-  xhr_to_load--;
-  if (xhr_to_load === 0) {
-    async_trigger()
-  };
-};
-xhr.send();
+  xhr.send();
+}
 
 function async_trigger() {
-  aggiorna_pdf();
-};
 
+  // ----------- INIZIALIZZA ---------
 
+  // Impostazioni font
+  impostazioni_PDF.strutture_bold_font = helvetica95;
+  impostazioni_PDF.strutture_light_font = helvetica45;
+  impostazioni_PDF.funzioni_font = helvetica65;
+  impostazioni_PDF.nomi_font = helvetica45;
+  impostazioni_PDF.annotazioni_font = helvetica45;
 
+  console.log("-- all font loaded --");
 
+  // Key bindings
+  document.querySelector("#page_counter").addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      change_page(update);
+    }
+  });
 
+  document.body.addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 37) {
+      change_page("prev");
+    } else if (event.keyCode === 39) {
+      change_page("next");
+    }
+  });
 
+  /*
+  document.querySelector("#singolo-multiplo").addEventListener("onchange", function(event) {
+    alert("change")
+  });
+  */
+  document.querySelector("#multiplo_control").style.display = "none";
 
+  document.getElementsByName("singolo_multiplo").forEach(function(radio) {
+    radio.onclick = function() {
+      // SWITCH CONTROL FEATURES
+      console.log("click: ", this)
+      if (this.value === "singolo") {
+        console.log("singolo")
+        document.querySelector("#multiplo_control").style.display = "none";
+        document.querySelector("#singolo_control").style.display = "block";
+      } else if (this.value === "multiplo") {
+        console.log("multiplo")
+        document.querySelector("#multiplo_control").style.display = "block";
+        document.querySelector("#singolo_control").style.display = "none";
+      }
+      // RESET CANVAS + PAGE COUNTER PREVIEW
+      var canvas_container = document.querySelector("#canvas_container")
+      canvas_container.innerHTML = '';
+      var nuovo_canvas = document.createElement("canvas");
+      nuovo_canvas.setAttribute("id", "the_canvas");
+      canvas_container.appendChild(nuovo_canvas);
+      document.querySelector("#page_num").textContent = "";
+    }
+  })
 
+  // popola il select delle strutture
+  populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
+  // visualizza il form
+  show_form(1);
 
-// ---------------------------------
-// ----------- INIZIALIZZA ---------
-// ---------------------------------
+  // aggiorna_anteprima_da_form();
+}
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  var struttura_selector = document.querySelector("#struttura_selector");
-  var text_input_container = document.querySelector("#text_input_container");
-  populate_select_input(struttura_selector, lista_strutture);
-});
+document.addEventListener('DOMContentLoaded', (event) => {
+  inizializza();
+})

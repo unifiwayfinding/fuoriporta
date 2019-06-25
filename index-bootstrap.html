@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="generator" content="">
+  <title>Generatore Fuoriporta</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    canvas {
+      width: 100%;
+      border: 1px solid black;
+    }
+
+    .JA_didacom_link, .JA_didacom_link:hover, .JA_didacom_link:visited {
+      font-weight: 600;
+      color: #666;
+    }
+
+
+  </style>
+  <!-- Custom styles for this template -->
+</head>
+
+<body class="bg-light">
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-md-3">
+        <!-- Coilonna a sinistra -->
+
+
+
+        <div class="row mb-5">
+          <div class="mt-3 col-12 btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-secondary active" checked>Singolo</button>
+            <button type="button" class="btn btn-outline-secondary disabled">Multiplo</button>
+          </div>
+        </div>
+
+
+        <div class="mt-4" id="box_struttura">
+          <h6>Struttura</h6>
+          <div>
+            <select class="custom-select d-block w-100" id="struttura">
+              <option value="">...</option>
+              <option>BIO</option>
+            </select>
+          </div>
+          <div class="input-group mt-2">
+            <div class="input-group-prepend"><span class="input-group-text">Bold 1</span></div>
+            <input type="text" class="form-control" id="struttura_b1" placeholder="" value="">
+          </div>
+          <div class="input-group mt-1">
+            <div class="input-group-prepend"><span class="input-group-text">Bold 2</span></div>
+            <input type="text" class="form-control" id="struttura_b2" placeholder="" value="">
+          </div>
+          <div class="input-group mt-1">
+            <div class="input-group-prepend"><span class="input-group-text">Bold 3</span></div>
+            <input type="text" class="form-control" id="struttura_b3" placeholder="" value="">
+          </div>
+          <div class="input-group mt-2">
+            <div class="input-group-prepend"><span class="input-group-text">Light 1</span></div>
+            <input type="text" class="form-control" id="struttura_l1" placeholder="" value="">
+          </div>
+          <div class="input-group mt-1">
+            <div class="input-group-prepend"><span class="input-group-text">Light 2</span></div>
+            <input type="text" class="form-control" id="struttura_l2" placeholder="" value="">
+          </div>
+          <div class="input-group mt-1">
+            <div class="input-group-prepend"><span class="input-group-text">Light 3</span></div>
+            <input type="text" class="form-control" id="struttura_l3" placeholder="" value="">
+          </div>
+        </div>
+
+        <div class="mt-4" id="box_funzioni">
+          <h6>Funzioni</h6>
+          <select class="custom-select d-block w-100 mt-1" id="funzioni_1">
+            <option value="">...</option>
+            <option>Studi docenti</option>
+          </select>
+          <select class="custom-select d-block w-100 mt-1" id="funzioni_2">
+            <option value="">...</option>
+            <option>Studi docenti</option>
+          </select>
+          <select class="custom-select d-block w-100 mt-1" id="funzioni_3">
+            <option value="">...</option>
+            <option>Studi docenti</option>
+          </select>
+        </div>
+
+
+
+        <div class="mt-4" id="box_nomi">
+          <h6>Nomi</h6>
+
+          <div class="row mt-1">
+            <div class="input-group col-8">
+              <div class="input-group-prepend"><span class="input-group-text">01</span></div>
+              <input type="text" class="form-control" id="nome_1" placeholder="">
+            </div>
+            <div class="col-4">
+              <select class="custom-select d-block w-100" id="nome1_type">
+                <option value="">Nome</option>
+                <option value="">Descrizione</option>
+                <option value="">Vuota</option>
+              </select>
+            </div>
+
+          </div>
+          <div class="row mt-1">
+            <div class="input-group col-8">
+              <div class="input-group-prepend"><span class="input-group-text">02</span></div>
+              <input type="text" class="form-control" id="nome_2" placeholder="">
+            </div>
+            <div class="col-4">
+              <select class="custom-select d-block w-100" id="nome2_type">
+                <option value="">Nome</option>
+                <option value="">Descrizione</option>
+                <option value="">Vuota</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mt-1">
+            <div class="input-group col-8">
+              <div class="input-group-prepend"><span class="input-group-text">03</span></div>
+              <input type="text" class="form-control" id="nome_3" placeholder="">
+            </div>
+            <div class="col-4">
+              <select class="custom-select d-block w-100" id="nome3_type">
+                <option value="">Nome</option>
+                <option value="">Descrizione</option>
+                <option value="">Vuota</option>
+              </select>
+            </div>
+          </div>
+
+          <small class="text-muted">Per tenere insieme due parole usare il trattino basso</small>
+        </div>
+
+        <div class="custom-control custom-checkbox mt-2">
+          <input type="checkbox" class="custom-control-input" id="nomipiccoli">
+          <label class="custom-control-label" for="nomipiccoli">Usa nomi più piccoli</label>
+        </div>
+
+        <hr>
+        <div class="d-block my-3">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input id="black" name="selezionaSfondo" type="radio" class="custom-control-input" checked>
+            <label class="custom-control-label" for="black">Sfondo nero</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input id="white" name="selezionaSfondo" type="radio" class="custom-control-input">
+            <label class="custom-control-label" for="white">Sfondo bianco</label>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Aggiorna l'anteprima</button>
+        </form>
+        <hr class="mt-5">
+      </div>
+
+
+
+
+
+      <div class="col-md-8">
+
+
+        <div class="mt-2 text-center">
+          <h2>Generatore Fuoriporta</h2>
+          <p>Università degli Studi di Firenze</p>
+        </div>
+
+        <div style="background-color: black; height: 100px"></div>
+        <canvas id="the-canvas"></canvas>
+        <div style="background-color: black; height: 40px; margin-top: -10px"></div>
+
+        <button class="btn btn-primary btn-lg btn-block mt-5">Scarica il PDF</button>
+      </div>
+
+
+
+
+
+
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+      <p class="mb-1">&copy; 2019 <a href="http:\\www.didacommunicationlab.it" class="JA_didacom_link">didacommunicationlab</a></p>
+      <ul class="list-inline">
+        <li class="list-inline-item"><a href="#">Leggi la guida</a></li>
+        <li class="list-inline-item"><a href="#">Segnala un problema</a></li>
+      </ul>
+    </footer>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>

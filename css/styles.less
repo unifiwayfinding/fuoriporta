@@ -1,0 +1,187 @@
+//out: styles.css
+// GENERALI
+
+@larghezza-control: 450px;
+@allineamento: 90px;
+@larghezza-input: 250px;
+
+
+body {
+	background: #81a9e8;
+	font-family: 'Titillium Web', sans-serif;
+	box-sizing: border-box;
+}
+
+
+
+
+
+// SCHEDE PRINCIPALI
+section {
+	background: #eee;
+	border: 1px solid black;
+	border-radius: 10px;
+	padding: 20px 10px 10px;
+	margin: 5px;
+	position: relative;
+}
+
+h1 {
+	font-size: 2.4rem;
+	margin-bottom: 0.1em;
+}
+
+p {
+	font-weight: 100;
+}
+
+
+
+
+
+// SCHEDA ANTEPRIMA (DESTRA
+#preview {
+	float: left;
+	height: 900px;
+	width: 700px;
+}
+
+#preview header {
+  text-align: center;
+}
+
+#preview main {
+	margin-top: 100px;
+}
+
+canvas {
+	width: 700px;
+	height: 385px;
+	border: 1px solid grey;
+	background-color: black;
+}
+
+
+
+
+
+// SCHEDA PANNELLO DI CONTROLLO (SINISTRA)
+#control {
+	float: left;
+	min-height: 900px;
+	width: @larghezza-control;
+	padding-right: 50px;
+}
+
+#control main {
+	margin-top: 30px;
+}
+
+#control {
+	h1,
+	p,
+	nav,
+	button,
+	input[type=file]
+	{
+		margin-left: @allineamento;
+	}
+}
+
+div.input_box {
+	margin: 25px 0;
+}
+
+
+//allineamento labels
+
+.input_line {
+	display: flex;
+	height: 30px;
+	radio {
+		margin-left: 5px;
+	}
+}
+
+.petit_line {
+  padding-left: @allineamento;
+}
+
+
+.label_box {
+	width: @allineamento - 10;
+}
+
+label {
+	text-align: right;
+	font-weight: 400;
+	font-size: 11px;
+	margin-bottom: 0;
+}
+
+.input_line label {
+  text_align: left;
+}
+
+.headerline {
+	padding-left: 340px;
+	padding-bottom: 10px;
+	writing-mode: vertical-lr;
+}
+
+input {
+	margin-bottom: 0;
+}
+
+input[type=text],
+select {
+	display: inline;
+	margin-left: 10px;
+	width: @larghezza-input;
+	margin-top: -5px;
+	height: 23px;
+}
+
+input:disabled {
+	color: #999;
+	cursor: default;
+	background-color: #fafafa;
+}
+
+
+
+
+// PARTE IN FONDO DELLA SCHEDA PANNELLO DI CONTROLLO
+#control-panel {
+	margin-bottom: 40px;
+}
+
+label.radio-label {
+	display: inline;
+	margin: 0;
+}
+
+button {
+	width: @larghezza-input;
+	height: 40px;
+	background: #fff;
+  line-height: 0;
+}
+
+button.csv_controls {
+	width: auto;
+  height: 20px;
+  display: inline;
+}
+
+#page_counter {
+  width: 70px;
+  margin-bottom: 10px;
+  margin-left: 0;
+}
+
+#scarica_link,
+.options-input,
+button {
+	display: block;
+}
