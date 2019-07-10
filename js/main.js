@@ -621,6 +621,9 @@ for (let page = 0; page < data.length; page++) {
         doc.text(e, funzioni_options)
       })
 
+
+
+
       if (show_qr) {
         doc .image(qr_code, pdf_settings.margin_sx, pdf_settings.altezza_qrcode, {fit: [pdf_settings.lato_qrcode, pdf_settings.lato_qrcode]});
         doc .font(pdf_settings.weblink_font, 10)
@@ -928,6 +931,7 @@ var inizializza = function() {
   };
   xhr.send();
 
+  /*
   xhr_to_load++;
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "./images/qr-code-white.jpg", true);
@@ -955,6 +959,7 @@ var inizializza = function() {
     };
   };
   xhr.send();
+*/
 }
 
 function async_trigger() {
@@ -1022,6 +1027,25 @@ function async_trigger() {
   populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
   // visualizza il form
   show_form(1);
+
+
+
+
+
+
+  var qr = new QRious();
+  qr.value = 'http://www.google.com';
+  qr.size = 1000;
+  qr_code_black = qr.toDataURL('image/jpeg');
+  qr.foreground = "white";
+  qr.background = "black";
+  qr_code_white = qr.toDataURL('image/jpeg');
+
+
+
+
+
+
 
   // aggiorna_anteprima_da_form();
 }
