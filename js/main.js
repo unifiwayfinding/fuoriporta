@@ -18,6 +18,7 @@ PDFJS.workerSrc = 'js/pdf.worker.js';
 
 var anteprima_pdf_url;
 var anteprima_pdf_numpages;
+var weblink = 'nuovofuoriporta.unifi.com';
 
 // ---------------------------------
 // ----------- SETTINGS ------------
@@ -25,6 +26,7 @@ var anteprima_pdf_numpages;
 
 // impostazioni PDF, in mm
 const show_margins = false;
+const show_qr = false;
 const force_petit_checkbox = false;
 
 const impostazioni_PDF = {
@@ -65,6 +67,9 @@ margin_dx           : mmToUnits(10),
 
 left_textbox_width  : mmToUnits(90),
 right_textbox_width : mmToUnits(85),
+altezza_qrcode      : mmToUnits(74),
+lato_qrcode         : mmToUnits(20),
+altezza_weblink     : mmToUnits(96),
 altezza_annotazioni : mmToUnits(106),
 
 
@@ -162,7 +167,7 @@ var show_form = function() {
 
 // helper function per aggiornare il pdf in automatico
 var timeout = null;
-var update = function (e) {
+var update = function () {
   clearTimeout(timeout);
   timeout = setTimeout(function () {
       aggiorna_anteprima_da_form();
@@ -428,7 +433,7 @@ var fetch_info_from_csv = function(data_line) {
 
     Nomi_piccoli: false,
 
-    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it",
+    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it                     locale: " + data_line.PLESSO + data_line.N,
     Annotazioni_2: (function() {
       d = new Date();
       return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
@@ -524,10 +529,12 @@ const compila_pdf = function(data, pdf_settings, multipagina) {
   if (document.querySelector("#options-color-black").checked == false) {
     pdf_settings.background = "#fff";
     pdf_settings.foreground = "#000";
+    qr_code = qr_code_black;
   }
   if (document.querySelector("#options-color-black").checked == true) {
     pdf_settings.background = "#000";
     pdf_settings.foreground = "#fff";
+    qr_code = qr_code_white;
   }
 
   let page_options = {
@@ -614,14 +621,19 @@ for (let page = 0; page < data.length; page++) {
         doc.text(e, funzioni_options)
       })
 
+
+
+
+      if (show_qr) {
+        doc .image(qr_code, pdf_settings.margin_sx, pdf_settings.altezza_qrcode, {fit: [pdf_settings.lato_qrcode, pdf_settings.lato_qrcode]});
+        doc .font(pdf_settings.weblink_font, 10)
+        .text(weblink, pdf_settings.margin_sx, pdf_settings.altezza_weblink, {})
+      };
+
       // annotazioni sulla riga in basso
-      doc.font(pdf_settings.annotazioni_font, 8)
+      doc .font(pdf_settings.annotazioni_font, 8)
           .text(info.Annotazioni_1, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {})
           .text(info.Annotazioni_2, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {align: "right"})
-
-
-
-
 
 
 
@@ -656,7 +668,6 @@ for (let page = 0; page < data.length; page++) {
       }
 
 
-
       // scrive nomi e specifiche
       doc .font(pdf_settings.nomi_font, 1)
           .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.page_height - pdf_settings.margin_down - lines_total_height)
@@ -667,6 +678,9 @@ for (let page = 0; page < data.length; page++) {
         doc .font(pdf_settings.nomi_font, (nome.size))
             .text(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
       }
+
+
+
 
 
 
@@ -916,6 +930,36 @@ var inizializza = function() {
     };
   };
   xhr.send();
+
+  /*
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./images/qr-code-white.jpg", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    qr_code_white = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
+  };
+  xhr.send();
+
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./images/qr-code-black.jpg", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    qr_code_black = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
+  };
+  xhr.send();
+*/
 }
 
 function async_trigger() {
@@ -927,6 +971,7 @@ function async_trigger() {
   impostazioni_PDF.strutture_light_font = helvetica45;
   impostazioni_PDF.funzioni_font = helvetica65;
   impostazioni_PDF.nomi_font = helvetica45;
+  impostazioni_PDF.weblink_font = helvetica45;
   impostazioni_PDF.annotazioni_font = helvetica45;
 
   console.log("-- all font loaded --");
@@ -983,9 +1028,28 @@ function async_trigger() {
   // visualizza il form
   show_form(1);
 
+
+
+
+
+
+  var qr = new QRious();
+  qr.value = 'http://www.google.com';
+  qr.size = 1000;
+  qr_code_black = qr.toDataURL('image/jpeg');
+  qr.foreground = "white";
+  qr.background = "black";
+  qr_code_white = qr.toDataURL('image/jpeg');
+
+
+
+
+
+
+
   // aggiorna_anteprima_da_form();
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   inizializza();
 })

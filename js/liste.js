@@ -141,9 +141,9 @@ var lista_strutture = [
   "option_value": "DipNEUROFARBA",
   "option_label": "NEUROFARBA",
   "struttura_bold_1": "NEUROFARBA",
-  "struttura_light_1": "Dipartimento di",
-  "struttura_light_2": "Formazione, Lingue, Intercultura,",
-  "struttura_light_3": "Letteratura e Psicologia"
+  "struttura_light_1": "Dipartimento di Neuroscienze,",
+  "struttura_light_2": "Psicologia, Area del Farmaco e",
+  "struttura_light_3": "Salute del Bambino"
 },
 {
   "option_value": "DipSAGAS",

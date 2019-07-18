@@ -21,18 +21,28 @@
       3. Quando si cambia il selettore delle strutture non viene ricaricato tutto.
 - [x] Implementare underscore => NBS per nomi
 - [x] Implementare underscore => NBS per strutture
-- [ ] Modificare layout spostando i due bottoni "CREA PDF" sopra l'anteprima
+- [x] Modificare layout spostando i due bottoni "CREA PDF" sopra l'anteprima
 - [x] Implementare next/prev con frecce
-- [ ] Correggere NEUROFARBA in liste
-- [ ] Risolvere overflow dei nomi in alto (dopo aver calcolato l'altezza della parte destra eliminare via via le righe superiori finché non risulta sotto un certo valore)
-- [ ] Cambiare flag nome/specifica facendo sì che sotto ogni nome possa essere inserito e rimosso un campo "specifica" - questo risolve sia il problema delle specifiche una sotto l'altra che il problema dell'interlinea sbagliata se sotto un nome c'è una riga flaggata specifica ma vuota
+- [x] Correggere NEUROFARBA in liste
+- [x] Risolvere overflow dei nomi in alto (dopo aver calcolato l'altezza della parte destra eliminare via via le righe superiori finché non risulta sotto un certo valore)
+- [ ] BUGFIX I select non funzionano da mobile
+- [ ] Dare una sistemata al layout mobile di modo che possa andare in produzione anche così
+- [ ] Sostituire "Scarica il pdf" con un button
 - [ ] Aggiungere qr code per giombetti
       https://github.com/soldair/node-qrcode
       https://github.com/papnkukn/qrcode-svg (sembra il più semplice)
       https://github.com/davidshimjs/qrcodejs
 - [ ] Separare html da js: eliminare js in html e togliere id e classes dalle funzioni
+- [ ] Aggiungere "loading" o "qualcosa non ha funzionato" che rimanga nel caso l'antemprima non si carichi per qualsiasi motivo.
+- [ ] Aggiungere loadbar quando carica il CSV
 
 
+**LAYOUT BOOTSTRAP**
+- [ ] Spostare titolo in alto su mobile
+- [ ] Controllare visualizzazioni intermedie (ipad)
+- [ ] Va benissimo come si vedono i select dei nomi da mobile. Da desktop devono vedersi ben larghi.
+- [ ] Implementare con uno script locale lo switch singolo/multiplo
+- [ ]
 
 
 
@@ -41,7 +51,7 @@
 
 **LAYOUT FUORIPORTA**
 - [x] Aggiungere annotazioni nella riga in basso (sicuramente "creato con..." la data).
-- [ ] Aggiungere "loading" o "qualcosa non ha funzionato" che rimanga nel caso l'antemprima non si carichi per qualsiasi motivo.
+
 - [x] Cambiare corpi
 - [x] Regolare interlinea tra strutture e funzioni
 - [x] Regolare accapo e eventuale interlinea su campo sinistro (strutture + funzioni)
