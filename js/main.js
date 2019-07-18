@@ -26,7 +26,7 @@ var weblink = 'nuovofuoriporta.unifi.com';
 
 // impostazioni PDF, in mm
 const show_margins = false;
-const show_qr = true;
+const show_qr = false;
 const force_petit_checkbox = false;
 
 const impostazioni_PDF = {
@@ -433,7 +433,7 @@ var fetch_info_from_csv = function(data_line) {
 
     Nomi_piccoli: false,
 
-    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it",
+    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it                     locale: " + data_line.PLESSO + data_line.N,
     Annotazioni_2: (function() {
       d = new Date();
       return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
