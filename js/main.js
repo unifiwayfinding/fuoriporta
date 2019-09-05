@@ -40,16 +40,16 @@ specifica_interlinea: 18,
 specifica_spaziosotto: 8,
 riduzione_nomi_piccoli: 1.65,
 
-strutture_bold_corpo: 25,
-strutture_bold_interlinea: 21,
+strutture_bold_corpo: 23,
+strutture_bold_interlinea: 20,
 strutture_bold_spaziosotto: 0,
 
 strutture_light_corpo: 16,
 strutture_light_interlinea: 14,
 strutture_light_spaziosotto: 0,
 
-funzioni_corpo: 20,
-funzioni_interlinea: 18,
+funzioni_corpo: 18,
+funzioni_interlinea: 16,
 funzioni_spaziosotto: 5,
 
 strutture_bold_font: null,
@@ -65,8 +65,8 @@ margin_down         : mmToUnits(12),
 margin_sx           : mmToUnits(10),
 margin_dx           : mmToUnits(10),
 
-left_textbox_width  : mmToUnits(90),
-right_textbox_width : mmToUnits(85),
+left_textbox_width  : mmToUnits(80),
+right_textbox_width : mmToUnits(95),
 altezza_qrcode      : mmToUnits(74),
 lato_qrcode         : mmToUnits(20),
 altezza_weblink     : mmToUnits(96),
@@ -398,7 +398,7 @@ var  fetch_info_from_form = function() {
   }
   infos.Nomi_piccoli = nomipiccoli || force_petit_checkbox;
 
-  infos.Annotazioni_1 = "fuoriporta generato dal sito wayfinding.unifi.it"
+  infos.Annotazioni_1 = "stampa il cartoncino sostituivo dal sito wayfinding.unifi.it"
   infos.Annotazioni_2 = (function(){d = new Date(); return d.getDate()+" | "+(d.getMonth()+1)+" | "+d.getFullYear(); })()
 
   return [infos];
@@ -433,7 +433,7 @@ var fetch_info_from_csv = function(data_line) {
 
     Nomi_piccoli: false,
 
-    Annotazioni_1: "fuoriporta generato con un file csv dal sito wayfinding.unifi.it                     locale: " + data_line.PLESSO + data_line.N,
+    Annotazioni_1: "stampa il cartoncino sostituivo dal sito wayfinding.unifi.it                     locale: " + data_line.PLESSO + data_line.N,
     Annotazioni_2: (function() {
       d = new Date();
       return d.getDate() + " | " + (d.getMonth() + 1) + " | " + d.getFullYear();
@@ -613,7 +613,7 @@ for (let page = 0; page < data.length; page++) {
       .text(info.St_l3, strutture_light_options)
 
       // questa linea serve come interlinea (brutto ma funziona)
-      .font(helvetica65, 8.5).text(" ")
+      .font(helvetica65, 10).text(" ")
 
       // funzioni
       .font(pdf_settings.funzioni_font, pdf_settings.funzioni_corpo)
