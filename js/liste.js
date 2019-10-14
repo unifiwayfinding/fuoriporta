@@ -232,18 +232,18 @@ var lista_strutture = [
 
 
 var lista_funzioni = [
-  "Assegnisti",
-  "Archivio",
-  "Borsisti",
-  "Direttore",
-  "Dottorandi",
-  "Presidenza",
-  "Responsabile amministrativo",
-  "Ricerca",
-  "Sala riunioni",
-  "Segreteria amministrativa",
-  "Segreteria didattica",
-  "Servizi relazioni internazionali",
-  "Studi docenti",
-  "Tutor"
+  "assegnisti",
+  "archivio",
+  "borsisti",
+  "direttore",
+  "dottorandi",
+  "presidenza",
+  "responsabile amministrativo",
+  "ricerca",
+  "sala riunioni",
+  "segreteria amministrativa",
+  "segreteria didattica",
+  "servizi relazioni internazionali",
+  "studi docenti",
+  "tutor"
 ];
