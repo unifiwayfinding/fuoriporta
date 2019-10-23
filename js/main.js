@@ -18,7 +18,7 @@ PDFJS.workerSrc = 'js/pdf.worker.js';
 
 var anteprima_pdf_url;
 var anteprima_pdf_numpages;
-var weblink = 'nuovofuoriporta.unifi.com';
+var weblink = 'prova.unifi.com';
 
 // ---------------------------------
 // ----------- SETTINGS ------------
@@ -26,11 +26,13 @@ var weblink = 'nuovofuoriporta.unifi.com';
 
 // impostazioni PDF, in mm
 const show_margins = false;
+const cresciture = true;
 const show_qr = false;
 const force_petit_checkbox = false;
+const debug = false;
+
 
 const impostazioni_PDF = {
-
 nomi_corpo: 28,
 nomi_interlinea: 24,
 nomi_spaziosotto: 8,
@@ -65,6 +67,10 @@ margin_down         : mmToUnits(12),
 margin_sx           : mmToUnits(10),
 margin_dx           : mmToUnits(10),
 
+abbondanza          : 0,
+area_bianca         : 0,
+offset              : 0,
+
 left_textbox_width  : mmToUnits(80),
 right_textbox_width : mmToUnits(95),
 altezza_qrcode      : mmToUnits(74),
@@ -78,6 +84,17 @@ background: null
 }
 
 
+// Impostazioni cresciture
+impostazioni_PDF.paper_width = impostazioni_PDF.page_width;
+impostazioni_PDF.paper_height = impostazioni_PDF.page_height;
+
+if (cresciture === true) {
+  impostazioni_PDF.abbondanza    = mmToUnits(3);
+  impostazioni_PDF.area_bianca   = mmToUnits(10);
+  impostazioni_PDF.offset        = impostazioni_PDF.abbondanza + impostazioni_PDF.area_bianca;
+  impostazioni_PDF.paper_width   = impostazioni_PDF.page_width + impostazioni_PDF.offset * 2;
+  impostazioni_PDF.paper_height  = impostazioni_PDF.page_height + impostazioni_PDF.offset * 2;
+}
 
 // Helper function: converts mm to pdf-units (pt)
 function mmToUnits(mm) {
@@ -538,12 +555,12 @@ const compila_pdf = function(data, pdf_settings, multipagina) {
   }
 
   let page_options = {
-    size: [pdf_settings.page_width, pdf_settings.page_height],
+    size: [pdf_settings.paper_width, pdf_settings.paper_height],
     margins: {
-      top: pdf_settings.margin_up,
+      top: pdf_settings.offset + pdf_settings.margin_up,
       bottom: 0,
-      left: pdf_settings.margin_sx,
-      right: pdf_settings.margin_dx
+      left: pdf_settings.offset + pdf_settings.margin_sx,
+      right: pdf_settings.offset + pdf_settings.margin_dx
     }
   }
 
@@ -587,18 +604,29 @@ for (let page = 0; page < data.length; page++) {
   info = data[page];
 
   // Aggiungi pagina
+  console.log ("QUI");
+  console.log (page_options);
   doc.addPage(page_options)
 
+      // Crea il rettangolo di crescitura
+      if (cresciture === true) {
+   doc  .rect(pdf_settings.area_bianca, pdf_settings.area_bianca, pdf_settings.abbondanza*2 + pdf_settings.page_width, pdf_settings.abbondanza*2 + pdf_settings.page_height)
+        .fill("green")
+      }
 
       // Crea rettangolo di background
-      .rect(0, 0, pdf_settings.page_width, pdf_settings.page_height)
+  doc .rect(pdf_settings.offset, pdf_settings.offset, pdf_settings.page_width, pdf_settings.page_height)
       .fill(pdf_settings.background)
 
+
+      // Crea i segni di taglio
+      if (cresciture === true) {
+      }
 
       // Scrive le scritte sul pdf
 
         // imposta colore
-      .fill(pdf_settings.foreground)
+  doc .fill(pdf_settings.foreground)
 
         // strutture bold
       .font(pdf_settings.strutture_bold_font, pdf_settings.strutture_bold_corpo)
@@ -632,8 +660,8 @@ for (let page = 0; page < data.length; page++) {
 
       // annotazioni sulla riga in basso
       doc .font(pdf_settings.annotazioni_font, 8)
-          .text(info.Annotazioni_1, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {})
-          .text(info.Annotazioni_2, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {align: "right"})
+          .text(info.Annotazioni_1, pdf_settings.margin_sx, pdf_settings.offset + pdf_settings.altezza_annotazioni, {})
+          .text(info.Annotazioni_2, pdf_settings.margin_sx, pdf_settings.offset + pdf_settings.altezza_annotazioni, {align: "right"})
 
 
 
@@ -662,7 +690,7 @@ for (let page = 0; page < data.length; page++) {
       }
 
       var lines_total_height = calcola_total_height();
-      while (lines_total_height > (pdf_settings.page_height-pdf_settings.margin_up-pdf_settings.margin_down + 3)) {
+      while (lines_total_height > (pdf_settings.paper_height - pdf_settings.margin_up - pdf_settings.margin_down - pdf_settings.offset*2 + 3 )) {
         processedNomi.pop();
         lines_total_height = calcola_total_height();
       }
@@ -670,13 +698,13 @@ for (let page = 0; page < data.length; page++) {
 
       // scrive nomi e specifiche
       doc .font(pdf_settings.nomi_font, 1)
-          .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.page_height - pdf_settings.margin_down - lines_total_height)
+          .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.paper_height - pdf_settings.margin_down - lines_total_height - pdf_settings.offset)
 
       console.log("Numero nomi/specifiche: " + processedNomi.length);
       for (i=0; i < processedNomi.length; i++) {
         let nome = processedNomi[i];
         doc .font(pdf_settings.nomi_font, (nome.size))
-            .text(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
+            .text(nome.content, {align: 'right', width: pdf_settings.offset*2 + pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
       }
 
 
@@ -687,21 +715,21 @@ for (let page = 0; page < data.length; page++) {
       // Mostra le guide e i margini se necessario
       if (show_margins === true) {
 
-        doc .rect(pdf_settings.margin_sx, pdf_settings.margin_up, (pdf_settings.page_width - pdf_settings.margin_sx - pdf_settings.margin_dx), (pdf_settings.page_height - pdf_settings.margin_up - pdf_settings.margin_down))
+        doc .rect(pdf_settings.margin_sx, pdf_settings.margin_up, pdf_settings.paper_width - pdf_settings.margin_sx - pdf_settings.margin_dx, pdf_settings.paper_height - pdf_settings.margin_up - pdf_settings.margin_down - pdf_settings.offset)
             .stroke("red")
 
-            .moveTo(mmToUnits(0), mmToUnits(5))
-            .lineTo(pdf_settings.page_width, mmToUnits(5))
+            .moveTo(pdf_settings.offset, pdf_settings.offset + mmToUnits(5))
+            .lineTo(pdf_settings.page_width + pdf_settings.offset, mmToUnits(5) + pdf_settings.offset)
             .lineWidth(1)
             .stroke("blue")
 
-            .moveTo(mmToUnits(0), mmToUnits(105))
-            .lineTo(pdf_settings.page_width, mmToUnits(105))
+            .moveTo(pdf_settings.offset, mmToUnits(105) + pdf_settings.offset)
+            .lineTo(pdf_settings.page_width + pdf_settings.offset, mmToUnits(105) + pdf_settings.offset)
             .lineWidth(1)
             .stroke("blue")
 
-            .moveTo(pdf_settings.margin_dx, pdf_settings.page_height - pdf_settings.margin_down)
-            .lineTo((pdf_settings.page_width - pdf_settings.margin_dx), pdf_settings.page_height - pdf_settings.margin_down)
+            .moveTo(pdf_settings.margin_sx, pdf_settings.paper_height - pdf_settings.margin_down - pdf_settings.offset)
+            .lineTo(pdf_settings.paper_width - pdf_settings.margin_dx, pdf_settings.paper_height - pdf_settings.margin_down - pdf_settings.offset)
             .lineWidth(.5)
             .stroke("yellow")
       }
@@ -1046,8 +1074,13 @@ function async_trigger() {
 
 
 
-
-  // aggiorna_anteprima_da_form();
+  // popola il form e fa mostrare la preview
+  if (debug === true) {
+    let index = 1;
+    document.querySelector("#struttura_selector").selectedIndex = index;
+    update_struttura(index);
+    aggiorna_anteprima_da_form();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
