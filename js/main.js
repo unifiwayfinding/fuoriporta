@@ -181,11 +181,11 @@ var update = function () {
   let option = document.createElement("option");
   option.setAttribute("selected", "selected");
   option.setAttribute("disabled", "disabled");
-  option.label = "...";
+  option.text = "...";
   select.appendChild(option);
   for (i = 0; i < lista.length; i++) {
     option = document.createElement("option");
-    option.label = lista[i].option_label;
+    option.text = lista[i].option_label;
     option.value = lista[i].option_value;
     select.appendChild(option)
   }
@@ -236,17 +236,17 @@ var create_select_and_text = function (etichetta, id, lista) {
   select.setAttribute("id", id);
 
   option = document.createElement("option");
-  option.label = "...";
+  option.text = "...";
   option.value = "";
   select.appendChild(option);
   for (i = 0; i < lista.length; i++) {
     let option = document.createElement("option");
-    option.label = lista[i];
+    option.text = lista[i];
     option.value = lista[i];
     select.appendChild(option);
   }
   option = document.createElement("option");
-  option.label = "Altro.. (inserimento manuale)";
+  option.text = "Altro.. (inserimento manuale)";
   option.value = "altro";
   select.appendChild(option);
 

@@ -91,6 +91,7 @@ select {
   width: 250px;
   margin-top: -5px;
   height: 23px;
+  padding: 0 10px;
 }
 input:disabled {
   color: #999;
