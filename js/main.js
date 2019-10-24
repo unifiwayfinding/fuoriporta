@@ -20,16 +20,92 @@ var anteprima_pdf_url;
 var anteprima_pdf_numpages;
 var weblink = 'nuovofuoriporta.unifi.com';
 
+
+
 // ---------------------------------
 // ----------- SETTINGS ------------
 // ---------------------------------
 
-// impostazioni PDF, in mm
+// impostazione di debug
 const show_margins = false;
 const show_qr = false;
 const force_petit_checkbox = false;
 
+
+
+/**
+ * Impostazioni di font, dimensioni pagina, posizione campi.
+ * @typedef   {Object}   PdfSettings
+
+ Impostazioni pagina
+ * @property  {number}   page_width                   pt
+ * @property  {number}   page_height                  pt
+ * @property  {number}   margin_up                    pt
+ * @property  {number}   margin_down                  pt
+ * @property  {number}   margin_sx                    pt
+ * @property  {number}   margin_dx                    pt
+
+ Impostazioni posizione campi
+ * @property  {number}   left_textbox_width           pt
+ * @property  {number}   right_textbox_width          pt
+ * @property  {number}   altezza_qrcode               pt
+ * @property  {number}   lato_qrcode                  pt
+ * @property  {number}   altezza_weblink              pt
+ * @property  {number}   altezza_annotazioni          pt
+
+ Impostazioni font
+ * @property  {number}   strutture_bold_font          font
+ * @property  {number}   funzioni_font                font
+ * @property  {number}   nomi_font                    font
+ * @property  {number}   annotazioni_font             font
+
+ * @property  {Number}   nomi_corpo                   pt
+ * @property  {number}   nomi_interlinea              pt
+ * @property  {number}   nomi_spaziosotto             pt
+
+ * @property  {number}   specifica_corpo              pt
+ * @property  {number}   specifica_interlinea         pt
+ * @property  {number}   specifica_spaziosotto        pt
+ * @property  {number}   riduzione_nomi_piccoli       ratio
+
+ * @property  {number}   strutture_bold_corpo         pt
+ * @property  {number}   strutture_bold_interlinea    pt
+ * @property  {number}   strutture_bold_spaziosotto   pt
+
+ * @property  {number}   strutture_light_corpo        pt
+ * @property  {number}   strutture_light_interlinea   pt
+ * @property  {number}   strutture_light_spaziosotto  pt
+
+ * @property  {number}   funzioni_corpo               pt
+ * @property  {number}   funzioni_interlinea          pt
+ * @property  {number}   funzioni_spaziosotto         pt
+
+ */
+
+
 const impostazioni_PDF = {
+
+// Impostazioni pagina
+page_width          : mmToUnits(200),
+page_height         : mmToUnits(110),
+margin_up           : mmToUnits(12),
+margin_down         : mmToUnits(12),
+margin_sx           : mmToUnits(10),
+margin_dx           : mmToUnits(10),
+
+// Impostazioni poszione campi
+left_textbox_width  : mmToUnits(80),
+right_textbox_width : mmToUnits(95),
+altezza_qrcode      : mmToUnits(74),
+lato_qrcode         : mmToUnits(20),
+altezza_weblink     : mmToUnits(96),
+altezza_annotazioni : mmToUnits(106),
+
+// impostazioni font
+strutture_bold_font: null,
+funzioni_font: null,
+nomi_font: null,
+annotazioni_font  : null,
 
 nomi_corpo: 28,
 nomi_interlinea: 24,
@@ -50,31 +126,8 @@ strutture_light_spaziosotto: 0,
 
 funzioni_corpo: 18,
 funzioni_interlinea: 16,
-funzioni_spaziosotto: 5,
+funzioni_spaziosotto: 5
 
-strutture_bold_font: null,
-strutture_bold_font: null,
-funzioni_font: null,
-nomi_font: null,
-annotazioni_font  : null,
-
-page_width          : mmToUnits(200),
-page_height         : mmToUnits(110),
-margin_up           : mmToUnits(12),
-margin_down         : mmToUnits(12),
-margin_sx           : mmToUnits(10),
-margin_dx           : mmToUnits(10),
-
-left_textbox_width  : mmToUnits(80),
-right_textbox_width : mmToUnits(95),
-altezza_qrcode      : mmToUnits(74),
-lato_qrcode         : mmToUnits(20),
-altezza_weblink     : mmToUnits(96),
-altezza_annotazioni : mmToUnits(106),
-
-
-foreground: null,
-background: null
 }
 
 
@@ -349,6 +402,23 @@ var update_struttura = function(index) {
 
 
 
+
+
+
+
+
+
+// -----------------------------------------------------------
+// ------ COMPILA IL PDF E AGGIORNA L'ANTEPRIMA --------------
+// ---------- (FETCHES INFO FROM FORM/FILE) ------------------
+// ------------- (CREA IL PDF CON PDFKIT) --------------------
+// -------------- (VISUALIZZA ANTEPRIMA) ---------------------
+// ----------(AGGIORNA LINK DOWNLOAD ANTEPRIMA) --------------
+// -----------------------------------------------------------
+
+
+
+
 // ----------------------------------------------------
 // ------------- FETCHES INFO FROM FORM ---------------
 // ----------------------------------------------------
@@ -409,14 +479,6 @@ var  fetch_info_from_form = function() {
 
 
 
-
-
-
-
-
-
-
-
 // ----------------------------------------------------
 // ------------- FETCHES INFO FROM CSV ----------------
 // ----------------------------------------------------
@@ -457,19 +519,9 @@ var fetch_info_from_csv = function(data_line) {
 
 
 
-
-
-
-
-
-
-// -----------------------------------------------------------
-// ---------------- AGGIORNA L'ANTEPRIMA ---------------------
-// ------------- (CREA IL PDF CON PDFKIT) --------------------
-// -------------- (VISUALIZZA ANTEPRIMA) ---------------------
-// ----------(AGGIORNA LINK DOWNLOAD ANTEPRIMA) --------------
-// -----------------------------------------------------------
-
+// ----------------------------------------------------
+// ---------- AGGIORNA L'ANTEPRIMA DA FORM ------------
+// ----------------------------------------------------
 
 var aggiorna_anteprima_da_form = function() {
   document.querySelector("#page_counter").value = 1;
@@ -479,9 +531,14 @@ var aggiorna_anteprima_da_form = function() {
 
 var reader = new FileReader();
 
+
+
+// ----------------------------------------------------
+// ---------- AGGIORNA L'ANTEPRIMA DA FILE ------------
+// ----------------------------------------------------
+
 var aggiorna_anteprima_da_file = function() {
   document.querySelector("#page_counter").value = 1;
-
 
   var file = document.querySelector("#file_loader").files[0];
 
@@ -508,8 +565,25 @@ var parseFile = function() {
 
 
 
-////////////////////////
-/// complila il PDF
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -----------------------------------------------------------
+// ------- COMPILA IL PDF AGGIORNA L'ANTEPRIMA ---------------
+// ------------- (CREA IL PDF CON PDFKIT) --------------------
+// -------------- (VISUALIZZA ANTEPRIMA) ---------------------
+// ----------(AGGIORNA LINK DOWNLOAD ANTEPRIMA) --------------
+// -----------------------------------------------------------
 
 /**
  * Crea il PDF a partire dalle informazioni
@@ -535,15 +609,17 @@ const compila_pdf = function(pdf_settings, data) {
   //////////////////////////////
   // SISTEMA ALCUNE IMPOSTAZIONI
 
+  let page_colors = {};
+
   // Impostazioni colori
   if (document.querySelector("#options-color-black").checked == false) {
-    pdf_settings.background = "#fff";
-    pdf_settings.foreground = "#000";
+    page_colors.background = "#fff";
+    page_colors.foreground = "#000";
     qr_code = qr_code_black;
   }
   if (document.querySelector("#options-color-black").checked == true) {
-    pdf_settings.background = "#000";
-    pdf_settings.foreground = "#fff";
+    page_colors.background = "#000";
+    page_colors.foreground = "#fff";
     qr_code = qr_code_white;
   }
 
@@ -602,13 +678,13 @@ for (let page = 0; page < data.length; page++) {
 
       // Crea rettangolo di background
       .rect(0, 0, pdf_settings.page_width, pdf_settings.page_height)
-      .fill(pdf_settings.background)
+      .fill(page_colors.background)
 
 
       // Scrive le scritte sul pdf
 
         // imposta colore
-      .fill(pdf_settings.foreground)
+      .fill(page_colors.foreground)
 
         // strutture bold
       .font(pdf_settings.strutture_bold_font, pdf_settings.strutture_bold_corpo)
@@ -632,7 +708,7 @@ for (let page = 0; page < data.length; page++) {
       })
 
 
-
+      // calcola e aggiunge il qrcode
 
       if (show_qr) {
         doc .image(qr_code, pdf_settings.margin_sx, pdf_settings.altezza_qrcode, {fit: [pdf_settings.lato_qrcode, pdf_settings.lato_qrcode]});
@@ -644,7 +720,6 @@ for (let page = 0; page < data.length; page++) {
       doc .font(pdf_settings.annotazioni_font, 8)
           .text(info.Annotazioni_1, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {})
           .text(info.Annotazioni_2, pdf_settings.margin_sx, pdf_settings.altezza_annotazioni, {align: "right"})
-
 
 
 
@@ -677,7 +752,6 @@ for (let page = 0; page < data.length; page++) {
         lines_total_height = calcola_total_height();
       }
 
-
       // scrive nomi e specifiche
       doc .font(pdf_settings.nomi_font, 1)
           .text("", pdf_settings.page_width - pdf_settings.margin_dx - pdf_settings.right_textbox_width, pdf_settings.page_height - pdf_settings.margin_down - lines_total_height)
@@ -688,10 +762,6 @@ for (let page = 0; page < data.length; page++) {
         doc .font(pdf_settings.nomi_font, (nome.size))
             .text(nome.content, {align: 'right', width: pdf_settings.right_textbox_width, lineGap: nome.interlinea-nome.size*1.2, paragraphGap: nome.spaziosotto});
       }
-
-
-
-
 
 
       // Mostra le guide e i margini se necessario
@@ -716,7 +786,6 @@ for (let page = 0; page < data.length; page++) {
             .stroke("yellow")
       }
   }
-
   // chiude il pdf
   doc.end();
 
@@ -792,6 +861,11 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
   }
   return new_nomi;
 }
+
+
+
+
+
 
 
 
@@ -974,6 +1048,9 @@ var inizializza = function() {
 
 function async_trigger() {
 
+
+
+
   // ----------- INIZIALIZZA ---------
 
   // Impostazioni font
@@ -1056,7 +1133,7 @@ function async_trigger() {
 
 
 
-
+  // uncomment following line for debug
   // aggiorna_anteprima_da_form();
 }
 
