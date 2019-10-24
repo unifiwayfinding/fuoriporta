@@ -588,17 +588,8 @@ var aggiorna_anteprima_da_file = function() {
 
 /**
  * Crea il PDF a partire dalle informazioni
-   * @param {object}  info - Le informazioni per il fuoriporta.
-   * @param {string}  info.St_b1 - Info struttura
-   * @param {string}  info.St_b2 - Info struttura
-   * @param {string}  info.St_b3 - Info struttura
-   * @param {string}  info.St_l1 - Info struttura
-   * @param {string}  info.St_l2 - Info struttura
-   * @param {array}   info.Funzioni - Array di stringhe per le funzioni
-   * @param {array}   info.Nomi - Array di stringhe
-   * @param {boolean} info.Nomi_piccoli - boolean
-   * @param {string}  Annotazioni_1 - Allinato a sinistra
-   * @param {string}  Annotazioni_2 - Allineato a destra
+   * @param {PdfSettings}        pdf_settings      Le impostazioni per pagina, font, posizioni
+   * @param {Array of Objects}   data              Le informazioni per il fuoriporta
  */
 
 
