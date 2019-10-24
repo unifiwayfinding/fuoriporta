@@ -529,7 +529,7 @@ var aggiorna_anteprima_da_form = function() {
   compila_pdf(impostazioni_PDF, fetch_info_from_form());
 }
 
-var reader = new FileReader();
+
 
 
 
@@ -537,31 +537,32 @@ var reader = new FileReader();
 // ---------- AGGIORNA L'ANTEPRIMA DA FILE ------------
 // ----------------------------------------------------
 
-var aggiorna_anteprima_da_file = function() {
-  document.querySelector("#page_counter").value = 1;
-
-  var file = document.querySelector("#file_loader").files[0];
-
-  reader.addEventListener("load", parseFile, false);
-  if (file) {
-    reader.readAsText(file);
-  }
-}
-
-var parseFile = function() {
+// crea file reader e aggiunge event listener
+var reader = new FileReader();
+reader.addEventListener("load", function() {
 
   var parser = d3.dsvFormat(";");
   var data = parser.parse(reader.result);
-
-  // let csv_counter = document.querySelector("#csv_page_counter");
-  // data = [ data[csv_counter.value - 1] ];
 
   console.log("DATA: ");
   console.log(data);
   // chiama compila_pdf
   compila_pdf(impostazioni_PDF, data.map(fetch_info_from_csv));
 
+}, false);
+
+// funzione aggiorna_anteprima_da_file
+var aggiorna_anteprima_da_file = function() {
+  document.querySelector("#page_counter").value = 1;
+
+  var file = document.querySelector("#file_loader").files[0];
+
+  if (file) {
+    reader.readAsText(file);
+  }
 }
+
+
 
 
 
