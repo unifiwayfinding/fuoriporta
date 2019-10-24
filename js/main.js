@@ -1003,35 +1003,6 @@ var inizializza = function() {
   };
   xhr.send();
 
-  /*
-  xhr_to_load++;
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "./images/qr-code-white.jpg", true);
-  xhr.responseType = "arraybuffer";
-  xhr.onload = function(e) {
-    qr_code_white = this.response;
-    console.log("font loaded");
-    xhr_to_load--;
-    if (xhr_to_load === 0) {
-      async_trigger()
-    };
-  };
-  xhr.send();
-
-  xhr_to_load++;
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "./images/qr-code-black.jpg", true);
-  xhr.responseType = "arraybuffer";
-  xhr.onload = function(e) {
-    qr_code_black = this.response;
-    console.log("font loaded");
-    xhr_to_load--;
-    if (xhr_to_load === 0) {
-      async_trigger()
-    };
-  };
-  xhr.send();
-*/
 }
 
 function async_trigger() {
@@ -1068,11 +1039,9 @@ function async_trigger() {
     }
   });
 
-  /*
-  document.querySelector("#singolo-multiplo").addEventListener("onchange", function(event) {
-    alert("change")
-  });
-  */
+
+  // gestisce la visualizzazione dei controlli singolo/multiplo
+
   document.querySelector("#multiplo_control").style.display = "none";
 
   document.getElementsByName("singolo_multiplo").forEach(function(radio) {
@@ -1103,11 +1072,6 @@ function async_trigger() {
   // visualizza il form
   show_form(1);
 
-
-
-
-
-
   var qr = new QRious();
   qr.value = 'http://www.google.com';
   qr.size = 1000;
@@ -1116,13 +1080,6 @@ function async_trigger() {
   qr.background = "black";
   qr_code_white = qr.toDataURL('image/jpeg');
 
-
-
-
-
-
-  // uncomment following line for debug
-  // aggiorna_anteprima_da_form();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
