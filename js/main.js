@@ -346,6 +346,9 @@ var update_struttura = function(index) {
 
 
 
+
+
+
 // ----------------------------------------------------
 // ------------- FETCHES INFO FROM FORM ---------------
 // ----------------------------------------------------
@@ -411,6 +414,9 @@ var  fetch_info_from_form = function() {
 
 
 
+
+
+
 // ----------------------------------------------------
 // ------------- FETCHES INFO FROM CSV ----------------
 // ----------------------------------------------------
@@ -453,6 +459,10 @@ var fetch_info_from_csv = function(data_line) {
 
 
 
+
+
+
+
 // -----------------------------------------------------------
 // ---------------- AGGIORNA L'ANTEPRIMA ---------------------
 // ------------- (CREA IL PDF CON PDFKIT) --------------------
@@ -464,7 +474,7 @@ var fetch_info_from_csv = function(data_line) {
 var aggiorna_anteprima_da_form = function() {
   document.querySelector("#page_counter").value = 1;
 
-  compila_pdf(fetch_info_from_form(), impostazioni_PDF, false);
+  compila_pdf(impostazioni_PDF, fetch_info_from_form());
 }
 
 var reader = new FileReader();
@@ -492,7 +502,7 @@ var parseFile = function() {
   console.log("DATA: ");
   console.log(data);
   // chiama compila_pdf
-  compila_pdf(data.map(fetch_info_from_csv), impostazioni_PDF, false);
+  compila_pdf(impostazioni_PDF, data.map(fetch_info_from_csv));
 
 }
 
@@ -517,7 +527,7 @@ var parseFile = function() {
  */
 
 
-const compila_pdf = function(data, pdf_settings, multipagina) {
+const compila_pdf = function(pdf_settings, data) {
 
   console.log ("updating pdf preview with data:");
   console.log (data);
