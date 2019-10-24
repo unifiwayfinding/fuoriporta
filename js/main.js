@@ -16,7 +16,6 @@ Prima di procedere va risolto il problema per il quale disattivando un funzionam
 
 PDFJS.workerSrc = 'js/pdf.worker.js';
 
-var anteprima_pdf_url;
 var anteprima_pdf_numpages;
 var weblink = 'nuovofuoriporta.unifi.com';
 
@@ -790,8 +789,7 @@ for (let page = 0; page < data.length; page++) {
     scaricaPdf_link.href = pdf_url;
 
     // aggiorna la visualizzazione dell'anteprima
-    anteprima_pdf_url = pdf_url
-    visualize_preview();
+    visualize_preview(pdf_url);
   });
 }
 
@@ -871,9 +869,7 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-var visualize_preview = function() {
-
-  var url = anteprima_pdf_url;
+var visualize_preview = function(url) {
 
   var pageNumber = parseInt(document.querySelector("#page_counter").value);
 
