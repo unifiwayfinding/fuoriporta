@@ -155,7 +155,7 @@ funzioni_spaziosotto: 5
 // ------ LOAD FONTS WITH XHR ------
 // ---------------------------------
 
-var inizializza = function() {
+var load_font_and_startup = function() {
   var xhr_to_load = 0;
 
   // load font helvetica black 95
@@ -168,7 +168,7 @@ var inizializza = function() {
     console.log("font loaded");
     xhr_to_load--;
     if (xhr_to_load === 0) {
-      async_trigger()
+      inizializza()
     };
   };
   xhr.send();
@@ -183,7 +183,7 @@ var inizializza = function() {
     console.log("font loaded");
     xhr_to_load--;
     if (xhr_to_load === 0) {
-      async_trigger()
+      inizializza()
     };
   };
   xhr.send();
@@ -198,7 +198,7 @@ var inizializza = function() {
     console.log("font loaded");
     xhr_to_load--;
     if (xhr_to_load === 0) {
-      async_trigger()
+      inizializza()
     };
   };
   xhr.send();
@@ -206,9 +206,11 @@ var inizializza = function() {
 }
 
 
+
+
 // ----------- INIZIALIZZA ---------
 
-function async_trigger() {
+function inizializza() {
 
 
   // Impostazioni font
@@ -282,7 +284,7 @@ function async_trigger() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  inizializza();
+  load_font_and_startup();
 })
 
 
