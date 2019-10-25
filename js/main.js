@@ -102,52 +102,7 @@ function mmToUnits(mm) {
 // --------- PDF SETTINGS ----------
 // ---------------------------------
 
-const impostazioni_PDF = {
-
-// Impostazioni pagina
-page_width          : mmToUnits(200),
-page_height         : mmToUnits(110),
-margin_up           : mmToUnits(12),
-margin_down         : mmToUnits(12),
-margin_sx           : mmToUnits(10),
-margin_dx           : mmToUnits(10),
-
-// Impostazioni poszione campi
-left_textbox_width  : mmToUnits(80),
-right_textbox_width : mmToUnits(95),
-altezza_qrcode      : mmToUnits(74),
-lato_qrcode         : mmToUnits(20),
-altezza_weblink     : mmToUnits(96),
-altezza_annotazioni : mmToUnits(106),
-
-// impostazioni font
-strutture_bold_font: null,
-funzioni_font: null,
-nomi_font: null,
-annotazioni_font  : null,
-
-nomi_corpo: 28,
-nomi_interlinea: 24,
-nomi_spaziosotto: 8,
-
-specifica_corpo: 20,
-specifica_interlinea: 18,
-specifica_spaziosotto: 8,
-riduzione_nomi_piccoli: 1.65,
-
-strutture_bold_corpo: 23,
-strutture_bold_interlinea: 20,
-strutture_bold_spaziosotto: 0,
-
-strutture_light_corpo: 16,
-strutture_light_interlinea: 14,
-strutture_light_spaziosotto: 0,
-
-funzioni_corpo: 18,
-funzioni_interlinea: 16,
-funzioni_spaziosotto: 5
-
-}
+let impostazioni_PDF;
 
 
 
@@ -212,6 +167,52 @@ var load_font_and_startup = function() {
 
 function inizializza() {
 
+  impostazioni_PDF = {
+
+  // Impostazioni pagina
+  page_width          : mmToUnits(200),
+  page_height         : mmToUnits(110),
+  margin_up           : mmToUnits(12),
+  margin_down         : mmToUnits(12),
+  margin_sx           : mmToUnits(10),
+  margin_dx           : mmToUnits(10),
+
+  // Impostazioni poszione campi
+  left_textbox_width  : mmToUnits(80),
+  right_textbox_width : mmToUnits(95),
+  altezza_qrcode      : mmToUnits(74),
+  lato_qrcode         : mmToUnits(20),
+  altezza_weblink     : mmToUnits(96),
+  altezza_annotazioni : mmToUnits(106),
+
+  // impostazioni font
+  strutture_bold_font: null,
+  funzioni_font: null,
+  nomi_font: null,
+  annotazioni_font  : null,
+
+  nomi_corpo: 28,
+  nomi_interlinea: 24,
+  nomi_spaziosotto: 8,
+
+  specifica_corpo: 20,
+  specifica_interlinea: 18,
+  specifica_spaziosotto: 8,
+  riduzione_nomi_piccoli: 1.65,
+
+  strutture_bold_corpo: 23,
+  strutture_bold_interlinea: 20,
+  strutture_bold_spaziosotto: 0,
+
+  strutture_light_corpo: 16,
+  strutture_light_interlinea: 14,
+  strutture_light_spaziosotto: 0,
+
+  funzioni_corpo: 18,
+  funzioni_interlinea: 16,
+  funzioni_spaziosotto: 5
+
+  }
 
   // Impostazioni font
   impostazioni_PDF.strutture_bold_font = helvetica95;
