@@ -8,29 +8,16 @@ pdf.js          required for preview visualization
 pdf.worker.js   comes together with pdf.js
 */
 
-/*
- --- *** APPUNTI *** ---
-Prima di procedere va risolto il problema per il quale disattivando un funzionamenro provvisorio che si trova nelle ultime due righe smette tutto di funzionare
-*/
-
-
 PDFJS.workerSrc = 'js/pdf.worker.js';
 
-var anteprima_pdf_numpages;
-var weblink = 'nuovofuoriporta.unifi.com';
 
 
 
-// ---------------------------------
-// ----------- SETTINGS ------------
-// ---------------------------------
-
-// impostazione di debug
-const show_margins = false;
-const show_qr = false;
-const force_petit_checkbox = false;
 
 
+// -------------------------------------
+// --------- JSDOC DEFINITIONS ---------
+// -------------------------------------
 
 /**
  * Impostazioni di font, dimensioni pagina, posizione campi.
@@ -82,6 +69,39 @@ const force_petit_checkbox = false;
  */
 
 
+
+
+
+
+ // ---------------------------------
+ // ------- GLOBAL VARIABLES --------
+ // ------ AND DEBUG SETTINGS -------
+ // ---------------------------------
+
+var anteprima_pdf_numpages;
+const weblink = 'wayfinding.unifi.it';
+
+// impostazione di debug
+const show_margins = false;
+const show_qr = false;
+const force_petit_checkbox = false;
+
+// Helper function: converts mm to pdf-units (pt)
+function mmToUnits(mm) {
+  units = mm * 2.8368794326;
+  return units;
+}
+
+
+
+
+
+
+
+// ---------------------------------
+// --------- PDF SETTINGS ----------
+// ---------------------------------
+
 const impostazioni_PDF = {
 
 // Impostazioni pagina
@@ -131,12 +151,139 @@ funzioni_spaziosotto: 5
 
 
 
-// Helper function: converts mm to pdf-units (pt)
-function mmToUnits(mm) {
-  units = mm * 2.8368794326;
-  return units;
+// ---------------------------------
+// ------ LOAD FONTS WITH XHR ------
+// ---------------------------------
+
+var inizializza = function() {
+  var xhr_to_load = 0;
+
+  // load font helvetica black 95
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica95 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
+  };
+  xhr.send();
+
+  // load font helvetica medium 65
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Md.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica65 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
+  };
+  xhr.send();
+
+  // load font helvetica light 45
+  xhr_to_load++;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function(e) {
+    helvetica45 = this.response;
+    console.log("font loaded");
+    xhr_to_load--;
+    if (xhr_to_load === 0) {
+      async_trigger()
+    };
+  };
+  xhr.send();
+
 }
 
+
+// ----------- INIZIALIZZA ---------
+
+function async_trigger() {
+
+
+  // Impostazioni font
+  impostazioni_PDF.strutture_bold_font = helvetica95;
+  impostazioni_PDF.strutture_light_font = helvetica45;
+  impostazioni_PDF.funzioni_font = helvetica65;
+  impostazioni_PDF.nomi_font = helvetica45;
+  impostazioni_PDF.weblink_font = helvetica45;
+  impostazioni_PDF.annotazioni_font = helvetica45;
+
+  console.log("-- all font loaded --");
+
+  // Key bindings
+  document.querySelector("#page_counter").addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      change_page(update);
+    }
+  });
+
+  document.body.addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 37) {
+      change_page("prev");
+    } else if (event.keyCode === 39) {
+      change_page("next");
+    }
+  });
+
+
+  // gestisce la visualizzazione dei controlli singolo/multiplo
+
+  document.querySelector("#multiplo_control").style.display = "none";
+
+  document.getElementsByName("singolo_multiplo").forEach(function(radio) {
+    radio.onclick = function() {
+      // SWITCH CONTROL FEATURES
+      console.log("click: ", this)
+      if (this.value === "singolo") {
+        console.log("singolo")
+        document.querySelector("#multiplo_control").style.display = "none";
+        document.querySelector("#singolo_control").style.display = "block";
+      } else if (this.value === "multiplo") {
+        console.log("multiplo")
+        document.querySelector("#multiplo_control").style.display = "block";
+        document.querySelector("#singolo_control").style.display = "none";
+      }
+      // RESET CANVAS + PAGE COUNTER PREVIEW
+      var canvas_container = document.querySelector("#canvas_container")
+      canvas_container.innerHTML = '';
+      var nuovo_canvas = document.createElement("canvas");
+      nuovo_canvas.setAttribute("id", "the_canvas");
+      canvas_container.appendChild(nuovo_canvas);
+      document.querySelector("#page_num").textContent = "";
+    }
+  })
+
+  // popola il select delle strutture
+  populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
+  // visualizza il form
+  show_form(1);
+
+  var qr = new QRious();
+  qr.value = 'http://www.google.com';
+  qr.size = 1000;
+  qr_code_black = qr.toDataURL('image/jpeg');
+  qr.foreground = "white";
+  qr.background = "black";
+  qr_code_white = qr.toDataURL('image/jpeg');
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  inizializza();
+})
 
 
 
@@ -937,151 +1084,3 @@ var change_page = function(action) {
 
   visualize_preview();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ---------------------------------
-// ------ LOAD FONTS WITH XHR ------
-// ---------------------------------
-
-var inizializza = function() {
-  var xhr_to_load = 0;
-
-  // load font helvetica black
-  xhr_to_load++;
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Blk.otf", true);
-  xhr.responseType = "arraybuffer";
-  xhr.onload = function(e) {
-    helvetica95 = this.response;
-    console.log("font loaded");
-    xhr_to_load--;
-    if (xhr_to_load === 0) {
-      async_trigger()
-    };
-  };
-  xhr.send();
-
-  // load font helvetica medium
-  xhr_to_load++;
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Md.otf", true);
-  xhr.responseType = "arraybuffer";
-  xhr.onload = function(e) {
-    helvetica65 = this.response;
-    console.log("font loaded");
-    xhr_to_load--;
-    if (xhr_to_load === 0) {
-      async_trigger()
-    };
-  };
-  xhr.send();
-
-  // load font helvetica light
-  xhr_to_load++;
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "./fonts/HelveticaNeueLTPro-Lt.otf", true);
-  xhr.responseType = "arraybuffer";
-  xhr.onload = function(e) {
-    helvetica45 = this.response;
-    console.log("font loaded");
-    xhr_to_load--;
-    if (xhr_to_load === 0) {
-      async_trigger()
-    };
-  };
-  xhr.send();
-
-}
-
-function async_trigger() {
-
-
-
-
-  // ----------- INIZIALIZZA ---------
-
-  // Impostazioni font
-  impostazioni_PDF.strutture_bold_font = helvetica95;
-  impostazioni_PDF.strutture_light_font = helvetica45;
-  impostazioni_PDF.funzioni_font = helvetica65;
-  impostazioni_PDF.nomi_font = helvetica45;
-  impostazioni_PDF.weblink_font = helvetica45;
-  impostazioni_PDF.annotazioni_font = helvetica45;
-
-  console.log("-- all font loaded --");
-
-  // Key bindings
-  document.querySelector("#page_counter").addEventListener("keyup", function(event) {
-    // Number 13 is the "Enter" key on the keyboard
-    if (event.keyCode === 13) {
-      change_page(update);
-    }
-  });
-
-  document.body.addEventListener("keyup", function(event) {
-    // Number 13 is the "Enter" key on the keyboard
-    if (event.keyCode === 37) {
-      change_page("prev");
-    } else if (event.keyCode === 39) {
-      change_page("next");
-    }
-  });
-
-
-  // gestisce la visualizzazione dei controlli singolo/multiplo
-
-  document.querySelector("#multiplo_control").style.display = "none";
-
-  document.getElementsByName("singolo_multiplo").forEach(function(radio) {
-    radio.onclick = function() {
-      // SWITCH CONTROL FEATURES
-      console.log("click: ", this)
-      if (this.value === "singolo") {
-        console.log("singolo")
-        document.querySelector("#multiplo_control").style.display = "none";
-        document.querySelector("#singolo_control").style.display = "block";
-      } else if (this.value === "multiplo") {
-        console.log("multiplo")
-        document.querySelector("#multiplo_control").style.display = "block";
-        document.querySelector("#singolo_control").style.display = "none";
-      }
-      // RESET CANVAS + PAGE COUNTER PREVIEW
-      var canvas_container = document.querySelector("#canvas_container")
-      canvas_container.innerHTML = '';
-      var nuovo_canvas = document.createElement("canvas");
-      nuovo_canvas.setAttribute("id", "the_canvas");
-      canvas_container.appendChild(nuovo_canvas);
-      document.querySelector("#page_num").textContent = "";
-    }
-  })
-
-  // popola il select delle strutture
-  populate_select_input(document.querySelector("#struttura_selector"), lista_strutture);
-  // visualizza il form
-  show_form(1);
-
-  var qr = new QRious();
-  qr.value = 'http://www.google.com';
-  qr.size = 1000;
-  qr_code_black = qr.toDataURL('image/jpeg');
-  qr.foreground = "white";
-  qr.background = "black";
-  qr_code_white = qr.toDataURL('image/jpeg');
-
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  inizializza();
-})
