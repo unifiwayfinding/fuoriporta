@@ -79,6 +79,7 @@ PDFJS.workerSrc = 'js/pdf.worker.js';
  // ---------------------------------
 
 var anteprima_pdf_numpages;
+var anteprima_pdf_url;
 const weblink = 'wayfinding.unifi.it';
 
 // impostazione di debug
@@ -939,7 +940,8 @@ for (let page = 0; page < data.length; page++) {
     scaricaPdf_link.href = pdf_url;
 
     // aggiorna la visualizzazione dell'anteprima
-    visualize_preview(pdf_url);
+    anteprima_pdf_url = pdf_url
+    visualize_preview();
   });
 }
 
@@ -1019,11 +1021,15 @@ var apply_fonts_to_nomi = function(nomi, nomipiccoli, font_settings) {
 // ----- VISUALIZE PDF WITH PDF.JS -----
 // -------------------------------------
 
-var visualize_preview = function(url) {
+var visualize_preview = function() {
 
+  // recupera il pdf per visualizzarlo, usando la global variable "anteprima_pdf_url"
+  var loadingTask = PDFJS.getDocument(anteprima_pdf_url);
+
+  // recupera il numero di pagina da visualizzare dalla GUI
   var pageNumber = parseInt(document.querySelector("#page_counter").value);
 
-  var loadingTask = PDFJS.getDocument(url);
+  // visualizza il pdf
   loadingTask.promise.then(function(pdf) {
     console.log('ANTEPRIMA - PDF loaded');
 
