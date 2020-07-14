@@ -717,6 +717,15 @@ for (let page = 0; page < data.length; page++) {
       }
   }
 
+
+    // Crea il segno di taglio (bordo grigio) per il ritaglio dei fuoriporta bianchi
+
+    //doc .rect(0, 0, pdf_settings.page_height, pdf_settings.page_width)
+    doc .rect(0, 0, pdf_settings.page_width, pdf_settings.page_height)
+        .lineWidth(.25)
+        .stroke("grey")
+
+
   // chiude il pdf
   doc.end();
 
