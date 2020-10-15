@@ -520,7 +520,7 @@ var parseFile = function() {
    * @param {string}  info.St_l1 - Info struttura
    * @param {string}  info.St_l2 - Info struttura
    * @param {array}   info.Funzioni - Array di stringhe per le funzioni
-   * @param {array}   info.Nomi - Array di stringhe
+   * @param {array}   info.Nomi - Array di stringhe (se inizia con asterisco > specifica)
    * @param {boolean} info.Nomi_piccoli - boolean
    * @param {string}  Annotazioni_1 - Allinato a sinistra
    * @param {string}  Annotazioni_2 - Allineato a destra
