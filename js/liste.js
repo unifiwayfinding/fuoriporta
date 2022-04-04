@@ -130,9 +130,9 @@ var lista_strutture = [
   "struttura_light_2": "Fisica e Astronomia"
 },
 {
-  "option_value": "DipFORLIPSI",
-  "option_label": "FORLIPSI",
-  "struttura_bold_1": "FORLIPSI",
+  "option_value": "DipFORLILPSI",
+  "option_label": "FORLILPSI",
+  "struttura_bold_1": "FORLILPSI",
   "struttura_light_1": "Dipartimento di",
   "struttura_light_2": "Formazione, Lingue, Intercultura,",
   "struttura_light_3": "Letteratura e Psicologia"
